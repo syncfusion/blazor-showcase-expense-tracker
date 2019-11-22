@@ -1,0 +1,32 @@
+﻿@page "/expense"
+
+<TransactGrid @ref="ContentRef" OnDataChange="DataChange"></TransactGrid>
+<FilterMenu @ref="FilterRef" ></FilterMenu>
+<TransactDialog @ref="DialogRef" ></TransactDialog>
+
+@code{
+    [Inject]
+    AppState AppState { get; set; }
+
+    [CascadingParameter]
+    public ExpenseDataService ExpenseDataService { get; set; }
+
+    public FilterMenu FilterRef;
+    public TransactDialog DialogRef;
+    public TransactGrid ContentRef;
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        this.ContentRef.DialogRef = this.DialogRef;
+        this.FilterRef.ContentRef = this.ContentRef;
+        this.DialogRef.ContentRef = this.ContentRef;
+        this.AppState.SetFilterComponent(this.FilterRef);
+    }
+
+    public void DataChange(ExpenseDataService data)
+    {
+        this.AppState.SetCommonData(data);
+        this.FilterRef.UpdateGrid(data);
+    }
+}

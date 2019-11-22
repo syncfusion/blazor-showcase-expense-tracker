@@ -1,0 +1,94 @@
+﻿@page "/about"
+@inject AppState AppState
+
+<div>
+    <div class='about-heading'>About this sample</div>
+    <div class='about-description'>
+        This expense tracker demo application showcases using several Syncfusion Blazor components together in a real-world application scenario. You can further explore the source code of this application and use it as a reference for integrating Syncfusion Blazor components into your applications.
+    </div>
+    <div class='list-heading'>List of EJ2 components used in this sample</div>
+    <div class='about-component'>
+        <div class='control-item'>
+            <span class="icon-button e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/button/getting-started/" target="_blank">Button</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-chart e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/chart/getting-started/" target="_blank">Chart</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-checkbox e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/check-box/getting-started/" target="_blank">CheckBox</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-datepicker e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/datepicker/getting-started/" target="_blank">DatePicker</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-daterangepicker e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/daterangepicker/getting-started/" target="_blank">DateRangePicker</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-dialog e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/dialog/getting-started/" target="_blank">Dialog</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-dropdownlist e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/dropdownlist/getting-started/?" target="_blank">DropDownList</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-grid e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/grid/getting-started/" target="_blank">Grid</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-multiselect e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/multiselect/getting-started/" target="_blank">MultiSelect</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-numerictextbox e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/numerictextbox/getting-started/" target="_blank">NumericTextBox</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-radiobutton e-sb-icon control-icon"></span>
+            <a class='control-name' href="http://ej2.syncfusion.com/blazor/documentation/radio-button/getting-started/" target="_blank">RadioButton</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-sidebar e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/sidebar/getting-started/" target="_blank">Sidebar</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-textboxes e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/textbox/getting-started/" target="_blank">TextBoxes</a>
+        </div>
+        <div class='control-item'>
+            <span class="icon-timepicker e-sb-icon control-icon"></span>
+            <a class='control-name' href="https://ej2.syncfusion.com/blazor/documentation/timepicker/getting-started/" target="_blank">TimePicker</a>
+        </div>
+    </div>
+</div>
+
+@code{
+    [CascadingParameter]
+    public ExpenseDataService ExpenseDataService { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        this.UpdateCardValues();
+    }
+
+    public void UpdateCardValues()
+    {
+        int incomeRS = 0;
+        int expenseRS = 0;
+        List<ExpenseData> incomeD = new List<ExpenseData>();
+        List<ExpenseData> expenseD = new List<ExpenseData>();
+        DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
+        var commonData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        incomeD = commonData.Where(s => s.TransactionType == "Income").ToList();
+        incomeRS = incomeD.Sum(s => Convert.ToInt32(s.Amount));
+        expenseD = commonData.Where(s => s.TransactionType == "Expense").ToList();
+        expenseRS = expenseD.Sum(s => Convert.ToInt32(s.Amount));
+        var totalBalance = CommonService.GetCurrencyVal(incomeRS - expenseRS);
+        this.AppState.UpdateCurrentBalance(totalBalance);
+    }
+}
