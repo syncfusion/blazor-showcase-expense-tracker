@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+@inject AppState AppState
+
+<div class="sb-content-overlay @hide">
+    <div class="sb-loading">
+        <svg class="circular" height="40" width="40">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
+        </svg>
+    </div>
+</div>
+<div class="@BodyClass" style="height: 100vh; width: 100%; visibility:@visible; opacity:@opacity">
+    <div class="sidebar">
+        <NavMenu OnChangeMenu="ChangeMenu" OnSidebarCreate="OnSidebarCreated" />
+    </div>
+    <div id="addexpenseDialog" class="expense-dialog"></div>
+
+    <div id="sidebarRightpane" class="sidebar-Rightpane">
+        <div class="content container-fluid rightpane">
+            <div class="content-wrapper">
+                <div id="content">
+                    @Body
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    public string BodyClass = "dashboard-page";
+
+    private string target { get; set; } = "#loader-content";
+
+    private string visible { get; set; } = "hidden";
+
+    private string hide { get; set; }
+    private string opacity { get;set; } = "0";
+
+    public void OnSidebarCreated(string status)
+    {
+        this.hide = "sb-hide";
+        this.visible = "visible";
+        this.opacity = "1";
+        StateHasChanged();
+    }
+
+    private void ChangeMenu(string pageName)
+    {
+        if (pageName == "dashboard")
+        {
+            BodyClass = "dashboard-page";
+        }
+        else if (pageName == "expense")
+        {
+            BodyClass = "expense-page";
+        }
+        else if (pageName == "about")
+        {
+            BodyClass = "about-page";
+        }
+        StateHasChanged();
+    }
+}

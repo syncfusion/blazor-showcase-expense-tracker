@@ -1,0 +1,248 @@
+﻿@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject AppState AppState
+
+
+ <style>
+    .enable-overlay {
+        background: #383838;
+    }
+    .disable-overlay {
+        background: #383838;
+    }
+    #sidebar-wrapper,
+    .sidebar-wrapper-filter {
+        z-index: @ZIndex;
+    }
+</style>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <span id="menu-toggle" href="#" class="navbar-toggle e-icon" style="float:left" @onclick="ToggleMenuClick"></span>
+            <div class="navbar-brand samplenameheader"></div>
+            <span id="filter-toggle" href="#" class="navbar-toggle filter-toggle e-icon" style="float:right" @onclick="FilterToggleMenuClick"></span>
+        </div>
+    </div>
+</nav>
+
+<div>
+    <EjsSidebar ID="sidebar-indexdefault" @ref="DefaultSidebar" Width="200px" MediaQuery="(min-width: 768px)"  Created="OnCreate">
+        <ChildContent>
+            <div id="sidebar-wrapper" class="@SideBarToggleClass">
+                <div class='samplename-header'>
+                    <div class='samplename'></div>
+                </div>
+                <div class="info align-center">
+                    <div class="image"></div>
+                    <div class="content nameContent">
+                        <p class='name' id='user-name'>Nicholas Delacruz</p>
+                        <div class='wallet-container'>
+                            <span style='height: 27px;' class='balance-align'>
+                                <img src="./styles/images/cash-wallet.svg" />
+                            </span>
+                            <span id="current-balance" class='balance-align'>@AppState.CurrentBalance</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-list align-center nav-list">
+                    <div class='nav-item'>
+                        <a class="@overviewClass" id="nav-overview" href="dashboard" @onclick="HandleOverlay">Dashboard</a>
+                    </div>
+                    <div class='nav-item'>
+                        <a class="@expenseClass" id="nav-expense" href="expense" @onclick="HandleOverlay">Transactions</a>
+                    </div>
+                    <div class='nav-item'>
+                        <a class="@aboutClass" id="nav-about" href="about" @onclick="HandleOverlay">About</a>
+                    </div>
+                </div>
+            </div>
+        </ChildContent>
+    </EjsSidebar>
+</div>
+
+<div id="overlay" class="@OverlayClass" @onclick="OverlayClick"></div>
+
+@functions {
+    EjsSidebar DefaultSidebar;
+
+    public string OverlayClass = "";
+    public string SideBarToggleClass = "sidebar-toggle";
+    public string overviewClass = "overview ripple-element";
+    public string expenseClass = "expense ripple-element";
+    public string aboutClass = "about ripple-element";
+
+    public bool IsSidebarOpen = false;
+    public bool IsFilterSidebarOpen = false;
+
+    [Parameter]
+    public Action<string> OnChangeMenu { get; set; }
+
+    [Parameter]
+    public Action<string> OnSidebarCreate { get; set; }
+
+    private string ZIndex = "";
+
+    protected override void OnInitialized()
+    {
+        this.RenderPage();
+        AppState.OnChange += StateHasChanged;
+        UriHelper.LocationChanged += OnLocationChanges;
+    }
+
+    public void ToggleMenuClick()
+    {
+        this.ToggleMenu();
+    }
+
+    public void FilterToggleMenuClick()
+    {
+        this.ToggleFilterMenu();
+    }
+
+    public void OverlayClick()
+    {
+        ZIndex = "";
+        this.RemoveToggleClass();
+        this.DefaultSidebar.Hide();
+        this.IsSidebarOpen = false;
+        this.RemoveFilterToggleClass();
+        if (this.AppState.FilterComponent != null)
+            this.AppState.FilterComponent.HideFilterMenu();
+        this.IsFilterSidebarOpen = false;
+        this.HandleOverlay();
+    }
+
+    public void OnCreate()
+    {
+        OnSidebarCreate.Invoke("Created");
+    }
+
+    public void ToggleMenu()
+    {
+        if (this.IsSidebarOpen)
+        {
+            ZIndex = "";
+            this.RemoveToggleClass();
+            this.DefaultSidebar.Hide();
+            this.IsSidebarOpen = false;
+            SideBarToggleClass = "sidebar-toggle close";
+            this.DisableOverlay();
+        }
+        else if (!IsSidebarOpen)
+        {
+            ZIndex = "100001";
+            this.RemoveToggleClass();
+            this.DefaultSidebar.Show();
+            this.IsSidebarOpen = true;
+            SideBarToggleClass = "sidebar-toggle open";
+            this.EnableOverlay();
+        }
+        else
+        {
+            ZIndex = "100001";
+            this.RemoveToggleClass();
+            this.DefaultSidebar.Show();
+            this.IsSidebarOpen = true;
+            SideBarToggleClass = "sidebar-toggle open";
+            this.EnableOverlay();
+        }
+    }
+
+    public void RemoveToggleClass()
+    {
+        SideBarToggleClass = "sidebar-toggle";
+    }
+
+    public void EnableOverlay()
+    {
+        this.OverlayClass = "dialog enable-overlay";
+    }
+
+    public void DisableOverlay()
+    {
+        this.OverlayClass = "disable-overlay";
+    }
+
+    public void ToggleFilterMenu()
+    {
+        if (IsFilterSidebarOpen)
+        {
+            ZIndex = "";
+            if (this.AppState.FilterComponent != null)
+                this.AppState.FilterComponent.HideFilterMenu();
+            DisableOverlay();
+
+        }
+        else if (!IsFilterSidebarOpen)
+        {
+            ZIndex = "100001";
+            if (this.AppState.FilterComponent != null)
+                this.AppState.FilterComponent.ShowFilterMenu();
+            EnableOverlay();
+        }
+        else
+        {
+            ZIndex = "100001";
+            if (this.AppState.FilterComponent != null)
+                this.AppState.FilterComponent.ShowFilterMenu();
+            EnableOverlay();
+        }
+    }
+
+    public void HandleOverlay()
+    {
+        ZIndex = "";
+        this.DisableOverlay();
+        this.RemoveToggleClass();
+    }
+
+    public void RemoveFilterToggleClass()
+    {
+        if (this.AppState.FilterComponent != null)
+            this.AppState.FilterComponent.RemoveFitlerClass();
+    }
+
+    private void OnLocationChanges(object sender, LocationChangedEventArgs e)
+    {
+        this.RenderPage();
+    }
+
+    private void RenderPage()
+    {
+        var uri = new Uri(UriHelper.Uri);
+
+        if (uri.AbsoluteUri.Contains("dashboard"))
+        {
+            this.overviewClass = "overview ripple-element expense-active-page";
+            this.expenseClass = "expense ripple-element";
+            this.aboutClass = "about ripple-element";
+            OnChangeMenu.Invoke("dashboard");
+
+        }
+        else if (uri.AbsoluteUri.Contains("about"))
+        {
+            this.overviewClass = "overview ripple-element";
+            this.expenseClass = "expense ripple-element";
+            this.aboutClass = "about ripple-element expense-active-page";
+            OnChangeMenu.Invoke("about");
+
+        }
+        else if (uri.AbsoluteUri.Contains("expensetracker") ? uri.AbsoluteUri.Split("expensetracker")[1].Contains("expense") : uri.AbsoluteUri.Contains("expense") )
+        {
+            this.overviewClass = "overview ripple-element";
+            this.expenseClass = "expense ripple-element expense-active-page";
+            this.aboutClass = "about ripple-element";
+            OnChangeMenu.Invoke("expense");
+
+        }
+        else
+        {
+            this.overviewClass = "overview ripple-element expense-active-page";
+            this.expenseClass = "expense ripple-element";
+            this.aboutClass = "about ripple-element";
+            OnChangeMenu.Invoke("dashboard");
+
+        }
+        StateHasChanged();
+    }
+}
