@@ -42,6 +42,7 @@ $shadow-active-color: rgba(66,115,249,0.85);
 }
 
 .e-btn.e-info.e-add,
+.e-btn.e-info.e-add:focus,
 .e-btn.e-info.e-save, .e-btn.e-ok.e-flat.e-primary {
     background-image: linear-gradient(-180deg, $gradient-start-color 0%, $gradient-end-color 100%) !important;
     border: 0;
@@ -2333,7 +2334,7 @@ body.about-page {
 .e-footer-content {
     .e-control.e-btn,
     .e-control.e-btn:hover {
-        font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif !important;
     }
 }
 

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ExpenseTracker.Service;
+using Syncfusion.EJ2.Blazor;
 
 namespace ExpenseTracker
 {
@@ -27,11 +28,12 @@ namespace ExpenseTracker
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-                services.AddServerSideBlazor().AddCircuitOptions(options => {
-                    #if DEBUG
-                        options.DetailedErrors = true;
-                    #endif
-                });
+            services.AddServerSideBlazor().AddCircuitOptions(options => {
+                #if DEBUG
+                    options.DetailedErrors = true;
+                #endif
+            });
+            services.AddSyncfusionBlazor();
             services.AddScoped<AppState>();
         }
 
