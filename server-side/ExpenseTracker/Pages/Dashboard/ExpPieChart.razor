@@ -7,7 +7,7 @@
         min-width: 250px;
     }
 
-    tr.e-blazor-template {
+    .e-grid tr.e-row {
         height: 30px;
     }
 </style>
@@ -46,7 +46,7 @@
                                 </span>
                             </div>
                         </div>
-                        <EjsGrid ModelType="@GridModalType" DataSource="@PieRenderData" Width="100%" AllowSelection="false" GridLines="GridLine.None" EnableHover="false">
+                        <EjsGrid TValue="LegendRenderData" DataSource="@PieRenderData" Width="100%" AllowSelection="false" GridLines="GridLine.None" EnableHover="false">
                             <GridTemplates>
                                 <RowTemplate>
                                     @{
@@ -76,8 +76,6 @@
 </div>
 
 @code{
-    LegendRenderData GridModalType = new LegendRenderData();
-
     [CascadingParameter]
     private ExpenseDataService ExpenseDataService { get; set; }
     [Parameter]

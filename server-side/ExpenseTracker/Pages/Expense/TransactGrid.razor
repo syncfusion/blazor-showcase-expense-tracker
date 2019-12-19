@@ -29,7 +29,7 @@
                         List<ItemModel> Toolbaritems = new List<ItemModel>();
                         Toolbaritems.Add(new ItemModel() { Text = "Edit", TooltipText = "Edit", Id = "Edit" });
                         Toolbaritems.Add(new ItemModel() { Text = "Delete", TooltipText = "Delete", Id = "Delete" });
-                        <EjsGrid @ref="TransactGridRef" ModelType="@gridModalType" Width="100%" Height="100%" AllowSelection="true" AllowPaging="true" AllowTextWrap="false" Toolbar="@Toolbaritems" DataSource="@TransactGridData">
+                        <EjsGrid @ref="TransactGridRef" TValue="ExpenseData" Width="100%" Height="100%" AllowSelection="true" AllowPaging="true" AllowTextWrap="false" Toolbar="@Toolbaritems" DataSource="@TransactGridData">
                             <GridEvents RowSelected="OnGridSelectRow" RowDeselected="OnGridDeselectRow" DataBound="OnGridRender" OnToolbarClick="ToolbarClickHandler" TValue="ExpenseData"></GridEvents>
                             <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false"></GridEditSettings>
                             <GridPageSettings PageSize="11"></GridPageSettings>
@@ -65,7 +65,7 @@
                                         }
                                     </Template>
                                 </GridColumn>
-                                <GridColumn Field="DateTime" HeaderText="Date" Format="yMd" Width="112" HideAtMedia="(min-Width: 1050px)" ValidationRules="@rules"></GridColumn>
+                                <GridColumn Field="DateTime" HeaderText="Date" Format="d" Width="112" HideAtMedia="(min-Width: 1050px)" ValidationRules="@rules"></GridColumn>
                                 <GridColumn Field="PaymentMode" HeaderText="Payment Mode" Width="140" HideAtMedia="(min-Width: 600px)" ValidationRules="@rules"></GridColumn>
                                 <GridColumn Field="Description" HeaderText="Description" ClipMode="@ClipMode.Ellipsis" HideAtMedia="(min-Width: 1050px)"></GridColumn>
                                 <GridColumn Field="UniqueId" HeaderText="Unique Id" IsPrimaryKey="true" Visible="false"></GridColumn>
@@ -103,8 +103,6 @@
 </div>
 
 @code{
-    ExpenseData gridModalType = new ExpenseData();
-
     [Inject]
     AppState AppState { get; set; }
     [CascadingParameter]

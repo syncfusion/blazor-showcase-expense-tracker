@@ -1,9 +1,9 @@
 ﻿<div class="row recent-expense-grid">
     <div class="col-xs-6 col-sm-6 col-md-12" style="width:100%">
-        <EjsGrid ModelType="GridModalType" DataSource="@RecentExpenseData" Height="100%" AllowSorting="true" EnableHover="false" AllowPaging="false" Width="100%" Toolbar="@GridToolbar">
+        <EjsGrid TValue="ExpenseData" DataSource="@RecentExpenseData" Height="100%" AllowSorting="true" EnableHover="false" AllowPaging="false" Width="100%" Toolbar="@GridToolbar">
             <GridPageSettings PageCount="4" PageSize="14"></GridPageSettings>
             <GridColumns>
-                <GridColumn Field="DateTime" HeaderText="Date" Width="120" Format="yMd" HideAtMedia="(min-width: 600px)"></GridColumn>
+                <GridColumn Field="DateTime" HeaderText="Date" Width="120" Format="d" HideAtMedia="(min-width: 600px)"></GridColumn>
                 <GridColumn Field="Category" HeaderText="Category" Width="170">
                     <Template>
                         @{
@@ -69,7 +69,6 @@
 {
     [Parameter]
     public List<ExpenseData> RecentExpenseData { get; set; }
-    ExpenseData GridModalType = new ExpenseData();
 
     private List<object> GridToolbar = new List<object>
     {
