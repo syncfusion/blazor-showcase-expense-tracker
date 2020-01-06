@@ -65,9 +65,9 @@
                                         }
                                     </Template>
                                 </GridColumn>
-                                <GridColumn Field="DateTime" HeaderText="Date" Format="d" Width="112" HideAtMedia="(min-Width: 1050px)" ValidationRules="@rules"></GridColumn>
-                                <GridColumn Field="PaymentMode" HeaderText="Payment Mode" Width="140" HideAtMedia="(min-Width: 600px)" ValidationRules="@rules"></GridColumn>
-                                <GridColumn Field="Description" HeaderText="Description" ClipMode="@ClipMode.Ellipsis" HideAtMedia="(min-Width: 1050px)"></GridColumn>
+                                <GridColumn Field="DateTime" HeaderText="Date" Format="d" Width="112" ValidationRules="@rules"></GridColumn>
+                                <GridColumn Field="PaymentMode" HeaderText="Payment Mode" Width="140" ValidationRules="@rules"></GridColumn>
+                                <GridColumn Field="Description" HeaderText="Description" ClipMode="@ClipMode.Ellipsis"></GridColumn>
                                 <GridColumn Field="UniqueId" HeaderText="Unique Id" IsPrimaryKey="true" Visible="false"></GridColumn>
                                 <GridColumn Field="Amount" HeaderText="Amount" Width="120" Format="C0" TextAlign="@TextAlign.Right" ValidationRules="@rules">
                                     <Template>
@@ -82,13 +82,13 @@
                                                 <div class='amt-payment @expense.TransactionType'>
                                                     <span>$</span> <span>@expense.Amount</span>
                                                 </div>
-                                                <div>@expense.DateTime</div>
+                                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
                                             </div>
                                             <div class="smallRes">
                                                 <div class='amt-payment @expense.TransactionType'>
                                                     <span>$</span> <span>@expense.Amount</span>
                                                 </div>
-                                                <div>@expense.DateTime</div>
+                                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
                                             </div>
                                         }
                                     </Template>
@@ -200,7 +200,7 @@
         if (args.Item.Id == "Edit")
         {
             if (selectedRecords.Count() == 1)
-            this.DialogRef.ShowEditDialog(selectedRecords[0]);
+                this.DialogRef.ShowEditDialog(selectedRecords[0]);
         }
         else if (args.Item.Id == "Delete")
         {
@@ -279,7 +279,7 @@
     public void GridRefresh(List<ExpenseData> gridData)
     {
         this.TransactGridData = gridData;
-        this.InvokeAsync(StateHasChanged);
+        this.StateHasChanged();
     }
 
     public void ShowAddTransactDialog()
