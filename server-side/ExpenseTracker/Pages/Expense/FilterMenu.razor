@@ -231,7 +231,7 @@
             expenseData = catagoryItems;
         }
         expenseData = expenseData.OrderByDescending(e => e.DateTime).ToList();
-        Task.Run(() => this.ContentRef.GridRefresh(expenseData.ToList()));
+        this.ContentRef.GridRefresh(expenseData.ToList());
     }
 
     public void UpdateGrid(ExpenseDataService data)

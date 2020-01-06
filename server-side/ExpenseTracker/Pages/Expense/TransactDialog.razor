@@ -1,9 +1,12 @@
 ﻿
 <div id='dlg-content' style="display: @visibility">
     <div id="confirmDialogTarget">
-        <EjsDialog @ref="ConfirmDialog" Width="40%" CssClass="confirm-dialog" ShowCloseIcon="true" @bind-Visible="ConfirmBindVisible" CloseOnEscape="false" IsModal="true" Content="Are you sure you want to delete the selected transaction(s)?" Target="#body">
+        <EjsDialog @ref="ConfirmDialog" Width="40%" CssClass="confirm-dialog" ShowCloseIcon="true" @bind-Visible="ConfirmBindVisible" CloseOnEscape="false" IsModal="true" Target="#body">
+            <DialogTemplates>
+                <Content>Are you sure you want to delete the selected transaction(s)?</Content>
+            </DialogTemplates>
             <DialogButtons>
-                <DialogButton ButtonModel="@deleteBtnOk" OnClick="OnClickDelete"></DialogButton>
+                <DialogButton ButtonModel="@deleteBtnOk" OnClick="OnClickDelete" />
                 <DialogButton ButtonModel="@deleteBtnNo" OnClick="OnClickCancel" />
             </DialogButtons>
         </EjsDialog>
