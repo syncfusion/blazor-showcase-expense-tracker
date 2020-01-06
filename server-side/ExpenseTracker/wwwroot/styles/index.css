@@ -883,6 +883,16 @@ html body > .content {
     height: 100%;
 }
 
+.samplename h1 {
+    color: #00B7F9;
+    font-size: 23px;
+    font-family: Tw Cen MT Condensed;
+    font-weight: bold;
+    top: -3px;
+    position: absolute;
+    right: 11px;
+}
+
 .current-balance-info {
     padding: 10px 0 10px 0;
 }

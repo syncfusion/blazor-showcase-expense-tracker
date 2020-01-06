@@ -970,6 +970,16 @@ html {
 .samplename {
     background: url("./images/title.svg") no-repeat center;
     height: 100%;
+
+    h1 {
+        color: #00B7F9;
+        font-size: 23px;
+        font-family: Tw Cen MT Condensed;
+        font-weight: bold;
+        top: -3px;
+        position: absolute;
+        right: 11px;
+    }
 }
 
 .current-balance-info {
