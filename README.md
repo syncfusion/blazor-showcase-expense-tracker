@@ -21,4 +21,4 @@ The samples requires the below requirements to run.
 
 ### <a href="https://blazor.syncfusion.com/showcase/expensetracker/" target="_blank">https://blazor.syncfusion.com/showcase/expensetracker/</a>
 
-Check all the showcase samples from <a href="https://ej2.syncfusion.com/home/blazor.html" target="_blank">here</a>.
+Check all the showcase samples from <a href="https://blazor.syncfusion.com/" target="_blank">here</a>.
