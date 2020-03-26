@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ExpenseTracker.Service;
-using Syncfusion.EJ2.Blazor;
+using Syncfusion.Blazor;
 
 namespace ExpenseTracker
 {

@@ -9,24 +9,20 @@
     .disable-overlay {
         background: #383838;
     }
-    #sidebar-wrapper,
-    .sidebar-wrapper-filter {
-        z-index: @ZIndex;
-    }
 </style>
 
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <span id="menu-toggle" href="#" class="navbar-toggle e-icon" style="float:left" @onclick="ToggleMenuClick"></span>
-            <div class="navbar-brand samplenameheader"></div>
-            <span id="filter-toggle" href="#" class="navbar-toggle filter-toggle e-icon" style="float:right" @onclick="FilterToggleMenuClick"></span>
-        </div>
-    </div>
-</nav>
+ <nav class="navbar navbar-default" role="navigation">
+     <div class="container">
+         <div class="navbar-header">
+             <span id="menu-toggle" href="#" class="navbar-toggle e-icon" style="float:left" @onclick="ToggleMenuClick"></span>
+             <div class="navbar-brand samplenameheader"></div>
+             <span id="filter-toggle" href="#" class="navbar-toggle filter-toggle e-icon" style="float:right" @onclick="FilterToggleMenuClick"></span>
+         </div>
+     </div>
+ </nav>
 
 <div>
-    <EjsSidebar ID="sidebar-indexdefault" @ref="DefaultSidebar" Width="200px" MediaQuery="(min-width: 768px)"  Created="OnCreate">
+    <SfSidebar ID="sidebar-indexdefault" @ref="DefaultSidebar" Width="200px" MediaQuery="(min-width: 768px)"  Created="OnCreate">
         <ChildContent>
             <div id="sidebar-wrapper" class="@SideBarToggleClass">
                 <div class='samplename-header'>
@@ -38,7 +34,7 @@
                         <p class='name' id='user-name'>Nicholas Delacruz</p>
                         <div class='wallet-container'>
                             <span style='height: 27px;' class='balance-align'>
-                                <img src="./styles/images/cash-wallet.svg" />
+                                <img alt="Cash wallet" src="./styles/images/cash-wallet.svg" />
                             </span>
                             <span id="current-balance" class='balance-align'>@AppState.CurrentBalance</span>
                         </div>
@@ -57,13 +53,13 @@
                 </div>
             </div>
         </ChildContent>
-    </EjsSidebar>
+    </SfSidebar>
 </div>
 
 <div id="overlay" class="@OverlayClass" @onclick="OverlayClick"></div>
 
 @functions {
-    EjsSidebar DefaultSidebar;
+    SfSidebar DefaultSidebar;
 
     public string OverlayClass = "";
     public string SideBarToggleClass = "sidebar-toggle";
@@ -72,15 +68,12 @@
     public string aboutClass = "about ripple-element";
 
     public bool IsSidebarOpen = false;
-    public bool IsFilterSidebarOpen = false;
 
     [Parameter]
     public Action<string> OnChangeMenu { get; set; }
 
     [Parameter]
     public Action<string> OnSidebarCreate { get; set; }
-
-    private string ZIndex = "";
 
     protected override void OnInitialized()
     {
@@ -96,19 +89,20 @@
 
     public void FilterToggleMenuClick()
     {
-        this.ToggleFilterMenu();
+        if (this.AppState.FilterComponent != null)
+            this.AppState.FilterComponent.ShowFilterMenu();
+        EnableOverlay();
+        StateHasChanged();
     }
 
     public void OverlayClick()
     {
-        ZIndex = "";
         this.RemoveToggleClass();
         this.DefaultSidebar.Hide();
         this.IsSidebarOpen = false;
         this.RemoveFilterToggleClass();
         if (this.AppState.FilterComponent != null)
             this.AppState.FilterComponent.HideFilterMenu();
-        this.IsFilterSidebarOpen = false;
         this.HandleOverlay();
     }
 
@@ -121,7 +115,6 @@
     {
         if (this.IsSidebarOpen)
         {
-            ZIndex = "";
             this.RemoveToggleClass();
             this.DefaultSidebar.Hide();
             this.IsSidebarOpen = false;
@@ -130,7 +123,6 @@
         }
         else if (!IsSidebarOpen)
         {
-            ZIndex = "100001";
             this.RemoveToggleClass();
             this.DefaultSidebar.Show();
             this.IsSidebarOpen = true;
@@ -139,7 +131,6 @@
         }
         else
         {
-            ZIndex = "100001";
             this.RemoveToggleClass();
             this.DefaultSidebar.Show();
             this.IsSidebarOpen = true;
@@ -163,35 +154,8 @@
         this.OverlayClass = "disable-overlay";
     }
 
-    public void ToggleFilterMenu()
-    {
-        if (IsFilterSidebarOpen)
-        {
-            ZIndex = "";
-            if (this.AppState.FilterComponent != null)
-                this.AppState.FilterComponent.HideFilterMenu();
-            DisableOverlay();
-
-        }
-        else if (!IsFilterSidebarOpen)
-        {
-            ZIndex = "100001";
-            if (this.AppState.FilterComponent != null)
-                this.AppState.FilterComponent.ShowFilterMenu();
-            EnableOverlay();
-        }
-        else
-        {
-            ZIndex = "100001";
-            if (this.AppState.FilterComponent != null)
-                this.AppState.FilterComponent.ShowFilterMenu();
-            EnableOverlay();
-        }
-    }
-
     public void HandleOverlay()
     {
-        ZIndex = "";
         this.DisableOverlay();
         this.RemoveToggleClass();
     }

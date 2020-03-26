@@ -2,9 +2,9 @@
 
 <div class="col-xs-12 col-sm-6 col-md-6 chart-container">
     <div class="chart-padding">
-        <EjsChart UseGroupingSeparator="true">
+        <SfChart UseGroupingSeparator="true">
             <ChartMargin Top="90"></ChartMargin>
-            <ChartPrimaryXAxis ValueType="Syncfusion.EJ2.Blazor.Charts.ValueType.DateTime" LabelFormat="MMM" IntervalType="IntervalType.Months" EdgeLabelPlacement="EdgeLabelPlacement.Shift"></ChartPrimaryXAxis>
+            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" LabelFormat="MMM" IntervalType="IntervalType.Months" EdgeLabelPlacement="EdgeLabelPlacement.Shift"></ChartPrimaryXAxis>
             <ChartPrimaryYAxis LabelFormat="c0" Maximum="9000" Minimum="3000"></ChartPrimaryYAxis>
             <ChartAnnotations>
                 <ChartAnnotation X="75px" Y="9%" CoordinateUnits="Units.Pixel" Region="Regions.Chart">
@@ -30,7 +30,7 @@
             <ChartTooltipSettings Fill="#707070" Enable="true" Shared="true" Format="${series.name} : ${point.y}" Header="Month - ${point.x} "></ChartTooltipSettings>
             <ChartTitleStyle TextAlignment="Alignment.Near" FontWeight="500" Size="16" Color="#000"></ChartTitleStyle>
             <ChartLegendSettings Visible="true"></ChartLegendSettings>
-        </EjsChart>
+        </SfChart>
     </div>
 </div>
 

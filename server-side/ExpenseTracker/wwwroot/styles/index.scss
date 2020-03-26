@@ -243,7 +243,7 @@ $shadow-active-color: rgba(66,115,249,0.85);
 }
 
 .transaction-dialog {
-    padding: 20px 0 20px 0;
+    padding: 20px 0 0 0;
 }
 
 .expense-page {
@@ -668,11 +668,27 @@ html {
 }
 
 .expense-search-icon {
+    height: 34px;
     position: absolute;
-    margin: 10px;
+    padding: 10px;
     font-size: 15px;
     color: black;
     opacity: .6;
+    margin: 2px 0;
+}
+
+.expense-head-padding .search-wrapper .e-input-group.e-control-wrapper.search {
+    margin: 2px 0;
+}
+
+#body .e-input-group.e-control-wrapper .e-input.e-control {
+    padding: 4px 0;
+    min-height: 22px;
+}
+
+.expense-head-padding .search-wrapper .e-input-group input.e-input,
+.expense-head-padding .search-wrapper .e-input-group input.e-input:focus {
+    padding: 0;
 }
 
 .e-search-icon::before {
@@ -1057,6 +1073,8 @@ html {
         font-size: 15px;
         font-weight: 400;
         margin-top: 0;
+        font-family: inherit;
+        line-height: 1.1;
     }
 }
 
@@ -1068,6 +1086,8 @@ html {
         font-weight: 400;
         margin-top: 0;
         margin-bottom: 0px;
+        font-family: inherit;
+        line-height: 1.1;
     }
 }
 
@@ -1151,6 +1171,11 @@ html {
 #daterange-wrapper .e-input-group.e-control-wrapper {
     &.e-date-range-wrapper {
         border: 1px solid #fff;
+        border-radius: 4px;
+
+        &.e-input-focus {
+            border: 1px solid #fff !important;
+        }
     }
 
     input.e-input {
@@ -1414,9 +1439,9 @@ span.e-label {
     transition: all 0.3s ease-out;
 }
 
-.filter-close {
-    right: -300px;
-    transition: all 0.3s ease-out;
+#sidebar-wrapper.sidebar-toggle.open,
+.sidebar-wrapper-filter.filter-open {
+    z-index: 100001;
 }
 
 .nav-list {
@@ -1536,6 +1561,10 @@ span.e-label {
         transition: all 0.3s ease-out;
         left: -200px;
     }
+	.filter-close {
+        right: -300px;
+        transition: all 0.3s ease-out;
+    }
 }
 
 #gradient-chart {
@@ -1577,6 +1606,12 @@ span.e-label {
         margin-bottom: 20px;
         max-width: 280px;
         padding-bottom: 15px;
+    }
+}
+
+@media (max-width: 991px) {
+    .dashboard-page #sidebarRightpane .page-title {
+        margin-bottom: 0 !important;
     }
 }
 
@@ -1998,14 +2033,16 @@ div.info::after {
     height: 34px;
 }
 
-#daterange-wrapper,
-#daterange-overlay {
+#daterange-wrapper {
     width: 100%;
     height: 100%;
 }
 
 #daterange-overlay {
+    width: 100%;
+    height: 34px;
     background: #FFFFFF;
+    border-radius: 4px;
 }
 
 .expense-page #daterange-wrapper,
@@ -2562,6 +2599,12 @@ body.about-page {
     }
 }
 
+@media (max-width: 330px) {
+    .transact-dialog.e-dialog .e-dlg-content {
+        height: 400px;
+    }
+}
+
 @media (min-width: 769px) {
     #dialog,
     .transact-dialog.e-dialog {
@@ -2632,29 +2675,30 @@ body.about-page {
     width: 33%;
     float: left;
     min-width: 80px;
-    padding: 0 0 15px 0;
+    padding: 0;
 }
 
 .dlg-debit-payment {
     width: 33%;
     float: left;
     min-width: 113px;
-    padding: 0 0 15px 0;
+    padding: 0;
 }
 
 .dlg-credit-payment {
     width: 33%;
     float: left;
     min-width: 100px;
-    padding: 0 0 15px 0;
+    padding: 0;
 }
 
 .payment-label {
-    margin-bottom: 20px;
+    margin-top: 30px;
 }
 
 .payment-radio-container {
-    height: 22px;
+    margin-top: 5px;
+    height: auto;
 }
 
 .description-container {

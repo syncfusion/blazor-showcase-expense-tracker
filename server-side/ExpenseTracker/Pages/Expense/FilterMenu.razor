@@ -2,7 +2,7 @@
 
 <div>
     <div class='filter-container'>
-        <EjsSidebar @ref="FilterSidebar" Width="270px" MediaQuery="(min-width: 768px)" Position="SidebarPosition.Right" Created="OnCreate">
+        <SfSidebar @ref="FilterSidebar" Width="270px" MediaQuery="(min-width: 768px)" Position="SidebarPosition.Right" Created="OnCreate">
             <ChildContent>
                 <div class="@FilterSideBarClass">
                     <div style="display: @visibility; height: 100%;">
@@ -13,46 +13,46 @@
                         <div class="expense-filter-container">
                             <label class="label-font">Select a range</label>
                             <div class='filter-item'>
-                                <EjsDateRangePicker CssClass="DateTime" ShowClearButton="false" Format="MM/dd/yyyy" AllowEdit="false" EndDate="@ExpenseDataService.EndDate" StartDate="@ExpenseDataService.StartDate">
+                                <SfDateRangePicker CssClass="DateTime" ShowClearButton="false" Format="MM/dd/yyyy" AllowEdit="false" EndDate="@ExpenseDataService.EndDate" StartDate="@ExpenseDataService.StartDate"  Min="@MinDate" Max="@MaxDate">
                                     <DateRangePickerEvents ValueChange="DateRangeChanged"></DateRangePickerEvents>
-                                </EjsDateRangePicker>
+                                </SfDateRangePicker>
                             </div>
                             <label class="label-font">Category</label>
                             <div class="treeview filter-item">
-                                <EjsMultiSelect TValue="string[]" DataSource="@FilterCategoryList" Mode="@VisualMode.Box"
+                                <SfMultiSelect TValue="string[]" DataSource="@FilterCategoryList" Mode="@VisualMode.Box"
                                                 Placeholder="Select Categories" HideSelectedItem="true" ClosePopupOnSelect="false">
                                     <MultiSelectEvents TValue="string[]" OnValueSelect="CategorySelect" OnValueRemove="CategoryRemove"></MultiSelectEvents>
                                     <MultiSelectFieldSettings Text="Text" Value="Value"></MultiSelectFieldSettings>
-                                </EjsMultiSelect>
+                                </SfMultiSelect>
                             </div>
                             <label class="label-font bottom-align">Cashflow</label>
                             <div class="cashflow filter-item">
-                                <EjsCheckBox Label="Income" @bind-Checked="IncomeChecked" CssClass="TransactionType" ValueChange="OnCheckBoxChange"></EjsCheckBox>
-                                <EjsCheckBox Label="Expense" @bind-Checked="ExpenseChecked" CssClass="TransactionType" ValueChange="OnCheckBoxChange"></EjsCheckBox>
+                                <SfCheckBox Label="Income" @bind-Checked="IncomeChecked" CssClass="TransactionType" ValueChange="OnCheckBoxChange"></SfCheckBox>
+                                <SfCheckBox Label="Expense" @bind-Checked="ExpenseChecked" CssClass="TransactionType" ValueChange="OnCheckBoxChange"></SfCheckBox>
                             </div>
                             <label class="label-font bottom-align">Payment Mode</label>
                             <div class="paymentModes filter-item">
-                                <EjsCheckBox Label="Cash" @bind-Checked="CashChecked" CssClass="PaymentMode"></EjsCheckBox>
-                                <EjsCheckBox Label="Debit Card" @bind-Checked="DebitChecked" CssClass="PaymentMode"></EjsCheckBox>
+                                <SfCheckBox Label="Cash" @bind-Checked="CashChecked" CssClass="PaymentMode" ValueChange="OnCheckBoxChange"></SfCheckBox>
+                                <SfCheckBox Label="Debit Card" @bind-Checked="DebitChecked" CssClass="PaymentMode" ValueChange="OnCheckBoxChange"></SfCheckBox>
                                 <br />
                                 <br />
-                                <EjsCheckBox Label="Credit Card" @bind-Checked="CreditChecked" CssClass="PaymentMode"></EjsCheckBox>
+                                <SfCheckBox Label="Credit Card" @bind-Checked="CreditChecked" CssClass="PaymentMode" ValueChange="OnCheckBoxChange"></SfCheckBox>
                             </div>
                             <div>
                                 <label class="label-font">Amount</label>
                                 <div class='amount-filter'>
                                     <div class='min-numeric amt-filter'>
                                         <label class="inlineAlign minLabel">Min :</label>
-                                        <EjsNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" Value="@MinAmount">
+                                        <SfNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" Value="@MinAmount" Min="0" Max="6000">
                                             <NumericTextBoxEvents TValue="int?" ValueChange="MinAmountChanged"></NumericTextBoxEvents>
-                                        </EjsNumericTextBox>
+                                        </SfNumericTextBox>
                                     </div>
                                     <span class='amt-filter separateLine'></span>
                                     <div class='max-numeric amt-filter'>
                                         <label class="inlineAlign maxLabel">Max :</label>
-                                        <EjsNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" Value="@MaxAmount">
+                                        <SfNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" Value="@MaxAmount" Min="0" Max="6000">
                                             <NumericTextBoxEvents TValue="int?" ValueChange="MaxAmountChanged"></NumericTextBoxEvents>
-                                        </EjsNumericTextBox>
+                                        </SfNumericTextBox>
                                     </div>
                                 </div>
                             </div>
@@ -60,15 +60,15 @@
                     </div>
                 </div>
             </ChildContent>
-        </EjsSidebar>
+        </SfSidebar>
     </div>
 </div>
 
 @code {
-    public EjsCheckBox CreditFilter;
-    public EjsSlider<int[]> RangeFilter;
+    public SfCheckBox CreditFilter;
+    public SfSlider<int[]> RangeFilter;
     public TransactGrid ContentRef;
-    public EjsSidebar FilterSidebar;
+    public SfSidebar FilterSidebar;
 
     public string OverlayClass = "";
     public string FilterSideBarClass = "filter pane sidebar-wrapper-filter";
@@ -84,6 +84,8 @@
     public List<FilterCategory> FilterCategoryList { get; set; }
     public List<ExpenseData> TempData { get; set; }
     private string visibility = "none";
+    private DateTime MinDate;
+    private DateTime MaxDate;
 
     [CascadingParameter]
     public ExpenseDataService ExpenseDataService { get; set; }
@@ -92,6 +94,8 @@
     {
         this.MinAmount = 0;
         this.MaxAmount = 100;
+        this.MinDate = new DateTime(2019, 06, 01, 00, 00, 00);
+        this.MaxDate = new DateTime(2019, 11, 30, 23, 59, 59);
         this.FilterCategoryList = new List<FilterCategory>();
         this.TempData = new List<ExpenseData>();
         this.CategoryValue = new List<string>();
@@ -114,12 +118,14 @@
     {
         this.FilterSidebar.Show();
         FilterSideBarClass = "filter pane sidebar-wrapper-filter filter-open";
+        StateHasChanged();
     }
 
     public void HideFilterMenu()
     {
         this.FilterSidebar.Hide();
         FilterSideBarClass = "filter pane sidebar-wrapper-filter filter-close";
+        StateHasChanged();
     }
 
     public void RemoveFitlerClass()
@@ -127,19 +133,19 @@
         FilterSideBarClass = "filter pane sidebar-wrapper-filter";
     }
 
-    public void OnCheckBoxChange(Syncfusion.EJ2.Blazor.Buttons.ChangeEventArgs args)
+    public void OnCheckBoxChange(Syncfusion.Blazor.Buttons.ChangeEventArgs args)
     {
         this.UpdateGrid();
     }
 
-    public void CategorySelect(Syncfusion.EJ2.Blazor.DropDowns.SelectEventArgs args)
+    public void CategorySelect(Syncfusion.Blazor.DropDowns.SelectEventArgs args)
     {
         FilterCategory item = JsonConvert.DeserializeObject<FilterCategory>(args.ItemData.ToString());
         this.CategoryValue.Add(item.Value);
         this.UpdateGrid();
     }
 
-    public void CategoryRemove(Syncfusion.EJ2.Blazor.DropDowns.RemoveEventArgs args)
+    public void CategoryRemove(Syncfusion.Blazor.DropDowns.RemoveEventArgs args)
     {
         FilterCategory item = JsonConvert.DeserializeObject<FilterCategory>(args.ItemData.ToString());
         this.CategoryValue.Remove(item.Value);
@@ -153,13 +159,13 @@
         this.ContentRef.UpdateTotalBalance();
     }
 
-    public void MinAmountChanged(Syncfusion.EJ2.Blazor.Inputs.ChangeEventArgs args)
+    public void MinAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs args)
     {
         this.MinAmount = (int)args.Value;
         this.UpdateGrid();
     }
 
-    public void MaxAmountChanged(Syncfusion.EJ2.Blazor.Inputs.ChangeEventArgs args)
+    public void MaxAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs args)
     {
         this.MaxAmount = (int)args.Value;
         this.UpdateGrid();
@@ -184,9 +190,12 @@
     public void MinMaxAmount()
     {
         DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
-        var expenseData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
-        this.MinAmount = expenseData.Min(s => s.Amount);
-        this.MaxAmount = expenseData.Max(s => s.Amount);
+        IEnumerable<ExpenseData> expenseData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        if (expenseData.Count() > 0)
+        {
+            this.MinAmount = expenseData.Min(s => s.Amount);
+            this.MaxAmount = expenseData.Max(s => s.Amount);
+        }
     }
 
     /** Updates the Grid based on the filtered data source */
