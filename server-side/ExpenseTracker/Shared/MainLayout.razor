@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject AppState AppState
+@*Used to enable the ripple*@
+@inject IJSRuntime JsRuntime
 
 <div class="sb-content-overlay @hide">
     <div class="sb-loading">
@@ -10,7 +12,7 @@
 </div>
 <div class="@BodyClass" style="height: 100vh; width: 100%; visibility:@visible; opacity:@opacity">
     <div class="sidebar">
-        <NavMenu OnChangeMenu="ChangeMenu" OnSidebarCreate="OnSidebarCreated" />
+        <NavMenu @ref="NavMenuRef" OnChangeMenu="ChangeMenu" OnSidebarCreate="OnSidebarCreated" />
     </div>
     <div id="addexpenseDialog" class="expense-dialog"></div>
 
@@ -28,12 +30,14 @@
 @code{
     public string BodyClass = "dashboard-page";
 
+    private NavMenu NavMenuRef;
+
     private string target { get; set; } = "#loader-content";
 
     private string visible { get; set; } = "hidden";
 
     private string hide { get; set; }
-    private string opacity { get;set; } = "0";
+    private string opacity { get; set; } = "0";
 
     public void OnSidebarCreated(string status)
     {
@@ -58,5 +62,11 @@
             BodyClass = "about-page";
         }
         StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JsRuntime.Sf().EnableRipple(true);
+        this.AppState.SetNavMenuComponent(this.NavMenuRef);
     }
 }

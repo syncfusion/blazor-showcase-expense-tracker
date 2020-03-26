@@ -25,7 +25,7 @@ namespace ExpenseTracker.Service
         public ExpenseDataService()
         {
             StartDate = new DateTime(2019, 06, 01, 00, 00, 00);
-            EndDate = new DateTime(2019, 12, 01, 23, 59, 59);
+            EndDate = new DateTime(2019, 11, 30, 23, 59, 59);
 
             UserInfo = new UserInfo { FirstName = "Nicholas", FullName = "Nicholas Delacruz", Email = "nicholas@gmail.com" };
 
@@ -41,7 +41,7 @@ namespace ExpenseTracker.Service
             CategoryExpenseData = new List<CategoryData>();
             CategoryExpenseData.AddRange(new List<CategoryData>
             {
-                new CategoryData { Class = "category-icon Rent", Category = "Rent", Id = "Rent" },
+                new CategoryData { Class = "category-icon Rent", Category = "Mortgage / Rent", Id = "Mortgage / Rent" },
                 new CategoryData { Class = "category-icon Food", Category = "Food", Id = "Food" },
                 new CategoryData { Class = "category-icon Bills", Category = "Bills", Id = "Bills" },
                 new CategoryData { Class = "category-icon Utilities", Category = "Utilities", Id = "Utilities" },

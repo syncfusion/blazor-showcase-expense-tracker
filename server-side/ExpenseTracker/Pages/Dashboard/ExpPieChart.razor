@@ -21,7 +21,7 @@
                 </div>
                 <div class="row">
                     <div class="pieChart">
-                        <EjsAccumulationChart Width="100%" Height="350px" EnableSmartLabels="true">
+                        <SfAccumulationChart Width="100%" Height="350px" EnableSmartLabels="true">
                             <AccumulationChartSeriesCollection>
                                 <AccumulationChartSeries DataSource="@PieRenderingData" XName="Text" YName="Y" Radius="83%" StartAngle="0" EndAngle="360" InnerRadius="50%" Palettes="@palettes">
                                     <AccumulationDataLabelSettings Visible="true" Name="X" Position="AccumulationLabelPosition.Outside">
@@ -31,9 +31,9 @@
                                     <AccumulationChartAnimation Enable="false"></AccumulationChartAnimation>
                                 </AccumulationChartSeries>
                             </AccumulationChartSeriesCollection>
-                            <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
+                            <AccumulationChartTooltipSettings Enable="true" Format="${point.x} : $${point.y}"></AccumulationChartTooltipSettings>
                             <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
-                        </EjsAccumulationChart>
+                        </SfAccumulationChart>
                     </div>
                     <div class="chartLegend" style="margin: 0 auto;">
                         <div style="position: relative">
@@ -46,7 +46,7 @@
                                 </span>
                             </div>
                         </div>
-                        <EjsGrid TValue="LegendRenderData" DataSource="@PieRenderData" Width="100%" AllowSelection="false" GridLines="GridLine.None" EnableHover="false">
+                        <SfGrid TValue="LegendRenderData" DataSource="@PieRenderData" Width="100%" AllowSelection="false" GridLines="GridLine.None" EnableHover="false">
                             <GridTemplates>
                                 <RowTemplate>
                                     @{
@@ -67,7 +67,7 @@
                                 <GridColumn Field="Y" Format="C2" Width="20%"></GridColumn>
                                 <GridColumn Field="X" Width="20%"></GridColumn>
                             </GridColumns>
-                        </EjsGrid>
+                        </SfGrid>
                     </div>
                 </div>
             </div>

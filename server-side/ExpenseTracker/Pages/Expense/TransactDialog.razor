@@ -1,18 +1,19 @@
 ﻿
 <div id='dlg-content' style="display: @visibility">
     <div id="confirmDialogTarget">
-        <EjsDialog @ref="ConfirmDialog" Width="40%" CssClass="confirm-dialog" ShowCloseIcon="true" @bind-Visible="ConfirmBindVisible" CloseOnEscape="false" IsModal="true" Target="#body">
+        <SfDialog @ref="ConfirmDialog" Width="40%" CssClass="confirm-dialog" ShowCloseIcon="true" @bind-Visible="ConfirmBindVisible" CloseOnEscape="false" IsModal="true" Target="#body">
             <DialogTemplates>
+                <Header>Delete</Header>
                 <Content>Are you sure you want to delete the selected transaction(s)?</Content>
             </DialogTemplates>
             <DialogButtons>
                 <DialogButton ButtonModel="@deleteBtnOk" OnClick="OnClickDelete" />
                 <DialogButton ButtonModel="@deleteBtnNo" OnClick="OnClickCancel" />
             </DialogButtons>
-        </EjsDialog>
+        </SfDialog>
     </div>
     <div id="dialogTarget">
-        <EjsDialog @ref="TransactionDialog" Width="100%" CssClass="transact-dialog" ShowCloseIcon="true" @bind-Visible="bindVisible" CloseOnEscape="false" IsModal="true" Target="#body">
+        <SfDialog @ref="TransactionDialog" Width="100%" CssClass="transact-dialog" ShowCloseIcon="true" @bind-Visible="bindVisible" CloseOnEscape="false" IsModal="true" Target="#sidebarRightpane">
             <ChildContent>
                 <DialogTemplates>
                     <Header>@DialogHeader</Header>
@@ -22,36 +23,36 @@
                         <input type='hidden' id="uniqueId" @bind="UniqueId" class="e-input required readonly" />
                         <div class='dlg-radio-btn-section'>
                             <div class='dlg-income-radio-section'>
-                                <EjsRadioButton Label="Income" @bind-Checked='IncomeChecked' Value="Income" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged"></EjsRadioButton>
+                                <SfRadioButton Label="Income" @bind-Checked='IncomeChecked' Value="Income" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged"></SfRadioButton>
                             </div>
                             <div class='dlg-expense-radio-section'>
-                                <EjsRadioButton Label="Expense" @bind-Checked='ExpenseChecked' Value="Expense" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged"></EjsRadioButton>
+                                <SfRadioButton Label="Expense" @bind-Checked='ExpenseChecked' Value="Expense" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged"></SfRadioButton>
                             </div>
                         </div>
                         <div class='dlg-date-section'>
                             <div class='dlg-date-picker-container'>
                                 <div>
-                                    <EjsDatePicker Placeholder='Choose a Date' Width='100%' FloatLabelType='FloatLabelType.Always' @bind-Value='DateValue'></EjsDatePicker>
+                                    <SfDatePicker Placeholder='Choose a Date' Width='100%' FloatLabelType='FloatLabelType.Always' @bind-Value="DateValue" Min="@MinDate" Max="@MaxDate"></SfDatePicker>
                                 </div>
                             </div>
                             <div class='dlg-time-picker-container'>
                                 <div>
-                                    <EjsTimePicker Placeholder='Choose a Time' Width='100%' FloatLabelType='FloatLabelType.Always' @bind-Value='DateValue'></EjsTimePicker>
+                                    <SfTimePicker Placeholder='Choose a Time' Width='100%' FloatLabelType='FloatLabelType.Always' @bind-Value="TimeValue"></SfTimePicker>
                                 </div>
                             </div>
                         </div>
                         <div class='category-section'>
                             <div class='dlg-category-container'>
                                 <div>
-                                    <EjsDropDownList TValue="string" CssClass='Category' Placeholder='Select a Category' FloatLabelType='FloatLabelType.Always'
+                                    <SfDropDownList @ref="DropDownList" TValue="string" CssClass='Category' Placeholder='Select a Category' FloatLabelType='FloatLabelType.Always'
                                                      TItem="CategoryData" DataSource='CategoryDataSource' @bind-Value="CategoryValue">
                                         <DropDownListFieldSettings Text="Category" Value="Category" IconCss="Class"></DropDownListFieldSettings>
-                                    </EjsDropDownList>
+                                    </SfDropDownList>
                                 </div>
                             </div>
                             <div class='dlg-amount-container'>
                                 <div>
-                                    <EjsNumericTextBox TValue="int?" Placeholder='Enter a Amount' FloatLabelType='FloatLabelType.Always' Format="c2" @bind-Value="Amount"></EjsNumericTextBox>
+                                    <SfNumericTextBox TValue="int?" Placeholder='Enter a Amount' FloatLabelType='FloatLabelType.Always' Format="c2" Min="0" @bind-Value="Amount"></SfNumericTextBox>
                                 </div>
                             </div>
                         </div>
@@ -70,13 +71,13 @@
                             </div>
                             <div class='payment-radio-container'>
                                 <div class='dlg-cash-payment'>
-                                    <EjsRadioButton Label="Cash" Value="Cash" @bind-Checked='CashChecked' Name='dlgPaymentMode'></EjsRadioButton>
+                                    <SfRadioButton Label="Cash" Value="Cash" @bind-Checked='CashChecked' Name='dlgPaymentMode'></SfRadioButton>
                                 </div>
                                 <div class='dlg-debit-payment'>
-                                    <EjsRadioButton Label="Debit Card" Value="Debit Card" @bind-Checked='DebitChecked' Name='dlgPaymentMode'></EjsRadioButton>
+                                    <SfRadioButton Label="Debit Card" Value="Debit Card" @bind-Checked='DebitChecked' Name='dlgPaymentMode'></SfRadioButton>
                                 </div>
                                 <div class='dlg-credit-payment'>
-                                    <EjsRadioButton Label="Credit Card" Value="Credit Card" @bind-Checked='CreditChecked' Name='dlgPaymentMode'></EjsRadioButton>
+                                    <SfRadioButton Label="Credit Card" Value="Credit Card" @bind-Checked='CreditChecked' Name='dlgPaymentMode'></SfRadioButton>
                                 </div>
                             </div>
                         </div>
@@ -88,22 +89,23 @@
                 </DialogButtons>
                 <DialogEvents Created="OnCreate"></DialogEvents>
             </ChildContent>
-        </EjsDialog>
+        </SfDialog>
     </div>
 </div>
 
 @code{
-    public EjsDialog TransactionDialog;
-    public EjsDialog ConfirmDialog;
+    public SfDialog TransactionDialog;
+    public SfDialog ConfirmDialog;
     public TransactGrid ContentRef;
+    SfDropDownList<string, CategoryData> DropDownList;
 
     public string CategoryValue { get; set; } = null;
-    public DateTime? DateValue { get; set; }
+    public DateTime? DateValue;
+    public DateTime? TimeValue;
     public string UniqueId { get; set; }
     public string Description { get; set; }
     public int? Amount { get; set; } = 0;
-    public List<CategoryData>
-        CategoryDataSource { get; set; }
+    public List<CategoryData> CategoryDataSource { get; set; }
     [CascadingParameter]
     public ExpenseDataService ExpenseDataService { get; set; }
     [Parameter]
@@ -111,6 +113,8 @@
     public bool IsAdd = false;
 
     private string visibility = "none";
+    private DateTime MinDate;
+    private DateTime MaxDate;
 
     public string DialogHeader { get; set; }
     public bool bindVisible { get; set; } = false;
@@ -122,10 +126,10 @@
     public bool CreditChecked = false;
     public bool DebitChecked = false;
 
-    public ButtonModel deleteBtnOk = new ButtonModel { content = "Yes", cssClass = "e-ok e-flat", isPrimary = true };
-    public ButtonModel deleteBtnNo = new ButtonModel { content = "No", cssClass = "e-no e-flat" };
-    public ButtonModel buttonPrimary = new ButtonModel { content = "Add", cssClass = "e-info e-add", isPrimary = true };
-    public ButtonModel buttonCancel = new ButtonModel { content = "Cancel", cssClass = "e-outline e-cancel" };
+    public ButtonModel deleteBtnOk = new ButtonModel { Content = "Yes", CssClass = "e-ok e-flat", IsPrimary = true };
+    public ButtonModel deleteBtnNo = new ButtonModel { Content = "No", CssClass = "e-no e-flat" };
+    public ButtonModel buttonPrimary = new ButtonModel { Content = "Add", CssClass = "e-info e-add", IsPrimary = true };
+    public ButtonModel buttonCancel = new ButtonModel { Content = "Cancel", CssClass = "e-outline e-cancel" };
 
     List<ExpenseData> GridSelectedRecords { get; set; }
 
@@ -134,6 +138,8 @@
         this.DialogHeader = "";
         this.Description = "";
         this.DateValue = ExpenseDataService.EndDate;
+        this.MinDate = new DateTime(2019, 06, 01, 00, 00, 00);
+        this.MaxDate = new DateTime(2019, 11, 30, 23, 59, 59);
         this.CategoryDataSource = new List<CategoryData>();
         this.GridSelectedRecords = new List<ExpenseData>();
         this.CategoryDataSource = ExpenseDataService.CategoryExpenseData;
@@ -146,19 +152,20 @@
     {
         this.IsAdd = true;
         this.DialogHeader = "New Transaction";
-        this.buttonPrimary.content = "Add";
+        this.buttonPrimary.Content = "Add";
         this.UniqueId = "T" + DateTime.Now.Ticks.ToString().Substring(12, 6);
         this.Amount = 0;
-        this.DateValue = ExpenseDataService.EndDate;
+        this.DateValue = this.TimeValue = ExpenseDataService.EndDate;
         this.Description = "";
         this.IncomeChecked = false;
         this.ExpenseChecked = true;
         this.CashChecked = true;
         this.CreditChecked = false;
         this.DebitChecked = false;
-        this.CategoryValue = null;
         this.CategoryDataSource = ExpenseDataService.CategoryExpenseData;
-        this.CategoryDataSource = ExpenseDataService.CategoryExpenseData;
+        this.CategoryValue = ExpenseDataService.CategoryExpenseData[0].Category;
+        this.DropDownList.Value = this.CategoryValue;
+        this.DropDownList.DataBind();
         this.TransactionDialog.Show();
     }
 
@@ -170,7 +177,7 @@
     {
         this.IsAdd = false;
         this.DialogHeader = "Edit Transaction";
-        this.buttonPrimary.content = "Save";
+        this.buttonPrimary.Content = "Save";
         if (selectedRecord != null)
         {
             this.UniqueId = selectedRecord.UniqueId;
@@ -187,7 +194,7 @@
                 this.ExpenseChecked = true;
                 this.CategoryDataSource = this.ExpenseDataService.CategoryExpenseData;
             }
-            this.DateValue = selectedRecord.DateTime;
+            this.DateValue = this.TimeValue = selectedRecord.DateTime;
             if (selectedRecord.PaymentMode == "Credit Card")
             {
                 this.CashChecked = false;
@@ -207,8 +214,10 @@
                 this.DebitChecked = false;
             }
             this.Description = selectedRecord.Description;
-            this.CategoryValue = selectedRecord.Category;
             this.Amount = selectedRecord.Amount;
+            this.CategoryValue = selectedRecord.Category;
+            this.DropDownList.Value = this.CategoryValue;
+            this.DropDownList.DataBind();
             this.TransactionDialog.Show();
         }
     }
@@ -236,7 +245,6 @@
 
     public void DlgTransactTypeChanged(object args)
     {
-        this.CategoryValue = "";
         if (this.IncomeChecked)
         {
             this.CategoryDataSource = this.ExpenseDataService.CategoryIncomeData;
@@ -245,6 +253,9 @@
         {
             this.CategoryDataSource = this.ExpenseDataService.CategoryExpenseData;
         }
+        this.CategoryValue = this.CategoryDataSource[0].Category;
+        this.DropDownList.Value = this.CategoryValue;
+        this.DropDownList.DataBind();
     }
 
     /// <summary>
@@ -256,7 +267,7 @@
         var expenseData = new ExpenseData();
         expenseData.UniqueId = this.UniqueId;
         expenseData.TransactionType = this.IncomeChecked == true ? "Income" : "Expense";
-        expenseData.DateTime = (DateTime) this.DateValue;
+        expenseData.DateTime = (this.DateValue == null ? ExpenseDataService.EndDate : (DateTime)this.DateValue).Date.Add((this.TimeValue == null ? ExpenseDataService.EndDate : (DateTime)this.TimeValue).TimeOfDay);
         expenseData.Category = this.CategoryValue;
         expenseData.PaymentMode = this.CashChecked == true ? "Cash" : this.CreditChecked == true ? "Credit Card" : "Debit Card";
         expenseData.Description = this.Description;
@@ -292,12 +303,5 @@
     {
         this.TransactionDialog.Hide();
         this.ConfirmDialog.Hide();
-    }
-
-    public class ButtonModel
-    {
-        public string content { get; set; }
-        public string cssClass { get; set; }
-        public bool isPrimary { get; set; }
     }
 }

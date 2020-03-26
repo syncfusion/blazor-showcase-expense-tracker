@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ExpenseTracker.Shared;
 using ExpenseTracker.Pages.Expense;
 
 namespace ExpenseTracker.Service
@@ -12,6 +13,7 @@ namespace ExpenseTracker.Service
 
         public string CurrentBalance { get; set; }
         public FilterMenu FilterComponent { get; private set; }
+        public NavMenu NavMenuComponent { get; private set; }
 
         public event Action OnChange;
 
@@ -35,6 +37,12 @@ namespace ExpenseTracker.Service
         public void SetFilterComponent(FilterMenu component)
         {
             this.FilterComponent = component;
+            NotifyStateChanged();
+        }
+
+        public void SetNavMenuComponent(NavMenu component)
+        {
+            this.NavMenuComponent = component;
             NotifyStateChanged();
         }
 

@@ -1,6 +1,6 @@
 ﻿<div class="row recent-expense-grid">
     <div class="col-xs-6 col-sm-6 col-md-12" style="width:100%">
-        <EjsGrid TValue="ExpenseData" DataSource="@RecentExpenseData" Height="100%" AllowSorting="true" EnableHover="false" AllowPaging="false" Width="100%" Toolbar="@GridToolbar">
+        <SfGrid TValue="ExpenseData" DataSource="@RecentExpenseData" Height="100%" AllowSorting="true" EnableHover="false" AllowPaging="false" Width="100%" Toolbar="@GridToolbar">
             <GridPageSettings PageCount="4" PageSize="14"></GridPageSettings>
             <GridColumns>
                 <GridColumn Field="DateTime" HeaderText="Date" Width="120" Format="d"></GridColumn>
@@ -61,7 +61,7 @@
                     </Template>
                 </GridColumn>
             </GridColumns>
-        </EjsGrid>
+        </SfGrid>
     </div>
 </div>
 

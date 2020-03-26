@@ -6,18 +6,18 @@
 <div class="control-section">
 
     <div class="row" style="margin-bottom: 16px;">
-        <h1 class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</h1>
+        <p class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</p>
         <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
             <div id="daterange-overlay" class="@hide">
                 <div id="daterange-wrapper">
-                    <EjsDateRangePicker @ref="DatePickerRef" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate">
+                    <SfDateRangePicker @ref="DatePickerRef" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@MinDate" Max="@MaxDate">
                         <DateRangePickerEvents ValueChange="OnDateRangeChange" Created="OnCreate"></DateRangePickerEvents>
                         <DateRangePickerPresets>
                             <DateRangePickerPreset Label="Last Month" Start="@LastMonthStart" End="@LastMonthEnd"></DateRangePickerPreset>
                             <DateRangePickerPreset Label="Last 3 Months" Start="@Last3MonthsStart" End="@Last3MonthsEnd"></DateRangePickerPreset>
                             <DateRangePickerPreset Label="All Time" Start="@AllTimeStart" End="@AllTimeEnd"></DateRangePickerPreset>
                         </DateRangePickerPresets>
-                    </EjsDateRangePicker>
+                    </SfDateRangePicker>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
     public ExpLineChart LineChartRef;
     public ExpPieChart PieChartRef;
     public ExpGrid RecentGridRef;
-    public EjsDateRangePicker DatePickerRef;
+    public SfDateRangePicker DatePickerRef;
 
     public ObservableCollection<ExpenseData> LineChartData { get; set; }
     public List<ExpenseData> ColChartIncomeData { get; set; }
@@ -63,6 +63,8 @@
     private DateTime Last3MonthsEnd;
     private DateTime AllTimeStart;
     private DateTime AllTimeEnd;
+    private DateTime MinDate;
+    private DateTime MaxDate;
     private string hide = "hide-daterange";
 
     protected override void OnInitialized()
@@ -71,8 +73,10 @@
         LastMonthEnd = new DateTime(2019, 10, 31, 23, 59, 59);
         Last3MonthsStart = new DateTime(2019, 09, 01, 00, 00, 00);
         Last3MonthsEnd = new DateTime(2019, 11, 30, 23, 59, 59);
-        AllTimeStart = new DateTime(2019, 01, 06, 00, 00, 00);
-        AllTimeEnd = new DateTime(2019, 11, 30, 23, 59, 59);
+        AllTimeStart = new DateTime(2019, 06, 01, 00, 00, 00);
+        AllTimeEnd = new DateTime(2019, 11, 30, 23, 58, 58);
+        MinDate = new DateTime(2019, 06, 01, 00, 00, 00);
+        MaxDate = new DateTime(2019, 11, 30, 23, 59, 59);
         hide = "hide-daterange";
         ColChartIncomeData = new List<ExpenseData>();
         ColChartExpenseData = new List<ExpenseData>();
