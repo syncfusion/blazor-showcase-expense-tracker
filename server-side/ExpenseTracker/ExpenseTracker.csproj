@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Syncfusion.Blazor" Version="18.1.0.36-beta" />
+    <PackageReference Include="Syncfusion.Blazor" Version="18.1.0.42" />
   </ItemGroup>
 
 </Project>

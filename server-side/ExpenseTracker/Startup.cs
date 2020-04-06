@@ -27,12 +27,12 @@ namespace ExpenseTracker
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor().AddCircuitOptions(options => {
-                #if DEBUG
-                    options.DetailedErrors = true;
-                #endif
+            services.AddSignalR(e =>
+            {
+                e.MaximumReceiveMessageSize = 102400000;
             });
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
             services.AddSyncfusionBlazor();
             services.AddScoped<AppState>();
         }

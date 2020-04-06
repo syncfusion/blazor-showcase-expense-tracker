@@ -285,7 +285,7 @@ $shadow-active-color: rgba(66,115,249,0.85);
     -moz-osx-font-smoothing: grayscale;
 }
 
-.e-sb-icon {
+.sf-sb-icon {
     font-family: 'sb-icons';
     font-style: normal;
     font-weight: normal;
@@ -989,12 +989,11 @@ html {
 
     h1 {
         color: #00B7F9;
-        font-size: 23px;
-        font-family: Tw Cen MT Condensed;
-        font-weight: bold;
-        top: -3px;
+        font-size: 17px;
+        font-family: "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
+        font-weight: 600;
         position: absolute;
-        right: 11px;
+        right: 8px;
     }
 }
 
