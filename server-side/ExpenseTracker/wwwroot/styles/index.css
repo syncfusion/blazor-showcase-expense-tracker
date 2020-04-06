@@ -255,7 +255,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.e-sb-icon {
+.sf-sb-icon {
     font-family: 'sb-icons';
     font-style: normal;
     font-weight: normal;
@@ -896,12 +896,11 @@ html body > .content {
 
 .samplename h1 {
     color: #00B7F9;
-    font-size: 23px;
-    font-family: Tw Cen MT Condensed;
+    font-size: 17px;
+    font-family: "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
     font-weight: 600;
-    top: -3px;
     position: absolute;
-    right: 11px;
+    right: 8px;
 }
 
 .current-balance-info {

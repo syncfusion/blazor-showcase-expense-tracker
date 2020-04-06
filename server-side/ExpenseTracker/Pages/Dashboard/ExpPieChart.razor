@@ -62,10 +62,10 @@
                                 </RowTemplate>
                             </GridTemplates>
                             <GridColumns>
-                                <GridColumn Field="Color" Width="10%" TextAlign="@TextAlign.Center"></GridColumn>
-                                <GridColumn Field="Text" Width="50%"></GridColumn>
-                                <GridColumn Field="Y" Format="C2" Width="20%"></GridColumn>
-                                <GridColumn Field="X" Width="20%"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.Color)" Width="10%" TextAlign="@TextAlign.Center"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.Text)" Width="50%"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.Y)" Format="C2" Width="20%"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.X)" Width="20%"></GridColumn>
                             </GridColumns>
                         </SfGrid>
                     </div>
@@ -92,7 +92,7 @@
     public ObservableCollection<RenderingData> PieRenderingData { get; set; }
     public List<RenderingData> HiGridData { get; set; }
     public List<dynamic> PieLegendData { get; set; }
-    public ObservableCollection<LegendRenderData> PieRenderData { get; set; }
+    public List<LegendRenderData> PieRenderData { get; set; }
 
     public string[] palettes = new string[] { "#61EFCD", "#CDDE1F", "#FEC200", "#CA765A", "#2485FA", "#F57D7D", "#C152D2",
                     "#8854D9", "#3D4EB8", "#00BCD7","#4472c4", "#ed7d31", "#ffc000", "#70ad47", "#5b9bd5",
@@ -191,7 +191,7 @@
         }
 
         this.PieRenderingData = new ObservableCollection<RenderingData>(renderingData);
-        this.PieRenderData = new ObservableCollection<LegendRenderData>(lengendRenderData);
+        this.PieRenderData = lengendRenderData;
     }
 
     /// <summary>

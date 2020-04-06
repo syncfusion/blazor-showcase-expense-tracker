@@ -27,16 +27,13 @@
                 <div id="expense-grid-wrapper">
                     @if (this.TransactGridData != null)
                     {
-                        List<ItemModel> Toolbaritems = new List<ItemModel>();
-                        Toolbaritems.Add(new ItemModel() { Text = "Edit", TooltipText = "Edit", Id = "Edit" });
-                        Toolbaritems.Add(new ItemModel() { Text = "Delete", TooltipText = "Delete", Id = "Delete" });
                         <SfGrid @ref="TransactGridRef" TValue="ExpenseData" Width="100%" Height="100%" AllowSelection="true" AllowPaging="true" AllowTextWrap="false" Toolbar="@Toolbaritems" DataSource="@TransactGridData">
                             <GridEvents RowSelected="OnGridSelectRow" RowDeselected="OnGridDeselectRow" DataBound="OnGridRender" OnToolbarClick="ToolbarClickHandler" TValue="ExpenseData"></GridEvents>
                             <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false"></GridEditSettings>
                             <GridPageSettings PageSize="11"></GridPageSettings>
                             <GridColumns>
                                 <GridColumn Type="ColumnType.CheckBox" Width="40"></GridColumn>
-                                <GridColumn Field="Category" HeaderText="Category" Width="178" ClipMode="@ClipMode.EllipsisWithTooltip" ValidationRules="@rules">
+                                <GridColumn Field="@nameof(ExpenseData.Category)" HeaderText="Category" Width="178" ClipMode="@ClipMode.EllipsisWithTooltip" ValidationRules="@rules">
                                     <Template>
                                         @{
                                             var expense = (context as ExpenseData);
@@ -66,11 +63,11 @@
                                         }
                                     </Template>
                                 </GridColumn>
-                                <GridColumn Field="DateTime" HeaderText="Date" Format="d" Width="112" ValidationRules="@rules"></GridColumn>
-                                <GridColumn Field="PaymentMode" HeaderText="Payment Mode" Width="140" ValidationRules="@rules"></GridColumn>
-                                <GridColumn Field="Description" HeaderText="Description" ClipMode="@ClipMode.Ellipsis"></GridColumn>
-                                <GridColumn Field="UniqueId" HeaderText="Unique Id" IsPrimaryKey="true" Visible="false"></GridColumn>
-                                <GridColumn Field="Amount" HeaderText="Amount" Width="120" Format="C0" TextAlign="@TextAlign.Right" ValidationRules="@rules">
+                                <GridColumn Field="@nameof(ExpenseData.DateTime)" HeaderText="Date" Format="d" Width="112" ValidationRules="@rules"></GridColumn>
+                                <GridColumn Field="@nameof(ExpenseData.PaymentMode)" HeaderText="Payment Mode" Width="140" ValidationRules="@rules"></GridColumn>
+                                <GridColumn Field="@nameof(ExpenseData.Description)" HeaderText="Description" ClipMode="@ClipMode.Ellipsis"></GridColumn>
+                                <GridColumn Field="@nameof(ExpenseData.UniqueId)" HeaderText="Unique Id" IsPrimaryKey="true" Visible="false"></GridColumn>
+                                <GridColumn Field="@nameof(ExpenseData.Amount)" HeaderText="Amount" Width="120" Format="C0" TextAlign="@TextAlign.Right" ValidationRules="@rules">
                                     <Template>
                                         @{
                                             var expense = (context as ExpenseData);
@@ -116,9 +113,13 @@
 
     public string SearchValue { get; set; }
     public Object rules = new { required = true };
-    public IEnumerable<ExpenseData> TransactGridData { get; set; }
+    public List<ExpenseData> TransactGridData { get; set; }
     private string visibility = "none";
     private string color = "#FFFFFF";
+    private List<ItemModel> Toolbaritems = new List<ItemModel> { 
+        new ItemModel() { Text = "Edit", TooltipText = "Edit", Id = "Edit" },
+        new ItemModel() { Text = "Delete", TooltipText = "Delete", Id = "Delete" }
+    };
 
     protected override void OnInitialized()
     {
