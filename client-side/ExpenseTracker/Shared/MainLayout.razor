@@ -1,0 +1,48 @@
+﻿@inherits LayoutComponentBase
+
+@if (ShowSpinner)
+{
+    <div class="sb-content-overlay">
+        <div class="sb-loading">
+            <svg class="circular" height="40" width="40">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+}
+
+<div id="main-page" style="height: 100vh; width: 100%; visibility:@visible; opacity:@opacity">
+    <div class="sidebar">
+        <NavMenu @ref="NavMenuRef" OnSidebarCreate="OnSidebarCreated" />
+    </div>
+    <div id="addexpenseDialog" class="expense-dialog"></div>
+
+    <div id="sidebarRightpane" class="sidebar-Rightpane">
+        <div class="content container-fluid rightpane">
+            <div class="content-wrapper">
+                <div id="content">
+                    @Body
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    private NavMenu NavMenuRef;
+
+    private string target { get; set; } = "#loader-content";
+
+    private string visible { get; set; } = "hidden";
+
+    private string opacity { get; set; } = "0";
+    private bool ShowSpinner = true;
+
+    public void OnSidebarCreated(string status)
+    {
+        ShowSpinner = false;
+        this.visible = "visible";
+        this.opacity = "1";
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,181 @@
+﻿@page "/"
+
+@using System.Collections.ObjectModel;
+@implements IDisposable;
+
+@if (ShowSpinner)
+{
+    <div class="sb-content-overlay">
+        <div class="sb-loading">
+            <svg class="circular" height="40" width="40">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+}
+
+<style>
+    #main-page {
+        overflow-x: hidden;
+        background: linear-gradient(-141deg, #EEF5F7 14%, #EEF2FB 100%);
+    }
+    .sidebar-Rightpane {
+        padding-bottom: 18px;
+        margin-right: -2px;
+    }
+</style>
+
+<div class="control-section dashboard-page">
+    <div class="row" style="margin-bottom: 16px;">
+        <p class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</p>
+        <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
+            <div id="daterange-overlay">
+                <div id="daterange-wrapper">
+                    <SfDateRangePicker @ref="DatePickerRef" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@MinDate" Max="@MaxDate">
+                        <DateRangePickerEvents ValueChange="OnDateRangeChange"></DateRangePickerEvents>
+                        <DateRangePickerPresets>
+                            <DateRangePickerPreset Label="Last Month" Start="@LastMonthStart" End="@LastMonthEnd"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="Last 3 Months" Start="@Last3MonthsStart" End="@Last3MonthsEnd"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="All Time" Start="@AllTimeStart" End="@AllTimeEnd"></DateRangePickerPreset>
+                        </DateRangePickerPresets>
+                    </SfDateRangePicker>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <ExpCards @ref="CardsRef" IncomeData="@IncomeData" ExpenseData="@ExpenseData"></ExpCards>
+    </div>
+    <ExpPieChart @ref="PieChartRef" Render="@Render" ExpenseData="@ExpenseData"></ExpPieChart>
+    <div>
+        <div>
+            <div class="line-chart-area">
+                <ExpLineChart @ref="LineChartRef" Render="@Render" LineChartData="@LineChartData"></ExpLineChart>
+            </div>
+            <div class="column-chart-area">
+                <ExpColumnChart @ref="ColumnChartRef" Render="@Render" ColChartIncomeData="@ColChartIncomeData" ColChartExpenseData="@ColChartExpenseData"></ExpColumnChart>
+            </div>
+        </div>
+        <ExpGrid @ref="RecentGridRef" Render="@Render" ExpenseGridCreated="@(() => { ShowSpinner = false; StateHasChanged(); })" RecentExpenseData="@RecentExpenseData"></ExpGrid>
+    </div>
+</div>
+
+@code{
+    [CascadingParameter]
+    private ExpenseDataService ExpenseDataService { get; set; }
+    private DashboardService dashboardService { get; set; }
+
+    public ExpCards CardsRef;
+    public ExpColumnChart ColumnChartRef;
+    public ExpLineChart LineChartRef;
+    public ExpPieChart PieChartRef;
+    public ExpGrid RecentGridRef;
+    public SfDateRangePicker DatePickerRef;
+
+    public List<ExpenseData> LineChartData { get; set; }
+    public List<ExpenseData> ColChartIncomeData { get; set; }
+    public List<ExpenseData> ColChartExpenseData { get; set; }
+    public List<ExpenseData> RecentExpenseData { get; set; }
+
+    private DateTime LastMonthStart;
+    private DateTime LastMonthEnd;
+    private DateTime Last3MonthsStart;
+    private DateTime Last3MonthsEnd;
+    private DateTime AllTimeStart;
+    private DateTime AllTimeEnd;
+    private DateTime MinDate;
+    private DateTime MaxDate;
+    private bool ShowSpinner = true;
+    private List<ExpenseData> IncomeData;
+    private List<ExpenseData> ExpenseData;
+    private bool Render;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        LastMonthStart = new DateTime(2019, 10, 01, 00, 00, 00);
+        LastMonthEnd = new DateTime(2019, 10, 31, 23, 59, 59);
+        Last3MonthsStart = new DateTime(2019, 09, 01, 00, 00, 00);
+        Last3MonthsEnd = new DateTime(2019, 11, 30, 23, 59, 59);
+        AllTimeStart = new DateTime(2019, 06, 01, 00, 00, 00);
+        AllTimeEnd = new DateTime(2019, 11, 30, 23, 58, 58);
+        MinDate = new DateTime(2019, 06, 01, 00, 00, 00);
+        MaxDate = new DateTime(2019, 11, 30, 23, 59, 59);
+        ColChartIncomeData = new List<ExpenseData>();
+        ColChartExpenseData = new List<ExpenseData>();
+        RecentExpenseData = new List<ExpenseData>();
+        dashboardService = new DashboardService();
+        this.UpdateChartData();
+        Render = false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this.ColumnChartRef.LineObj = this.LineChartRef;
+            InvokeAsync(async () =>
+            {
+                await Task.Delay(1);
+                Render = true;
+                StateHasChanged();
+            });
+        }
+    }
+
+    /// <summary>
+    /// Update the chart in dashboard in page render
+    /// </summary>
+    public void UpdateChartData()
+    {
+        ColChartIncomeData = new List<ExpenseData>();
+        ColChartExpenseData = new List<ExpenseData>();
+        RecentExpenseData = new List<ExpenseData>();
+        dashboardService = new DashboardService();
+        DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
+        var commonData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        ExpenseDataService.SetCurrentData(commonData);
+        ExpenseData = commonData.Where(s => s.TransactionType == "Expense").ToList();
+        this.ColChartExpenseData = dashboardService.GetColumnChartExpenseDS(ExpenseData);
+        IncomeData = commonData.Where(s => s.TransactionType == "Income").ToList();
+        dashboardService.SetColumnChartIncomeDS(IncomeData);
+        this.LineChartData = dashboardService.GetLineChartDS();
+        this.ColChartIncomeData = dashboardService.GetColumnChartIncomeDS();
+        this.RecentExpenseData = commonData.OrderByDescending(s => s.DateTime).Take(5).ToList();
+    }
+
+    public void OnDateRangeChange(RangeEventArgs args)
+    {
+        ExpenseDataService.SetDate(args.StartDate, args.EndDate);
+        this.FilterData();
+    }
+
+    /// <summary>
+    /// Filter and update the data.
+    /// </summary>
+    public void FilterData()
+    {
+        this.UpdateChartData();
+        if (this.CardsRef != null)
+            this.CardsRef.UpdateCards();
+        if (this.PieChartRef != null)
+            this.PieChartRef.UpdatePieChart();
+        if (this.LineChartRef != null)
+            this.LineChartRef.UpdateLineChart(LineChartData);
+        if (this.ColumnChartRef != null)
+            this.ColumnChartRef.UpdateColumnChart(ColChartExpenseData, ColChartIncomeData);
+        if (this.RecentGridRef != null)
+            this.RecentGridRef.UpdateRecentGrid(RecentExpenseData);
+    }
+
+    public void Dispose()
+    {
+        DatePickerRef = null;
+        CardsRef = null;
+        PieChartRef = null;
+        LineChartRef = null;
+        ColumnChartRef = null;
+        RecentGridRef = null;
+        GC.SuppressFinalize(this);
+    }
+}

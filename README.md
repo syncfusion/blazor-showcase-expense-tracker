@@ -8,8 +8,8 @@ This expense tracker demo application showcases using several Syncfusion Blazor 
 
 The samples requires the below requirements to run.
 
-* [Visual Studio 2019 Preview](https://visualstudio.microsoft.com/vs/preview/)
-* [NET Core SDK 3.1.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+* [Visual Studio 2019](https://visualstudio.microsoft.com/vs/)
+* [.NET Core SDK 3.1.3](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 ### Run
 
