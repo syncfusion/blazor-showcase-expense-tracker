@@ -1,0 +1,21 @@
+{
+  "name": "Expense Tracker",
+  "short_name": "Expense Tracker",
+  "description": "Syncfusion Blazor Expense Tracker",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5851e1",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}
