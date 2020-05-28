@@ -20,7 +20,7 @@ namespace ExpenseTracker
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddSyncfusionBlazor();
+            builder.Services.AddSyncfusionBlazor(true);
             await builder.Build().RunAsync();
         }
     }

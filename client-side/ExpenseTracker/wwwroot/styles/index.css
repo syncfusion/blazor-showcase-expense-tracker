@@ -464,6 +464,11 @@ html body > .content {
     #sidebar-wrapper {
         top: 0px;
     }
+    #sidebar-indexdefault {
+        height: 100vh;
+        position: fixed;
+        background: #fff;
+    }
 }
 
 @media (min-width: 768px) {
@@ -1440,6 +1445,10 @@ span.e-label {
     .dashboard-page #sidebarRightpane .page-title {
         margin-bottom: 0 !important;
     }
+
+    .dashboard-page .daterange.overview-range-picker {
+        margin-top: 16px;
+    }
 }
 
 @media (max-width: 644px) {
@@ -1847,6 +1856,7 @@ div.info::after {
 #filterExpense.e-btn,
 #filter-btn.e-btn {
     height: 34px;
+    line-height: 24px;
 }
 
 #daterange-wrapper {

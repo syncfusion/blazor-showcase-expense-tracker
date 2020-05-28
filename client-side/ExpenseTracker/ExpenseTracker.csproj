@@ -4,6 +4,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <BlazorCacheBootResources>false</BlazorCacheBootResources>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+    <UserSecretsId>cb0171fc-fc45-4dcf-b056-a4c027094415</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
