@@ -1,0 +1,115 @@
+﻿@page "/expense"
+
+@implements IDisposable;
+
+<style>
+    #main-page {
+        overflow-x: hidden;
+        background: linear-gradient(-141deg, #EEF5F7 14%, #EEF2FB 100%);
+    }
+
+    .content.container-fluid {
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    @@media (min-width: 1100px) {
+        .rightpane {
+            margin-right: 270px;
+        }
+    }
+
+    @@media (max-width: 1100px) {
+        .rightpane {
+            margin-right: 0px;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .content .content-wrapper {
+            padding: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .content .content-wrapper {
+            padding: 0 8px 8px 8px;
+            margin-top: 7rem;
+        }
+    }
+
+    .content.container-fluid {
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+</style>
+
+<div class="expense-page">
+    <div class='exp-content-container'>
+        <div>
+            <p class="page-title">All Transactions</p>
+        </div>
+        <div>
+            <div class="col-md-12 margin-top col-lg-12">
+                <div class="expense-grid-container">
+                    <div class="expense-head-padding" style="background-color: @color;">
+                        <div class="search-wrapper search-section" style="display: @visibility;">
+                            <div id="search">
+                                <SfTextBox Type="InputType.Search" ShowClearButton="true" Placeholder="Search" CssClass="search txt" @bind-Value="SearchValue" ValueChange="@(async () => await this.ContentRef.Search(SearchValue))" Created="OnCreate"></SfTextBox>
+                                <span id="searchbtn" class="e-search-icon expense-search-icon e-icons" @onclick="@(() => this.ContentRef.Search(SearchValue))"></span>
+                            </div>
+                            <div class="button-section search-section">
+                                <button id="addexpense" class="e-btn small e-info" @onclick="@(() => this.DialogRef.ShowAddDialog())">Add Transaction</button>
+                                <button id="filterExpense" class="e-btn small e-info" @onclick="@(() => this.FilterRef.ShowFilterMenu())">Filter</button>
+                                <div id="add-btn" class='e-btn' @onclick="@(() => this.DialogRef.ShowAddDialog())">
+                                    <span class='e-icons add-icon add-head-item'></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <TransactGrid @ref="ContentRef"></TransactGrid>
+                </div>
+            </div>
+        </div>
+    </div>
+    <FilterMenu @ref="FilterRef"></FilterMenu>
+    <TransactDialog @ref="DialogRef"></TransactDialog>
+</div>
+
+@code{
+    [CascadingParameter]
+    public ExpenseDataService ExpenseDataService { get; set; }
+
+    public FilterMenu FilterRef;
+    public TransactDialog DialogRef;
+    public TransactGrid ContentRef;
+    public string SearchValue { get; set; }
+    private string visibility = "none";
+    private string color = "#FFFFFF";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+            this.ContentRef.DialogRef = this.DialogRef;
+            this.FilterRef.ContentRef = this.ContentRef;
+            this.DialogRef.ContentRef = this.ContentRef;
+            this.ContentRef.FilterRef = this.FilterRef;
+        }
+    }
+
+    private void OnCreate()
+    {
+        this.visibility = ""; this.color = "";
+    }
+
+    public void Dispose()
+    {
+        ContentRef = null;
+        FilterRef = null;
+        DialogRef = null;
+    }
+}

@@ -1,0 +1,251 @@
+﻿@using Newtonsoft.Json;
+@implements IDisposable;
+
+<div>
+    <span id="filter-toggle" href="#" class="navbar-toggle e-icon" @onclick="ShowFilterMenu"></span>
+    <div class='filter-container'>
+        <SfSidebar @ref="Sidebar" Width="270px" MediaQuery="(min-width: 1101px)" Position="SidebarPosition.Right" Created="@(() => { this.display = ""; })">
+            <ChildContent>
+                <div class="sidebar-wrapper-filter">
+                    <div style="@display">
+                        <div class="filter-head">
+                            <span class="e-icon filter-icon filter-head-item"></span>
+                            <span class="filter-txt filter-head-item">Filters</span>
+                        </div>
+                        <div class="expense-filter-container">
+                            <label class="label-font">Select a range</label>
+                            <div class='filter-date-range filter-item'>
+                                <SfDateRangePicker CssClass="DateTime" ShowClearButton="false" Format="MM/dd/yyyy" AllowEdit="false" EndDate="@ExpenseDataService.EndDate" StartDate="@ExpenseDataService.StartDate" Min="@MinDate" Max="@MaxDate">
+                                    <DateRangePickerEvents ValueChange="DateRangeChanged"></DateRangePickerEvents>
+                                </SfDateRangePicker>
+                            </div>
+                            <label class="label-font">Category</label>
+                            <div class="category filter-item">
+                                <SfMultiSelect TValue="string[]" DataSource="@FilterCategoryList" Mode="@VisualMode.Box"
+                                               Placeholder="Select Categories" HideSelectedItem="true" ClosePopupOnSelect="false">
+                                    <MultiSelectEvents TValue="string[]" OnValueSelect="CategorySelect" OnValueRemove="CategoryRemove"></MultiSelectEvents>
+                                    <MultiSelectFieldSettings Text="Text" Value="Value"></MultiSelectFieldSettings>
+                                </SfMultiSelect>
+                            </div>
+                            <label class="label-font bottom-align">Cashflow</label>
+                            <div class="cashflow filter-item">
+                                <SfCheckBox TChecked="bool" Label="Income" @bind-Checked="IncomeChecked" CssClass="TransactionType" ValueChange="UpdateGrid"></SfCheckBox>
+                                <SfCheckBox TChecked="bool" Label="Expense" @bind-Checked="ExpenseChecked" CssClass="TransactionType" ValueChange="UpdateGrid"></SfCheckBox>
+                            </div>
+                            <label class="label-font bottom-align">Payment Mode</label>
+                            <div class="paymentModes filter-item">
+                                <SfCheckBox TChecked="bool" Label="Cash" @bind-Checked="CashChecked" CssClass="PaymentMode" ValueChange="UpdateGrid"></SfCheckBox>
+                                <SfCheckBox TChecked="bool" Label="Debit Card" @bind-Checked="DebitChecked" CssClass="PaymentMode" ValueChange="UpdateGrid"></SfCheckBox>
+                                <br />
+                                <br />
+                                <SfCheckBox TChecked="bool" Label="Credit Card" @bind-Checked="CreditChecked" CssClass="PaymentMode" ValueChange="UpdateGrid"></SfCheckBox>
+                            </div>
+                            <div>
+                                <label class="label-font">Amount</label>
+                                <div class='amount-filter'>
+                                    <div class='min-numeric amt-filter'>
+                                        <label class="inlineAlign minLabel">Min :</label>
+                                        <SfNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" @bind-Value="MinAmount" Min="0" Max="6000">
+                                            <NumericTextBoxEvents TValue="int?" ValueChange="UpdateGrid"></NumericTextBoxEvents>
+                                        </SfNumericTextBox>
+                                    </div>
+                                    <span class='amt-filter separateLine'></span>
+                                    <div class='max-numeric amt-filter'>
+                                        <label class="inlineAlign maxLabel">Max :</label>
+                                        <SfNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" @bind-Value="MaxAmount" Min="0" Max="6000">
+                                            <NumericTextBoxEvents TValue="int?" ValueChange="UpdateGrid"></NumericTextBoxEvents>
+                                        </SfNumericTextBox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ChildContent>
+        </SfSidebar>
+    </div>
+</div>
+
+<div class="@OverlayClass" @onclick="HideFilterMenu"></div>
+
+@code {
+    public SfCheckBox<bool> CreditFilter;
+    public SfSlider<int[]> RangeFilter;
+    public TransactGrid ContentRef;
+    private SfSidebar Sidebar;
+
+    private string OverlayClass = string.Empty;
+    public bool IncomeChecked = true;
+    public bool ExpenseChecked = true;
+    public bool CashChecked = true;
+    public bool DebitChecked = true;
+    public bool CreditChecked = true;
+    public int? MinAmount { get; set; } = 0;
+    public int? MaxAmount { get; set; } = 100;
+    public List<string> CategoryValue { get; set; } = new List<string>();
+    public List<FilterCategory> FilterCategoryList { get; set; } = new List<FilterCategory>();
+    private string display = "display: none;";
+    private DateTime MinDate;
+    private DateTime MaxDate;
+
+    [CascadingParameter]
+    public ExpenseDataService ExpenseDataService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        this.MinDate = new DateTime(2019, 06, 01, 00, 00, 00);
+        this.MaxDate = new DateTime(2019, 11, 30, 23, 59, 59);
+        this.GetCategory();
+        this.MinMaxAmount();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        this.UpdateGrid();
+    }
+
+    internal async Task ShowFilterMenu()
+    {
+        if (!Sidebar.IsOpen)
+        {
+            await Sidebar.Show();
+            this.OverlayClass = "overlay";
+            StateHasChanged();
+        }
+    }
+
+    private async Task HideFilterMenu()
+    {
+        if (Sidebar.IsOpen)
+        {
+            await Sidebar.Hide();
+            this.OverlayClass = string.Empty;
+        }
+    }
+
+    public void OnCheckBoxChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
+    {
+        this.UpdateGrid();
+    }
+
+    public void CategorySelect(Syncfusion.Blazor.DropDowns.SelectEventArgs args)
+    {
+        FilterCategory item = JsonConvert.DeserializeObject<FilterCategory>(args.ItemData.ToString());
+        this.CategoryValue.Add(item.Value);
+        this.UpdateGrid();
+    }
+
+    public void CategoryRemove(Syncfusion.Blazor.DropDowns.RemoveEventArgs args)
+    {
+        FilterCategory item = JsonConvert.DeserializeObject<FilterCategory>(args.ItemData.ToString());
+        this.CategoryValue.Remove(item.Value);
+        this.UpdateGrid();
+    }
+
+    public void DateRangeChanged(RangeEventArgs args)
+    {
+        ExpenseDataService.SetDate(args.StartDate, args.EndDate);
+        this.UpdateGrid();
+        this.ContentRef.UpdateTotalBalance();
+    }
+
+    public void MinAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args)
+    {
+        this.UpdateGrid();
+    }
+
+    public void MaxAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args)
+    {
+        this.UpdateGrid();
+    }
+
+    /** Gets the available category in-between the start and end date, for category filter dropdown */
+    public void GetCategory()
+    {
+        this.FilterCategoryList = new List<FilterCategory>();
+        DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
+        foreach (var expenseData in ExpenseDataService.ExpenseData)
+        {
+            if (expenseData.DateTime >= start && expenseData.DateTime <= end)
+            {
+                this.FilterCategoryList.Add(new FilterCategory { Text = expenseData.Category, Value = expenseData.Category });
+            }
+        }
+        this.FilterCategoryList = this.FilterCategoryList.GroupBy(x => x.Value).Select(y => y.First()).ToList();
+    }
+
+    /** Gets the minimum and maximum amount from the datasource */
+    public void MinMaxAmount()
+    {
+        DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
+        IEnumerable<ExpenseData> expenseData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        if (expenseData.Count() > 0)
+        {
+            this.MinAmount = expenseData.Min(s => s.Amount);
+            this.MaxAmount = expenseData.Max(s => s.Amount);
+        }
+    }
+
+    /** Updates the Grid based on the filtered data source */
+    public IEnumerable<ExpenseData> RefreshData()
+    {
+        DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
+        var expenseData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        ExpenseDataService.SetCurrentData(expenseData);
+        expenseData = expenseData.Where(s => s.Amount >= this.MinAmount && s.Amount <= this.MaxAmount);
+        if (this.IncomeChecked || this.ExpenseChecked)
+        {
+            if (this.IncomeChecked && this.ExpenseChecked)
+                expenseData = expenseData.Where(s => s.TransactionType == "Income" || s.TransactionType == "Expense");
+            else if (this.IncomeChecked)
+                expenseData = expenseData.Where(s => s.TransactionType == "Income");
+            else if (this.ExpenseChecked)
+                expenseData = expenseData.Where(s => s.TransactionType == "Expense");
+        }
+        if (this.CashChecked || this.CreditChecked || this.DebitChecked)
+        {
+            if (this.CashChecked && this.CreditChecked && this.DebitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash" || s.PaymentMode == "Credit Card" || s.PaymentMode == "Debit Card");
+            else if (this.CashChecked && this.CreditChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash" || s.PaymentMode == "Credit Card");
+            else if (this.CashChecked && this.DebitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash" || s.PaymentMode == "Debit Card");
+            else if (this.CreditChecked && this.DebitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Credit Card" || s.PaymentMode == "Debit Card");
+            else if (this.CashChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash");
+            else if (this.CreditChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Credit Card");
+            else if (this.DebitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Debit Card");
+        }
+        if (this.CategoryValue.Count() > 0)
+        {
+            var catagoryItems = new List<ExpenseData>();
+            foreach (var category in this.CategoryValue)
+            {
+                catagoryItems.AddRange(expenseData.Where(s => s.Category == (string)category));
+            }
+            expenseData = catagoryItems;
+        }
+        expenseData = expenseData.OrderByDescending(e => e.DateTime).ToList();
+        return expenseData;
+    }
+
+    public void UpdateGrid()
+    {
+        this.ContentRef.GridRefresh(this.RefreshData());
+    }
+
+    public class FilterCategory
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
+
+    public void Dispose()
+    {
+        Sidebar = null;
+    }
+}
