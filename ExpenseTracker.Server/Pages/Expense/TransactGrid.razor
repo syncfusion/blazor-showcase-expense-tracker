@@ -7,7 +7,7 @@
     @if (this.RenderGrid)
     {
         <SfGrid @ref="TransactGridRef" TValue="ExpenseData" Width="100%" Height="100%" AllowSelection="true" AllowPaging="true" AllowTextWrap="false" Toolbar="@Toolbaritems" DataSource="@TransactGridData">
-            <GridEvents RowSelected="OnGridSelectRow" RowDeselected="OnGridDeselectRow" OnToolbarClick="ToolbarClickHandler" TValue="ExpenseData"></GridEvents>
+            <GridEvents RowSelected="@EnableToolbarItems" RowDeselected="@EnableToolbarItems" OnToolbarClick="ToolbarClickHandler" TValue="ExpenseData"></GridEvents>
             <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false"></GridEditSettings>
             <GridPageSettings PageSize="11"></GridPageSettings>
             <GridColumns>
@@ -104,18 +104,10 @@
         }
     }
 
-    /// <summary>
-    /// Enable or disable the tool bar items when grid is selected
-    ///</summary>
-    /// <param name="args"></param>
-    public async Task OnGridSelectRow(RowSelectEventArgs<ExpenseData> args)
+    internal async Task EnableToolbarItems()
     {
-        var selectedIndexes = await this.TransactGridRef.GetSelectedRecords();
-        EnableToolbarItems(selectedIndexes.Count());
-    }
-
-    private void EnableToolbarItems(int count)
-    {
+        var selectedIndexes = await TransactGridRef.GetSelectedRecords();
+        var count = selectedIndexes.Count();
         if (count > 1)
         {
             Toolbaritems[0].Disabled = true;
@@ -131,16 +123,6 @@
             Toolbaritems[0].Disabled = false;
             Toolbaritems[1].Disabled = false;
         }
-    }
-    /// <summary>
-    /// Enable or disable the tool bar items when grid is unselected
-    ///
-    ///</summary>
-    /// <param name="args"></param>
-    public async Task OnGridDeselectRow(RowDeselectEventArgs<ExpenseData> args)
-    {
-        var selectedIndexes = await this.TransactGridRef.GetSelectedRecords();
-        EnableToolbarItems(selectedIndexes.Count());
     }
 
     /// <summary>

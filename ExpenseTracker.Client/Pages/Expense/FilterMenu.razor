@@ -45,15 +45,15 @@
                                 <div class='amount-filter'>
                                     <div class='min-numeric amt-filter'>
                                         <label class="inlineAlign minLabel">Min :</label>
-                                        <SfNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" @bind-Value="MinAmount" Min="0" Max="6000">
-                                            <NumericTextBoxEvents TValue="int?" ValueChange="UpdateGrid"></NumericTextBoxEvents>
+                                        <SfNumericTextBox TValue="double?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" @bind-Value="MinAmount" Min=0 Max=6000>
+                                            <NumericTextBoxEvents TValue="double?" ValueChange="@MinAmountChanged"></NumericTextBoxEvents>
                                         </SfNumericTextBox>
                                     </div>
                                     <span class='amt-filter separateLine'></span>
                                     <div class='max-numeric amt-filter'>
                                         <label class="inlineAlign maxLabel">Max :</label>
-                                        <SfNumericTextBox TValue="int?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" @bind-Value="MaxAmount" Min="0" Max="6000">
-                                            <NumericTextBoxEvents TValue="int?" ValueChange="UpdateGrid"></NumericTextBoxEvents>
+                                        <SfNumericTextBox TValue="double?" CssClass="inlineAlign" Width="55px" Format="c0" ShowSpinButton="false" @bind-Value="MaxAmount" Min=0 Max=6000>
+                                            <NumericTextBoxEvents TValue="double?" ValueChange="@MaxAmountChanged"></NumericTextBoxEvents>
                                         </SfNumericTextBox>
                                     </div>
                                 </div>
@@ -80,8 +80,8 @@
     public bool CashChecked = true;
     public bool DebitChecked = true;
     public bool CreditChecked = true;
-    public int? MinAmount { get; set; } = 0;
-    public int? MaxAmount { get; set; } = 100;
+    public double? MinAmount = 0;
+    public double? MaxAmount = 100;
     public List<string> CategoryValue { get; set; } = new List<string>();
     public List<FilterCategory> FilterCategoryList { get; set; } = new List<FilterCategory>();
     private string display = "display: none;";
@@ -150,12 +150,12 @@
         this.ContentRef.UpdateTotalBalance();
     }
 
-    public void MinAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args)
+    public void MinAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs<double?> args)
     {
         this.UpdateGrid();
     }
 
-    public void MaxAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs<int?> args)
+    public void MaxAmountChanged(Syncfusion.Blazor.Inputs.ChangeEventArgs<double?> args)
     {
         this.UpdateGrid();
     }

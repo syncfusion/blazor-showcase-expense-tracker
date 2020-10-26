@@ -6,7 +6,7 @@
                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" LabelFormat="MMM" IntervalType="IntervalType.Months" EdgeLabelPlacement="EdgeLabelPlacement.Shift"></ChartPrimaryXAxis>
                 <ChartPrimaryYAxis LabelFormat="c0" Maximum="9000" Minimum="3000"></ChartPrimaryYAxis>
                 <ChartAnnotations>
-                    <ChartAnnotation X="75px" Y="9%" CoordinateUnits="Units.Pixel" Region="Regions.Chart">
+                    <ChartAnnotation X="@chartXAnnoation" Y="9%" CoordinateUnits="Units.Pixel" Region="Regions.Chart">
                         <ContentTemplate>
                             <p style="font-family:Roboto;font-size: 16px;font-weight: 400;font-weight: 400;letter-spacing: 0.02em;line-height: 16px;color: #797979 !important;">Income - Expense</p>
                         </ContentTemplate>
@@ -38,4 +38,5 @@
     public List<ExpenseData> ColChartIncomeData { get; set; }
     [Parameter]
     public List<ExpenseData> ColChartExpenseData { get; set; }
+    private string chartXAnnoation = "75px";
 }
