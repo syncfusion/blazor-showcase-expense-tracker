@@ -58,7 +58,7 @@
                                 </div>
                                 <div class='dlg-amount-container'>
                                     <div>
-                                        <SfNumericTextBox TValue="int?" Placeholder='Enter a Amount' FloatLabelType='FloatLabelType.Always' Format="c2" Min="0" @bind-Value="Amount"></SfNumericTextBox>
+                                        <SfNumericTextBox TValue="double?" Placeholder='Enter a Amount' FloatLabelType='FloatLabelType.Always' Format="c2" Min="0" @bind-Value="Amount"></SfNumericTextBox>
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +111,7 @@
     public DateTime? TimeValue;
     public string UniqueId { get; set; }
     public string Description { get; set; }
-    public int? Amount { get; set; } = 0;
+    public double? Amount = 0;
     public List<CategoryData> CategoryDataSource { get; set; }
     [CascadingParameter]
     public ExpenseDataService ExpenseDataService { get; set; }
@@ -222,7 +222,7 @@
             this.DateValue = this.TimeValue = SelectedRecord.DateTime;
             this.PaymentMode = SelectedRecord.PaymentMode;
             this.Description = SelectedRecord.Description;
-            this.Amount = SelectedRecord.Amount;
+            this.Amount = (double?)SelectedRecord.Amount;
             this.CategoryValue = SelectedRecord.Category;
         }
     }
@@ -313,6 +313,7 @@
         this.ContentRef.RemoveRecord(selectedIds);
         await this.ConfirmDialog.Hide();
         this.ContentRef.UpdateTotalBalance();
+        await ContentRef.EnableToolbarItems();
     }
 
     public async Task OnClickCancel()
