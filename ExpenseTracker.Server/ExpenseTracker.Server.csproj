@@ -10,7 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Syncfusion.Blazor" Version="18.3.0.41" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="18.4.0.35" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" Version="18.4.0.35" />
   </ItemGroup>
 
 </Project>

@@ -55,7 +55,12 @@
     /// <summary>
     /// Calculation for card values
     /// </summary>
-    public void UpdateCards()
+    public void RefreshCards(IEnumerable<ExpenseData> incomeData, IEnumerable<ExpenseData> expenseData)
+    {
+        IncomeData = incomeData; ExpenseData = expenseData;
+        UpdateCards();
+    }
+    private void UpdateCards()
     {
         var incomeRS = 0;
         var expenseRS = 0;

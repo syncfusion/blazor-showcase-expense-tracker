@@ -8,12 +8,12 @@
         <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
             <div id="daterange-overlay">
                 <div id="daterange-wrapper">
-                    <SfDateRangePicker AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@(new DateTime(2019, 06, 01, 00, 00, 00))" Max="@(new DateTime(2019, 11, 30, 23, 59, 59))">
-                        <DateRangePickerEvents ValueChange="OnDateRangeChange"></DateRangePickerEvents>
+                    <SfDateRangePicker TValue="DateTime" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
+                        <DateRangePickerEvents TValue="DateTime" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
                         <DateRangePickerPresets>
-                            <DateRangePickerPreset Label="Last Month" Start="@(new DateTime(2019, 10, 01, 00, 00, 00))" End="@(new DateTime(2019, 10, 31, 23, 59, 59))"></DateRangePickerPreset>
-                            <DateRangePickerPreset Label="Last 3 Months" Start="@(new DateTime(2019, 09, 01, 00, 00, 00))" End="@(new DateTime(2019, 11, 30, 23, 59, 59))"></DateRangePickerPreset>
-                            <DateRangePickerPreset Label="All Time" Start="@(new DateTime(2019, 06, 01, 00, 00, 00))" End="@(new DateTime(2019, 11, 30, 23, 58, 58))"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="Last Month" Start="@lastMonthStart" End="@lastMonthEnd"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="Last 3 Months" Start="@last3MonthStart" End="@last3MonthEnd"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="All Time" Start="@allTimeStart" End="@allTimeEnd"></DateRangePickerPreset>
                         </DateRangePickerPresets>
                     </SfDateRangePicker>
                 </div>
@@ -37,7 +37,7 @@
     </div>
 </div>
 
-@code{
+@code {
     [CascadingParameter]
     private ExpenseDataService ExpenseDataService { get; set; }
 
@@ -51,6 +51,14 @@
     private IEnumerable<ExpenseData> ExpenseData;
     private List<TempExpenseData> TempExpenseDS;
     private List<TempExpenseData> TempIncomeDS;
+    private DateTime minDate = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime maxDate = new DateTime(2019, 11, 30, 23, 59, 59);
+    private DateTime lastMonthStart = new DateTime(2019, 10, 01, 00, 00, 00);
+    private DateTime lastMonthEnd = new DateTime(2019, 10, 31, 23, 59, 59);
+    private DateTime last3MonthStart = new DateTime(2019, 09, 01, 00, 00, 00);
+    private DateTime last3MonthEnd = new DateTime(2019, 11, 30, 23, 59, 59);
+    private DateTime allTimeStart = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime allTimeEnd = new DateTime(2019, 11, 30, 23, 58, 58);
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,15 +150,15 @@
         }
     }
 
-    private void OnDateRangeChange(RangeEventArgs args)
+    private void OnDateRangeChange(RangePickerEventArgs<DateTime> args)
     {
         ExpenseDataService.SetDate(args.StartDate, args.EndDate);
         InitializeData();
-        StateHasChanged();
         if (this.CardsRef != null)
-            this.CardsRef.UpdateCards();
+            this.CardsRef.RefreshCards(IncomeData, ExpenseData);
         if (this.PieChartRef != null)
-            this.PieChartRef.UpdatePieChart();
+            this.PieChartRef.RefreshPieChart(ExpenseData);
+        StateHasChanged();
     }
 
     public void Dispose()

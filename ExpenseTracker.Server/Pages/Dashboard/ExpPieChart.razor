@@ -10,17 +10,16 @@
                 </div>
                 <div class="row">
                     <div class="pieChart">
-                        <SfAccumulationChart Width="100%" Height="350px" EnableSmartLabels="true">
+                        <SfAccumulationChart Height="350px" EnableAnimation="false" EnableSmartLabels="true">
                             <AccumulationChartSeriesCollection>
                                 <AccumulationChartSeries DataSource="@PieRenderingData" XName="Text" YName="Y" Radius="83%" StartAngle="0" EndAngle="360" InnerRadius="50%" Palettes="@palettes">
                                     <AccumulationDataLabelSettings Visible="true" Name="X" Position="AccumulationLabelPosition.Outside">
                                         <AccumulationChartConnector Length="10%"></AccumulationChartConnector>
                                         <AccumulationChartDataLabelFont Color="Black" Size="14px" FontFamily="Roboto"></AccumulationChartDataLabelFont>
                                     </AccumulationDataLabelSettings>
-                                    <AccumulationChartAnimation Enable="false"></AccumulationChartAnimation>
                                 </AccumulationChartSeries>
                             </AccumulationChartSeriesCollection>
-                            <AccumulationChartTooltipSettings Enable="true" Format="${point.x} : ${point.y}"></AccumulationChartTooltipSettings>
+                            <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
                             <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
                         </SfAccumulationChart>
                     </div>
@@ -71,13 +70,19 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        this.UpdatePieChart();
+        UpdatePieChart();
     }
 
     /// <summary>
     /// Calculate the total expense and update the pie chart
     /// </summary>
-    public void UpdatePieChart()
+    public void RefreshPieChart(IEnumerable<ExpenseData> expenseData)
+    {
+        ExpenseData = expenseData;
+        UpdatePieChart();
+    }
+
+    private void UpdatePieChart()
     {
         StartDate = ExpenseDataService.StartDate;
         EndDate = ExpenseDataService.EndDate;
