@@ -49,7 +49,6 @@
     public async Task Refresh(List<ExpenseData> colChartIncomeData, List<ExpenseData> colChartExpenseData)
     {
         ColChartIncomeData = colChartIncomeData; ColChartExpenseData = colChartExpenseData;
-        StateHasChanged();
         await InvokeAsync(async () =>
         {
             await Task.Delay(1);

@@ -47,7 +47,6 @@
     public async Task Refresh(List<ExpenseData> lineChartData)
     {
         LineChartData = lineChartData;
-        StateHasChanged();
         await InvokeAsync(async () =>
         {
             await Task.Delay(1);
