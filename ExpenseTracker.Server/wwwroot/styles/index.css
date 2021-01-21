@@ -1353,7 +1353,7 @@ span.e-label {
 }
 
 @media (max-width: 480px) {
-    .dashboard-page .e-accumulationchart svg g g:last-child {
+    .dashboard-page .e-accumulationchart svg g g g g {
         display: none;
     }
 }
@@ -1841,17 +1841,6 @@ div.info::after {
     height: 34px;
     background: #FFFFFF;
     border-radius: 4px;
-}
-
-.expense-page #daterange-wrapper,
-#daterange-overlay input:not(.e-daterangepicker),
-.filter-date-range input:not(.e-daterangepicker),
-.category.filter-item input {
-    display: none;
-}
-
-.filter-item .e-multiselect .e-multi-select-wrapper .e-multiselect-box input.e-dropdownbase {
-    display: block;
 }
 
 .e-btn.e-info,

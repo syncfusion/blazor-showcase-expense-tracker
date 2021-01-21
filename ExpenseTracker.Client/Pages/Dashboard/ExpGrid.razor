@@ -1,19 +1,19 @@
 ﻿<div class="row recent-expense-grid">
     <div class="col-xs-6 col-sm-6 col-md-12" style="width:100%">
-        @if (Render)
+		@if (Render)
         {
             <SfGrid TValue="ExpenseData" DataSource="@RecentExpenseData" Height="100%" AllowSorting="true" EnableHover="false" AllowPaging="false" Width="100%">
                 <GridPageSettings PageCount="4" PageSize="14"></GridPageSettings>
-                <GridEvents TValue="ExpenseData" Created="@(() => ExpenseGridCreated?.Invoke())"></GridEvents>
-				<GridTemplates>
-                	<ToolbarTemplate>
-                    	<SfToolbar>
-                        	<Syncfusion.Blazor.Navigations.ToolbarItems>
-                            	<ToolbarItem Text="Recent Transactions"></ToolbarItem>
-                        	</Syncfusion.Blazor.Navigations.ToolbarItems>
-                    	</SfToolbar>
-                	</ToolbarTemplate>
-            	</GridTemplates>
+             	<GridEvents TValue="ExpenseData" Created="@(() => ExpenseGridCreated?.Invoke())"></GridEvents>
+                <GridTemplates>
+                    <ToolbarTemplate>
+                        <SfToolbar>
+                            <ToolbarItems>
+                                <ToolbarItem Text="Recent Transactions"></ToolbarItem>
+                            </ToolbarItems>
+                        </SfToolbar>
+                    </ToolbarTemplate>
+                </GridTemplates>
                 <GridColumns>
                     <GridColumn Field="@nameof(ExpenseData.DateTime)" HeaderText="Date" Width="120" Format="d"></GridColumn>
                     <GridColumn Field="@nameof(ExpenseData.Category)" HeaderText="Category" Width="180">
@@ -74,7 +74,7 @@
                     </GridColumn>
                 </GridColumns>
             </SfGrid>
-        }
+		}
     </div>
 </div>
 

@@ -1,16 +1,5 @@
 ﻿@implements IDisposable;
 
-<style>
-    .chartLegend .e-grid {
-        border: none !important;
-        box-shadow: none !important;
-        min-width: 250px;
-    }
-
-    .e-grid tr.e-row {
-        height: 30px;
-    }
-</style>
 <div class="pie-chart-container">
     <div class="row pie-chart" id="totalExpense">
         <div class="col-xs-12 col-sm-12 col-md-12">
@@ -21,25 +10,24 @@
                 </div>
                 <div class="row">
                     <div class="pieChart">
-                        @if (Render)
+						@if (Render)
                         {
-                            <SfAccumulationChart Width="100%" Height="350px" EnableSmartLabels="true">
+                            <SfAccumulationChart Height="350px" EnableAnimation="false" EnableSmartLabels="true">
                                 <AccumulationChartSeriesCollection>
                                     <AccumulationChartSeries DataSource="@PieRenderingData" XName="Text" YName="Y" Radius="83%" StartAngle="0" EndAngle="360" InnerRadius="50%" Palettes="@palettes">
                                         <AccumulationDataLabelSettings Visible="true" Name="X" Position="AccumulationLabelPosition.Outside">
                                             <AccumulationChartConnector Length="10%"></AccumulationChartConnector>
                                             <AccumulationChartDataLabelFont Color="Black" Size="14px" FontFamily="Roboto"></AccumulationChartDataLabelFont>
                                         </AccumulationDataLabelSettings>
-                                        <AccumulationChartAnimation Enable="false"></AccumulationChartAnimation>
                                     </AccumulationChartSeries>
                                 </AccumulationChartSeriesCollection>
-                                <AccumulationChartTooltipSettings Enable="true" Format="${point.x} : ${point.y}"></AccumulationChartTooltipSettings>
-                                <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
-                            </SfAccumulationChart>
-                        }
+                            	<AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
+                            	<AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
+                        	</SfAccumulationChart>
+						}
                     </div>
                     <div class="chartLegend" style="margin: 0 auto;">
-                        @if (Render)
+						@if (Render)
                         {
                             <SfGrid TValue="LegendRenderData" DataSource="@PieRenderData" Width="100%" AllowSelection="false" GridLines="GridLine.None" EnableHover="false">
                                 <GridTemplates>
@@ -63,7 +51,7 @@
                                     <GridColumn Field="@nameof(LegendRenderData.X)" Width="20%"></GridColumn>
                                 </GridColumns>
                             </SfGrid>
-                        }
+						}
                     </div>
                 </div>
             </div>
@@ -90,13 +78,19 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        this.UpdatePieChart();
+        UpdatePieChart();
     }
 
     /// <summary>
     /// Calculate the total expense and update the pie chart
     /// </summary>
-    public void UpdatePieChart()
+    public void RefreshPieChart(IEnumerable<ExpenseData> expenseData)
+    {
+        ExpenseData = expenseData;
+        UpdatePieChart();
+    }
+
+    private void UpdatePieChart()
     {
         StartDate = ExpenseDataService.StartDate;
         EndDate = ExpenseDataService.EndDate;
@@ -185,3 +179,15 @@
         PieRenderData = null;
     }
 }
+
+<style>
+    .chartLegend .e-grid {
+        border: none !important;
+        box-shadow: none !important;
+        min-width: 250px;
+    }
+
+    .e-grid tr.e-row {
+        height: 30px;
+    }
+</style>

@@ -28,6 +28,7 @@
     <link href="styles/index.css" rel="stylesheet" />
     <link href="styles/main.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
 </head>
 
 <body id="body">
@@ -35,7 +36,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WLQL39J" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div hidden id="sync-analytics" data-queue="Syncfusion - Showcase - Blazor - ExpenseTracker"></div>
-    <app>
+    <div id="app">
         <div class="sb-content-overlay">
             <h2 id="title">Syncfusion Blazor Expense Tracker</h2>
             <div id="description">Initializing the WebAssembly Application</div>
@@ -45,7 +46,7 @@
                 </svg>
             </div>
         </div>
-    </app>
+    </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>

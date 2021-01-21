@@ -19,35 +19,23 @@
     </style>
 }
 
-<style>
-    #main-page {
-        overflow-x: hidden;
-        background: linear-gradient(-141deg, #EEF5F7 14%, #EEF2FB 100%);
-    }
-
-    .sidebar-Rightpane {
-        padding-bottom: 18px;
-        margin-right: -2px;
-    }
-</style>
-
 <div class="control-section dashboard-page">
     <div class="row" style="margin-bottom: 16px;">
         <p class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</p>
         <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
             <div id="daterange-overlay">
                 <div id="daterange-wrapper">
-                    @if (Render)
-                    {
-                        <SfDateRangePicker AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@(new DateTime(2019, 06, 01, 00, 00, 00))" Max="@(new DateTime(2019, 11, 30, 23, 59, 59))">
-                            <DateRangePickerEvents ValueChange="OnDateRangeChange"></DateRangePickerEvents>
-                            <DateRangePickerPresets>
-                                <DateRangePickerPreset Label="Last Month" Start="@(new DateTime(2019, 10, 01, 00, 00, 00))" End="@(new DateTime(2019, 10, 31, 23, 59, 59))"></DateRangePickerPreset>
-                                <DateRangePickerPreset Label="Last 3 Months" Start="@(new DateTime(2019, 09, 01, 00, 00, 00))" End="@(new DateTime(2019, 11, 30, 23, 59, 59))"></DateRangePickerPreset>
-                                <DateRangePickerPreset Label="All Time" Start="@(new DateTime(2019, 06, 01, 00, 00, 00))" End="@(new DateTime(2019, 11, 30, 23, 58, 58))"></DateRangePickerPreset>
-                            </DateRangePickerPresets>
-                        </SfDateRangePicker>
-                    }
+					@if (Render)
+					{
+                    	<SfDateRangePicker TValue="DateTime" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
+                        	<DateRangePickerEvents TValue="DateTime" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
+                        	<DateRangePickerPresets>
+                            	<DateRangePickerPreset Label="Last Month" Start="@lastMonthStart" End="@lastMonthEnd"></DateRangePickerPreset>
+                            	<DateRangePickerPreset Label="Last 3 Months" Start="@last3MonthStart" End="@last3MonthEnd"></DateRangePickerPreset>
+                          		<DateRangePickerPreset Label="All Time" Start="@allTimeStart" End="@allTimeEnd"></DateRangePickerPreset>
+                        	</DateRangePickerPresets>
+                    	</SfDateRangePicker>
+					}
                 </div>
             </div>
         </div>
@@ -59,10 +47,10 @@
     <div>
         <div>
             <div class="line-chart-area">
-                <ExpLineChart Render="@Render" LineChartData="@LineChartData"></ExpLineChart>
+                <ExpLineChart @ref="lineChart" Render="@Render" LineChartData="@LineChartData"></ExpLineChart>
             </div>
             <div class="column-chart-area">
-                <ExpColumnChart Render="@Render" ColChartIncomeData="@ColChartIncomeData" ColChartExpenseData="@ColChartExpenseData"></ExpColumnChart>
+                <ExpColumnChart @ref="columnChart" Render="@Render" ColChartIncomeData="@ColChartIncomeData" ColChartExpenseData="@ColChartExpenseData"></ExpColumnChart>
             </div>
         </div>
         <ExpGrid Render="@Render" RecentExpenseData="@RecentExpenseData" ExpenseGridCreated="@(() => { ShowSpinner = false; StateHasChanged(); })"></ExpGrid>
@@ -75,6 +63,8 @@
 
     private ExpCards CardsRef;
     private ExpPieChart PieChartRef;
+    private ExpLineChart lineChart;
+    private ExpColumnChart columnChart;
     private List<ExpenseData> LineChartData;
     private List<ExpenseData> ColChartIncomeData;
     private List<ExpenseData> ColChartExpenseData;
@@ -85,6 +75,14 @@
     private List<TempExpenseData> TempIncomeDS;
     private bool ShowSpinner = true;
     private bool Render;
+    private DateTime minDate = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime maxDate = new DateTime(2019, 11, 30, 23, 59, 59);
+    private DateTime lastMonthStart = new DateTime(2019, 10, 01, 00, 00, 00);
+    private DateTime lastMonthEnd = new DateTime(2019, 10, 31, 23, 59, 59);
+    private DateTime last3MonthStart = new DateTime(2019, 09, 01, 00, 00, 00);
+    private DateTime last3MonthEnd = new DateTime(2019, 11, 30, 23, 59, 59);
+    private DateTime allTimeStart = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime allTimeEnd = new DateTime(2019, 11, 30, 23, 58, 58);
 
     protected override async Task OnInitializedAsync()
     {
@@ -197,16 +195,16 @@
         }
     }
 
-    private void OnDateRangeChange(RangeEventArgs args)
+    private async Task OnDateRangeChange(RangePickerEventArgs<DateTime> args)
     {
         ExpenseDataService.SetDate(args.StartDate, args.EndDate);
         InitializeData();
         UpdateChartData();
         StateHasChanged();
-        if (this.CardsRef != null)
-            this.CardsRef.UpdateCards();
-        if (this.PieChartRef != null)
-            this.PieChartRef.UpdatePieChart();
+        await lineChart?.Refresh(LineChartData);
+        await columnChart?.Refresh(ColChartIncomeData, ColChartExpenseData);
+        CardsRef?.RefreshCards(IncomeData, ExpenseData);
+        PieChartRef?.RefreshPieChart(ExpenseData);
     }
 
     public void Dispose()
@@ -221,3 +219,15 @@
         public ExpenseData ExpenseData { get; set; }
     }
 }
+
+<style>
+    #main-page {
+        overflow-x: hidden;
+        background: linear-gradient(-141deg, #EEF5F7 14%, #EEF2FB 100%);
+    }
+
+    .sidebar-Rightpane {
+        padding-bottom: 18px;
+        margin-right: -2px;
+    }
+</style>
