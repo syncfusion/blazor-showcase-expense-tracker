@@ -20,8 +20,4 @@
     <PackageReference Include="Syncfusion.Blazor.Popups" Version="19.1.0.54" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <ProjectReference Include="..\..\ej2-blazor-source\Syncfusion.Blazor\Syncfusion.Blazor.csproj" />
-  </ItemGroup>-->
-
 </Project>
