@@ -113,6 +113,7 @@
 
     internal async Task EnableToolbarItems()
     {
+        await Task.Yield();
         var selectedIndexes = await TransactGridRef.GetSelectedRecords();
         var count = selectedIndexes.Count();
         if (count > 1)
