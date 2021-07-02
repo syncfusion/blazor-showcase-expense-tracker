@@ -17,10 +17,10 @@ namespace ExpenseTracker.Service
         public IEnumerable<ExpenseData> CurrentExpenseData { get; set; }
         public event Action OnChange;
 
-        public void SetDate(DateTime StartDate, DateTime EndDate)
+        public void SetDate(DateTime? StartDate, DateTime? EndDate)
         {
-            this.StartDate = StartDate;
-            this.EndDate = EndDate;
+            this.StartDate = (DateTime)StartDate;
+            this.EndDate = (DateTime)EndDate;
         }
 
         public void UpdateCurrentBalance(string currentBalance)

@@ -8,8 +8,8 @@
         <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
             <div id="daterange-overlay">
                 <div id="daterange-wrapper">
-                    <SfDateRangePicker TValue="DateTime" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
-                        <DateRangePickerEvents TValue="DateTime" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
+                    <SfDateRangePicker TValue="DateTime?" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
+                        <DateRangePickerEvents TValue="DateTime?" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
                         <DateRangePickerPresets>
                             <DateRangePickerPreset Label="Last Month" Start="@lastMonthStart" End="@lastMonthEnd"></DateRangePickerPreset>
                             <DateRangePickerPreset Label="Last 3 Months" Start="@last3MonthStart" End="@last3MonthEnd"></DateRangePickerPreset>
@@ -150,7 +150,7 @@
         }
     }
 
-    private void OnDateRangeChange(RangePickerEventArgs<DateTime> args)
+    private void OnDateRangeChange(RangePickerEventArgs<DateTime?> args)
     {
         ExpenseDataService.SetDate(args.StartDate, args.EndDate);
         InitializeData();
