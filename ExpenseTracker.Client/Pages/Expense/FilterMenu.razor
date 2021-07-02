@@ -14,8 +14,8 @@
                         <div class="expense-filter-container">
                             <label class="label-font">Select a range</label>
                             <div class='filter-date-range filter-item'>
-                                <SfDateRangePicker TValue="DateTime" CssClass="DateTime" ShowClearButton="false" Format="MM/dd/yyyy" AllowEdit="false" EndDate="@ExpenseDataService.EndDate" StartDate="@ExpenseDataService.StartDate" Min="@minDate" Max="@maxDate">
-                                    <DateRangePickerEvents TValue="DateTime" ValueChange="DateRangeChanged"></DateRangePickerEvents>
+                                <SfDateRangePicker TValue="DateTime?" CssClass="DateTime" ShowClearButton="false" Format="MM/dd/yyyy" AllowEdit="false" EndDate="@ExpenseDataService.EndDate" StartDate="@ExpenseDataService.StartDate" Min="@minDate" Max="@maxDate">
+                                    <DateRangePickerEvents TValue="DateTime?" ValueChange="DateRangeChanged"></DateRangePickerEvents>
                                 </SfDateRangePicker>
                             </div>
                             <label class="label-font">Category</label>
@@ -138,7 +138,7 @@
         UpdateGrid();
     }
 
-    private void DateRangeChanged(RangePickerEventArgs<DateTime> args)
+    private void DateRangeChanged(RangePickerEventArgs<DateTime?> args)
     {
         ExpenseDataService.SetDate(args.StartDate, args.EndDate);
         UpdateGrid();
