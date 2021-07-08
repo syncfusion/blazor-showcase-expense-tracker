@@ -27,8 +27,8 @@
                 <div id="daterange-wrapper">
 					@if (Render)
 					{
-                    	<SfDateRangePicker TValue="DateTime?" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
-                        	<DateRangePickerEvents TValue="DateTime?" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
+                    	<SfDateRangePicker TValue="DateTime" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
+                        	<DateRangePickerEvents TValue="DateTime" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
                         	<DateRangePickerPresets>
                             	<DateRangePickerPreset Label="Last Month" Start="@lastMonthStart" End="@lastMonthEnd"></DateRangePickerPreset>
                             	<DateRangePickerPreset Label="Last 3 Months" Start="@last3MonthStart" End="@last3MonthEnd"></DateRangePickerPreset>
@@ -195,7 +195,7 @@
         }
     }
 
-    private async Task OnDateRangeChange(RangePickerEventArgs<DateTime?> args)
+    private async Task OnDateRangeChange(RangePickerEventArgs<DateTime> args)
     {
         ExpenseDataService.SetDate(args.StartDate, args.EndDate);
         InitializeData();
