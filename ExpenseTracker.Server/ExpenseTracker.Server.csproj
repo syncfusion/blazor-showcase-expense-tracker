@@ -10,14 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.Charts" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.Grid" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="19.4.0.38" />
-    <PackageReference Include="Syncfusion.Blazor.Popups" Version="19.4.0.38" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.1.0.47" />
   </ItemGroup>
 
 </Project>
