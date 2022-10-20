@@ -1,21 +1,9 @@
 ﻿@implements IDisposable;
+@using Syncfusion.Blazor.Popups;
+@inject SfDialogService DialogService;
 
 <div id='dlg-content'>
-    <div id="confirmDialogTarget">
-        @if (CreateConfirmDialog)
-        {
-            <SfDialog @ref="ConfirmDialog" Width="40%" CssClass="confirm-dialog" ShowCloseIcon="true" CloseOnEscape="false" IsModal="true" Target="#sidebarRightpane">
-                <DialogTemplates>
-                    <Header>Delete</Header>
-                    <Content>Are you sure you want to delete the selected transaction(s)?</Content>
-                </DialogTemplates>
-                <DialogButtons>
-                    <DialogButton Content="Yes" CssClass="e-ok e-flat" IsPrimary="true" OnClick="OnClickDelete" />
-                    <DialogButton Content="No" CssClass="e-no e-flat" OnClick="OnClickCancel" />
-                </DialogButtons>
-            </SfDialog>
-        }
-    </div>
+    <Syncfusion.Blazor.Popups.SfDialogProvider />
     <div id="dialogTarget">
         @if (CreateNewDialog)
         {
@@ -102,7 +90,6 @@
 
 @code{
     public SfDialog TransactionDialog;
-    public SfDialog ConfirmDialog;
     public TransactGrid ContentRef;
     SfDropDownList<string, CategoryData> DropDownList;
 
@@ -126,7 +113,6 @@
 
     public string DialogHeader { get; set; }
     public bool CreateNewDialog = false;
-    public bool CreateConfirmDialog = false;
     public string TransactionType = "Expense";
 
     public string PaymentMode = "Cash";
@@ -242,14 +228,15 @@
     public async Task ShowAlertDialog(List<ExpenseData> selectedRecords)
     {
         this.GridSelectedRecords = selectedRecords;
-        if (this.ConfirmDialog == null)
-        {
-            CreateConfirmDialog = true;
-            StateHasChanged();
-        }
-        else
-        {
-            await this.ConfirmDialog.Show();
+        bool isConfirm = await DialogService.ConfirmAsync("Are you sure you want to delete the selected transaction(s)?", "Delete", new DialogOptions()
+            {
+                ShowCloseIcon = true,
+                Width = "40%",
+                PrimaryButtonOptions = new DialogButtonOptions() { Content = "Yes" },
+                CancelButtonOptions = new DialogButtonOptions() { Content = "No" },
+            });
+        if(isConfirm){
+            await this.OnClickDelete();
         }
     }
 
@@ -257,8 +244,6 @@
     {
         if (CreateNewDialog)
             await this.TransactionDialog.Hide();
-        if (CreateConfirmDialog)
-            await this.ConfirmDialog.Hide();
     }
 
     public void DlgTransactTypeChanged(Syncfusion.Blazor.Buttons.ChangeArgs<string> args)
@@ -311,7 +296,6 @@
     {
         var selectedIds = this.GridSelectedRecords.Select(s => s.UniqueId).ToList();
         this.ContentRef.RemoveRecord(selectedIds);
-        await this.ConfirmDialog.Hide();
         this.ContentRef.UpdateTotalBalance();
         await ContentRef.EnableToolbarItems();
     }
@@ -323,7 +307,6 @@
 
     public void Dispose()
     {
-        ConfirmDialog = null;
         TransactionDialog = null;
         DropDownList = null;
     }

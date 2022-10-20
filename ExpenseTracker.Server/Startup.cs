@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ExpenseTracker.Service;
 using Syncfusion.Blazor;
+using Syncfusion.Blazor.Popups;
 
 namespace ExpenseTracker
 {
@@ -33,6 +34,7 @@ namespace ExpenseTracker
             });
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<SfDialogService>();
             services.AddSyncfusionBlazor();
         }
 
