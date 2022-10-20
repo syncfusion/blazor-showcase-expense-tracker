@@ -1,4 +1,5 @@
 ﻿@implements IDisposable;
+@using static ExpenseTracker.Server.Pages.Expense.TransactGrid;
 @using Syncfusion.Blazor.Popups;
 @inject SfDialogService DialogService;
 
@@ -237,6 +238,10 @@
             });
         if(isConfirm){
             await this.OnClickDelete();
+            ContentRef.Toolbaritems[0].Disabled = true;
+            ContentRef.Toolbaritems[1].Disabled = true;
+            ShowDeletMsg = true;
+            StateHasChanged();
         }
     }
 

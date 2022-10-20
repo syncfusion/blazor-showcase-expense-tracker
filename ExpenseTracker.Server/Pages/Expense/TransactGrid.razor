@@ -6,6 +6,7 @@
 <div id="expense-grid-wrapper">
     @if (this.RenderGrid)
     {
+        <SfMessage Severity="MessageSeverity.Success" Visible=@ShowDeletMsg>The transaction(s) has been deleted successfully.</SfMessage>
         <SfGrid @ref="TransactGridRef" TValue="ExpenseData" Width="100%" Height="100%" AllowSelection="true" AllowPaging="true" AllowTextWrap="false" Toolbar="@Toolbaritems" DataSource="@TransactGridData">
             <GridEvents RowSelected="@EnableToolbarItems" RowDeselected="@EnableToolbarItems" OnToolbarClick="ToolbarClickHandler" TValue="ExpenseData"></GridEvents>
             <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false"></GridEditSettings>
@@ -73,6 +74,24 @@
     }
 </div>
 
+<style>
+    .e-message {
+        position:absolute;
+        top:-4%;
+        right:0%;
+        width: 100%;
+        letter-spacing: 0.5px;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+@@media (max-width: 600px){
+        .e-message {
+                top:-6%;
+        }
+}
+</style>
+
 @code{
     [CascadingParameter]
     public ExpenseDataService ExpenseDataService { get; set; }
@@ -83,11 +102,12 @@
 
     public ValidationRules rules = new ValidationRules { Required = true };
     public IEnumerable<ExpenseData> TransactGridData { get; set; } = new List<ExpenseData>();
-    private List<ItemModel> Toolbaritems = new List<ItemModel> {
+    public List<ItemModel> Toolbaritems = new List<ItemModel> {
         new ItemModel() { Text = "Edit", PrefixIcon = "e-edit e-icons", TooltipText = "Edit", Id = "Edit", Disabled = true },
         new ItemModel() { Text = "Delete", PrefixIcon = "e-delete e-icons", TooltipText = "Delete", Id = "Delete", Disabled = true }
     };
     private bool RenderGrid;
+    public static bool ShowDeletMsg;
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,6 +121,11 @@
         {
             await base.OnAfterRenderAsync(firstRender);
             RenderGrid = true;
+        }
+        if(ShowDeletMsg==true){
+            await Task.Delay(1000);
+            ShowDeletMsg = false;
+            StateHasChanged();
         }
     }
 
