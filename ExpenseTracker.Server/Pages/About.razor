@@ -9,8 +9,26 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
+
+    /*skeleton*/
+    .about-descrip-skeleton {
+        line-height: 20px;
+        margin-top: 26px;
+    }
+
+    .about-heading-skeleton{
+            margin-top: 1%;
+            padding: 0;
+    }
+
+    .about-component-skeleton{
+        width: 92%;
+        margin-left: 15px;
+    }
 </style>
 
+@if (isDataLoaded)
+{
 <div>
     <div class='about-heading'>About this sample</div>
     <div class='about-description'>
@@ -76,12 +94,39 @@
         </div>
     </div>
 </div>
+}
+else
+{
+    <div class="about-heading-skeleton">
+        <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="15px" Width="20%"></SfSkeleton>
+        <br />
+    </div>
+    <div class="about-descrip-skeleton">
+        <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="15px" Width="97%"></SfSkeleton>
+        <br />
+        <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="15px" Width="74%"></SfSkeleton>
+    </div>
+    <br />
+    <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="15px" Width="60%"></SfSkeleton>
+    <br />
+    <br />
+    <div class="about-component-skeleton">
+        @for (int i = 0; i < 14; i++)
+        {
+            <div class="control-item">
+                <span>
+                    <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="15px" Width="75%"></SfSkeleton>
+                </span>
+            </div>
+        }
+    </div>
+}
 
 @code{
     [CascadingParameter]
     public ExpenseDataService ExpenseDataService { get; set; }
 
-    protected override bool ShouldRender() => false;
+    private bool isDataLoaded;
 
     protected override async Task OnInitializedAsync()
     {
@@ -99,5 +144,20 @@
         expenseRS = expenseD.Sum(s => Convert.ToInt32(s.Amount));
         var totalBalance = CommonService.GetCurrencyVal(incomeRS - expenseRS);
         ExpenseDataService.UpdateCurrentBalance(totalBalance);
+    }
+
+    private async void LoadData()
+    {
+        await Task.Delay(500);
+        isDataLoaded = true;
+        StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            LoadData();
+        }
     }
 }
