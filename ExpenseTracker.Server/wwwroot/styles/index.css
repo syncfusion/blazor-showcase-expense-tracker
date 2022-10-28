@@ -2025,6 +2025,22 @@ input[type="search"].search::-moz-placeholder {
     content: '\e92e';
 }
 
+.icon-skeleton::before {
+    content: '\e904';
+}
+
+.icon-appbar::before {
+    content: "\e900";
+}
+
+.icon-predefineddialogs::before {
+    content: "\e901";
+}
+
+.icon-message::before {
+    content: "\e903";
+}
+
 .add-icon::before {
     content: '\e823';
 }
