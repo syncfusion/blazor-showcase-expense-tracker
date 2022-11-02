@@ -12,14 +12,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.4" PrivateAssets="all" />
-    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.Charts" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.1.0.47" />
-    <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.1.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.3.0.47" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.3.0.47" />
     <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 
