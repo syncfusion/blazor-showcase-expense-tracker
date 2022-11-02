@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>7f63d331-17d3-49e8-9368-0e2e0216adda</UserSecretsId>
-  </PropertyGroup>
+   <PropertyGroup>
+	 <TargetFramework>net6.0</TargetFramework>
+	 <Nullable>enable</Nullable>
+	 <ImplicitUsings>enable</ImplicitUsings>
+   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Services\" />
