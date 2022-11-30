@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 	  <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
@@ -10,17 +10,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.4" PrivateAssets="all" />
-    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.Charts" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.3.0.56" />
-    <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.3.0.56" />
-    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
+	<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
+	  <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Charts" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Notifications" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.3.0.50" />
+	  <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.3.0.50" />
+    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

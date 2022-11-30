@@ -85,7 +85,7 @@
 
     public ValidationRules rules = new ValidationRules { Required = true };
     public IEnumerable<ExpenseData> TransactGridData { get; set; } = new List<ExpenseData>();
-    private List<ItemModel> Toolbaritems = new List<ItemModel> {
+    public List<ItemModel> Toolbaritems = new List<ItemModel> {
         new ItemModel() { Text = "Edit", PrefixIcon = "e-edit e-icons", TooltipText = "Edit", Id = "Edit", Disabled = true },
         new ItemModel() { Text = "Delete", PrefixIcon = "e-delete e-icons", TooltipText = "Delete", Id = "Delete", Disabled = true }
     };
