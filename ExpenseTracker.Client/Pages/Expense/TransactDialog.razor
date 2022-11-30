@@ -337,11 +337,10 @@
         await this.DlgOverlayClicked();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        base.OnAfterRender(firstRender);
         if(ShowDeleteMsg || ShowAddedMsg || ShowSavedMsg){
-            Task.Delay(1000).Wait();
+            await Task.Delay(1000);
             ShowDeleteMsg = false;
             ShowAddedMsg = false;
             ShowSavedMsg = false;
