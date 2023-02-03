@@ -2702,6 +2702,6 @@ input[type="search"].search::-moz-placeholder {
     margin-right: 0px;
 }
 
-.e-grid .e-focused {
+#expense-grid-wrapper .e-focused {
     box-shadow: none !important;
 }
