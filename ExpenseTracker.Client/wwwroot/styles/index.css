@@ -2720,3 +2720,7 @@ input[type="search"].search::-moz-placeholder {
     min-width: 17px;
     margin-right: 0px;
 }
+
+.e-grid .e-focused {
+    box-shadow: none !important;
+}
