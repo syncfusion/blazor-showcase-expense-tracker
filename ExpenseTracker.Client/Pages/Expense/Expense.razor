@@ -2,23 +2,6 @@
 
 @implements IDisposable;
 
-@if (ShowSpinner)
-{
-    <div class="sb-content-overlay">
-        <div class="sb-loading">
-            <svg class="circular" height="40" width="40">
-                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
-            </svg>
-        </div>
-    </div>
-    <style>
-        #main-page {
-            pointer-events: none;
-            cursor: auto;
-        }
-    </style>
-}
-
 <style>
     #main-page {
         overflow-x: hidden;
@@ -61,8 +44,52 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
+
+    /*skeleton*/
+    .e-skeleton.e-skeleton-text, .e-skeleton.e-skeleton-square, .e-skeleton.e-skeleton-rectangle, .e-skeleton.e-skeleton-circle {
+        background-color: #83808014;
+    }
+
+    .search-skeleton {
+        height: 30px;
+        width: 100%;
+        margin: 40px 15px 15px 15px;
+    }
+
+    .expense-grid-skeleton {
+        height: 80%;
+        width: 100%;
+        margin: 0px 10px 10px 15px;
+    }
+
+    .filter-skeleton{
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 251px;
+        height: 100%;
+    }
+
+    @@media (max-width:1101px) {
+        .filter-skeleton{
+            display:none;
+        }
+    }
+
+    @@media (max-width:768px) {
+        .search-skeleton {
+            margin: 106px 0px 10px 0px;
+        }
+
+        .expense-grid-skeleton {
+            margin: 10px 0px 10px;
+        }
+    }
+
 </style>
 
+@if (isDataLoaded)
+{
 <div class="expense-page">
     <div class='exp-content-container'>
         <div>
@@ -86,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                    <TransactGrid @ref="ContentRef" GridCreated="@(() => { ShowSpinner = false; StateHasChanged(); })"></TransactGrid>
+                    <TransactGrid @ref="ContentRef"></TransactGrid>
                 </div>
             </div>
         </div>
@@ -94,6 +121,12 @@
     <FilterMenu @ref="FilterRef"></FilterMenu>
     <TransactDialog @ref="DialogRef"></TransactDialog>
 </div>
+}
+else{
+    <div class="search-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="30px" Width="100%"></SfSkeleton></div>
+    <div class="expense-grid-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="700px" Width="100%"></SfSkeleton></div>
+    <div class="filter-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="815px" Width="100%"></SfSkeleton></div>
+}
 
 @code{
     [CascadingParameter]
@@ -103,13 +136,13 @@
     public TransactDialog DialogRef;
     public TransactGrid ContentRef;
     public string SearchValue { get; set; }
-    private bool ShowSpinner = true;
     private string visibility = "none";
     private string color = "#FFFFFF";
+    private bool isDataLoaded;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (isDataLoaded)
         {
             await base.OnAfterRenderAsync(firstRender);
             this.ContentRef.DialogRef = this.DialogRef;
@@ -129,5 +162,21 @@
         ContentRef = null;
         FilterRef = null;
         DialogRef = null;
+        isDataLoaded = false;
+    }
+
+    private async void LoadData()
+    {
+        await Task.Delay(500);
+        isDataLoaded = true;
+        StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            LoadData();
+        }
     }
 }

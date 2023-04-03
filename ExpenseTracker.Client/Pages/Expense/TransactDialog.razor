@@ -1,22 +1,13 @@
 ﻿@implements IDisposable;
+@using Syncfusion.Blazor.Popups;
+@inject SfDialogService DialogService;
 
 <div id='dlg-content'>
-    <div id="confirmDialogTarget">
-        @if (CreateConfirmDialog)
-        {
-            <SfDialog @ref="ConfirmDialog" Width="40%" CssClass="confirm-dialog" ShowCloseIcon="true" CloseOnEscape="false" IsModal="true" Target="#sidebarRightpane">
-                <DialogTemplates>
-                    <Header>Delete</Header>
-                    <Content>Are you sure you want to delete the selected transaction(s)?</Content>
-                </DialogTemplates>
-                <DialogButtons>
-                    <DialogButton Content="Yes" CssClass="e-ok e-flat" IsPrimary="true" OnClick="OnClickDelete" />
-                    <DialogButton Content="No" CssClass="e-no e-flat" OnClick="OnClickCancel" />
-                </DialogButtons>
-            </SfDialog>
-        }
-    </div>
+    <Syncfusion.Blazor.Popups.SfDialogProvider />
     <div id="dialogTarget">
+        <SfMessage Severity="MessageSeverity.Success" Visible=@ShowDeleteMsg>The transaction(s) has been deleted successfully.</SfMessage>
+        <SfMessage Severity="MessageSeverity.Success" Visible=@ShowAddedMsg>The transaction has been added successfully.</SfMessage>
+        <SfMessage Severity="MessageSeverity.Success" Visible=@ShowSavedMsg>The transaction has been saved successfully.</SfMessage>
         @if (CreateNewDialog)
         {
             <SfDialog @ref="TransactionDialog" Width="100%" CssClass="transact-dialog" ShowCloseIcon="true" CloseOnEscape="false" IsModal="true" Target="#sidebarRightpane">
@@ -100,9 +91,28 @@
     </div>
 </div>
 
+<style>
+    .e-message {
+        position: absolute;
+        top: 0%;
+        right: 0%;
+        width: 86%;
+        letter-spacing: 0.5px;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    @@media (max-width: 600px) {
+        .e-message {
+            top: 8%;
+            width: 100%;
+        }
+    }
+</style>
+
 @code{
     public SfDialog TransactionDialog;
-    public SfDialog ConfirmDialog;
     public TransactGrid ContentRef;
     SfDropDownList<string, CategoryData> DropDownList;
 
@@ -126,7 +136,9 @@
 
     public string DialogHeader { get; set; }
     public bool CreateNewDialog = false;
-    public bool CreateConfirmDialog = false;
+    public bool ShowAddedMsg;
+    public bool ShowDeleteMsg;
+    public bool ShowSavedMsg;
     public string TransactionType = "Expense";
 
     public string PaymentMode = "Cash";
@@ -242,14 +254,19 @@
     public async Task ShowAlertDialog(List<ExpenseData> selectedRecords)
     {
         this.GridSelectedRecords = selectedRecords;
-        if (this.ConfirmDialog == null)
-        {
-            CreateConfirmDialog = true;
+        bool isConfirm = await DialogService.ConfirmAsync("Are you sure you want to delete the selected transaction(s)?", "Delete", new DialogOptions()
+            {
+                ShowCloseIcon = true,
+                Width = "40%",
+                PrimaryButtonOptions = new DialogButtonOptions() { Content = "Yes" },
+                CancelButtonOptions = new DialogButtonOptions() { Content = "No" },
+            });
+        if(isConfirm){
+            await this.OnClickDelete();
+            ContentRef.Toolbaritems[0].Disabled = true;
+            ContentRef.Toolbaritems[1].Disabled = true;
+            ShowDeleteMsg = true;
             StateHasChanged();
-        }
-        else
-        {
-            await this.ConfirmDialog.Show();
         }
     }
 
@@ -257,8 +274,6 @@
     {
         if (CreateNewDialog)
             await this.TransactionDialog.Hide();
-        if (CreateConfirmDialog)
-            await this.ConfirmDialog.Hide();
     }
 
     public void DlgTransactTypeChanged(Syncfusion.Blazor.Buttons.ChangeArgs<string> args)
@@ -293,10 +308,12 @@
         expenseData.FormattedDate = expenseData.DateTime.ToString("MM/dd/yyyy hh:mm tt");
         if (IsAdd)
         {
+            ShowAddedMsg = true;
             this.ContentRef.AddRecord(expenseData);
         }
         else
         {
+            ShowSavedMsg = true;
             this.ContentRef.UpdateRecord(expenseData);
         }
         await this.TransactionDialog.Hide();
@@ -311,7 +328,6 @@
     {
         var selectedIds = this.GridSelectedRecords.Select(s => s.UniqueId).ToList();
         this.ContentRef.RemoveRecord(selectedIds);
-        await this.ConfirmDialog.Hide();
         this.ContentRef.UpdateTotalBalance();
         await ContentRef.EnableToolbarItems();
     }
@@ -321,9 +337,19 @@
         await this.DlgOverlayClicked();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(ShowDeleteMsg || ShowAddedMsg || ShowSavedMsg){
+            await Task.Delay(1000);
+            ShowDeleteMsg = false;
+            ShowAddedMsg = false;
+            ShowSavedMsg = false;
+            StateHasChanged();
+        }
+    }
+
     public void Dispose()
     {
-        ConfirmDialog = null;
         TransactionDialog = null;
         DropDownList = null;
     }

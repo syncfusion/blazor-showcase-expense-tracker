@@ -2,6 +2,8 @@
 
 @implements IDisposable;
 
+@if (isDataLoaded)
+{
 <div class="control-section dashboard-page">
     <div class="row" style="margin-bottom: 16px;">
         <p class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</p>
@@ -36,6 +38,40 @@
         <ExpGrid RecentExpenseData="@RecentExpenseData"></ExpGrid>
     </div>
 </div>
+}
+else{
+    <div class="content-wrapper-skeleton">
+            <div style="margin-bottom: 16px;">
+                <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Text" Height="15px"></SfSkeleton>
+            </div>
+            <div class="desktop-skeleton">
+                <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                <div class="pie-chart-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+                <div>
+                    <div class="recent-expense-grid-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+                    <div class="recent-expense-grid-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+                </div>
+                <div class="recent-transaction-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+            </div>
+            <div class="mobile-skeleton">
+                <div>
+                    <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                    <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                </div>
+                <div>
+                    <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                    <div class="card-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100px" Width="100%"></SfSkeleton></div>
+                </div>
+                <div class="pie-chart-container-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+                <div class="recent-expense-grid-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+                <div class="recent-expense-grid-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+                <div class="recent-transaction-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="100%" Width="100%"></SfSkeleton></div>
+            </div>
+    </div>
+}
 
 @code {
     [CascadingParameter]
@@ -59,6 +95,7 @@
     private DateTime last3MonthEnd = new DateTime(2019, 11, 30, 23, 59, 59);
     private DateTime allTimeStart = new DateTime(2019, 06, 01, 00, 00, 00);
     private DateTime allTimeEnd = new DateTime(2019, 11, 30, 23, 58, 58);
+    private bool isDataLoaded;
 
     protected override async Task OnInitializedAsync()
     {
@@ -114,23 +151,6 @@
         }
         ExpenseData = ExpenseD; IncomeData = IncomeD;
         RecentExpenseData = commonData.OrderByDescending(s => s.DateTime).Take(5);
-        var LineD = new List<TempExpenseData>();
-        var LineDS = new List<ExpenseData>();
-        var ColIncomeDS = new List<ExpenseData>();
-        foreach (var data in this.TempIncomeDS)
-        {
-            ColIncomeDS.Add(data.ExpenseData);
-            ProcessLineData(data.ExpenseData, LineD, LineDS);
-        }
-        ColChartIncomeData = ColIncomeDS;
-        var ColExpenseDS = new List<ExpenseData>();
-        foreach (var data in TempExpenseDS)
-        {
-            ColExpenseDS.Add(data.ExpenseData);
-            ProcessLineData(data.ExpenseData, LineD, LineDS);
-        }
-        ColChartExpenseData = ColExpenseDS;
-        LineChartData = LineDS;
     }
 
     private void ProcessLineData(ExpenseData data, List<TempExpenseData> LineD, List<ExpenseData> LineDS)
@@ -172,6 +192,38 @@
         public int Month { get; set; }
         public ExpenseData ExpenseData { get; set; }
     }
+
+    private async void LoadData()
+    {
+        var LineD = new List<TempExpenseData>();
+        var LineDS = new List<ExpenseData>();
+        var ColIncomeDS = new List<ExpenseData>();
+        foreach (var data in this.TempIncomeDS)
+        {
+            ColIncomeDS.Add(data.ExpenseData);
+            ProcessLineData(data.ExpenseData, LineD, LineDS);
+        }
+        ColChartIncomeData = ColIncomeDS;
+        var ColExpenseDS = new List<ExpenseData>();
+        foreach (var data in TempExpenseDS)
+        {
+            ColExpenseDS.Add(data.ExpenseData);
+            ProcessLineData(data.ExpenseData, LineD, LineDS);
+        }
+        ColChartExpenseData = ColExpenseDS;
+        LineChartData = LineDS;
+        await Task.Delay(500);
+        isDataLoaded = true;
+        StateHasChanged();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            LoadData();
+        }
+    }
 }
 
 <style>
@@ -183,5 +235,73 @@
     .sidebar-Rightpane {
         padding-bottom: 18px;
         margin-right: -2px;
+    }
+
+    /*skeleton*/
+    .e-skeleton.e-skeleton-text, .e-skeleton.e-skeleton-square, .e-skeleton.e-skeleton-rectangle, .e-skeleton.e-skeleton-circle {
+        background-color: #83808014;
+    }
+
+    .card-container-skeleton {
+        display: inline-block;
+        width: 23%;
+        margin: 5px;
+    }
+
+    .content-wrapper-skeleton {
+        padding: 10px !important;
+    }
+
+    .mobile-skeleton {
+        display: none;
+    }
+
+    .pie-chart-container-skeleton {
+        width: 98%;
+        height: 450px;
+    }
+
+    .recent-expense-grid-skeleton {
+        width: 48.3%;
+        margin: 10px 10px 10px 0px;
+        height: 450px;
+        display: inline-block;
+    }
+
+    .recent-transaction-skeleton {
+        width: 97.8%;
+        height: 350px;
+    }
+
+    @@media (max-width:991px) {
+        .mobile-skeleton {
+            display: block;
+        }
+
+        .desktop-skeleton {
+            display: none;
+        }
+
+        .card-container-skeleton {
+            display: inline-block;
+            width: 48.5%;
+            margin: 0;
+        }
+
+        .pie-chart-container-skeleton {
+            height: 853px;
+        }
+    }
+
+    @@media (max-width:956px) {
+        .recent-expense-grid-skeleton {
+            width: 47.5%;
+        }
+    }
+
+    @@media (max-width:767px) {
+        .recent-expense-grid-skeleton {
+            width: 98%;
+        }
     }
 </style>

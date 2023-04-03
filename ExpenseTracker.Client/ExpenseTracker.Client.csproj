@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 	  <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <BlazorCacheBootResources>false</BlazorCacheBootResources>
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
@@ -19,6 +19,8 @@
     <PackageReference Include="Syncfusion.Blazor.Grid" Version="21.1.35" />
     <PackageReference Include="Syncfusion.Blazor.Inputs" Version="21.1.35" />
     <PackageReference Include="Syncfusion.Blazor.Navigations" Version="21.1.35" />
+    <PackageReference Include="Syncfusion.Blazor.Notifications" Version="21.1.35" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="21.1.35" />
     <PackageReference Include="Syncfusion.Blazor.Popups" Version="21.1.35" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
