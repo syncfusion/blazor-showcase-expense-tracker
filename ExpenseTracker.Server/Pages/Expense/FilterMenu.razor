@@ -106,7 +106,7 @@
     {
         if (!Sidebar.IsOpen)
         {
-            await Sidebar.Show();
+            Sidebar.IsOpen = true;
             overlayClass = "overlay";
             StateHasChanged();
         }
@@ -116,7 +116,7 @@
     {
         if (Sidebar.IsOpen)
         {
-            await Sidebar.Hide();
+            Sidebar.IsOpen = false;
             overlayClass = string.Empty;
         }
     }
