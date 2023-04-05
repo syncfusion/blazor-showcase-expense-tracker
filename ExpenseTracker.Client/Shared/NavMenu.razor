@@ -70,7 +70,7 @@
     {
         if (!Sidebar.IsOpen)
         {
-            await this.Sidebar.Show();
+            Sidebar.IsOpen = true;
             this.OverlayClass = "overlay";
         }
     }
@@ -78,7 +78,7 @@
     {
         if (Sidebar.IsOpen)
         {
-            await this.Sidebar.Hide();
+            Sidebar.IsOpen = false;
             this.OverlayClass = "";
         }
     }
