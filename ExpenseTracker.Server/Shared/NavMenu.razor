@@ -66,19 +66,19 @@
         await base.OnInitializedAsync();
         ExpenseDataService.OnChange += StateHasChanged;
     }
-    private async Task OpenSidebar()
+    private void OpenSidebar()
     {
         if (!Sidebar.IsOpen)
         {
-            await this.Sidebar.Show();
+            this.Sidebar.IsOpen = true;
             this.OverlayClass = "overlay";
         }
     }
-    private async Task CloseSidebar()
+    private void CloseSidebar()
     {
         if (Sidebar.IsOpen)
         {
-            await this.Sidebar.Hide();
+            this.Sidebar.IsOpen = false;
             this.OverlayClass = "";
         }
     }

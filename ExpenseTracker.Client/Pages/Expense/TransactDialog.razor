@@ -174,7 +174,7 @@
         {
             this.UpdateAddDialog();
             StateHasChanged();
-            await this.TransactionDialog.Show();
+            await this.TransactionDialog.ShowAsync();
         }
     }
 
@@ -210,7 +210,7 @@
         {
             this.UpdateEditDialog();
             StateHasChanged();
-            await this.TransactionDialog.Show();
+            await this.TransactionDialog.ShowAsync();
         }
     }
 
@@ -273,7 +273,7 @@
     public async Task DlgOverlayClicked()
     {
         if (CreateNewDialog)
-            await this.TransactionDialog.Hide();
+            await this.TransactionDialog.HideAsync();
     }
 
     public void DlgTransactTypeChanged(Syncfusion.Blazor.Buttons.ChangeArgs<string> args)
@@ -316,7 +316,7 @@
             ShowSavedMsg = true;
             this.ContentRef.UpdateRecord(expenseData);
         }
-        await this.TransactionDialog.Hide();
+        await this.TransactionDialog.HideAsync();
         this.ContentRef.UpdateTotalBalance();
     }
 
