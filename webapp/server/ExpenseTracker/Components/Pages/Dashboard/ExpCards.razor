@@ -1,0 +1,77 @@
+﻿<div class="row">
+    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
+        <div class="e-card card">
+            <div class="e-card-content">
+                <h3 class="card-value" id="tolincome">@TotalIncome</h3>
+                <span class="card-text">Income</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
+        <div class="e-card card">
+            <div class="e-card-content">
+                <h3 class="card-value" id="tolexpense">@TotalExpense</h3>
+                <span class="card-text">Expenses</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
+        <div class="e-card card">
+            <div class="e-card-content">
+                <h3 class="card-value" id="tolbalance">@TotalBalance</h3>
+                <span class="card-text">Balance</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
+        <div class="e-card card">
+            <div class="e-card-content">
+                <h3 class="card-value" id="toltransaction">@TotalTransactions</h3>
+                <span class="card-text">Transactions</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [CascadingParameter]
+    private ExpenseDataService ExpenseDataService { get; set; }
+    [Parameter]
+    public IEnumerable<ExpenseData> IncomeData { get; set; }
+    [Parameter]
+    public IEnumerable<ExpenseData> ExpenseData { get; set; }
+
+    private string TotalIncome = "$0";
+    private string TotalExpense = "$0";
+    private string TotalBalance = "$0";
+    private string TotalTransactions = "0";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        UpdateCards();
+    }
+
+    /// <summary>
+    /// Calculation for card values
+    /// </summary>
+    public void RefreshCards(IEnumerable<ExpenseData> incomeData, IEnumerable<ExpenseData> expenseData)
+    {
+        IncomeData = incomeData; ExpenseData = expenseData;
+        UpdateCards();
+    }
+    private void UpdateCards()
+    {
+        var incomeRS = 0;
+        var expenseRS = 0;
+        //Calulates total income and sets to the Income card
+        incomeRS = IncomeData.Sum(s => s.Amount);
+        TotalIncome = CommonService.GetCurrencyVal(incomeRS);
+        //Calulates total expenses and sets to the Expenses card
+        expenseRS = ExpenseData.Sum(s => s.Amount);
+        TotalExpense = CommonService.GetCurrencyVal(expenseRS);
+        TotalBalance = CommonService.GetCurrencyVal(incomeRS - expenseRS);
+        TotalTransactions = CommonService.GetNumberVal(ExpenseDataService.CurrentExpenseData.Count());
+        ExpenseDataService.UpdateCurrentBalance(TotalBalance);
+    }
+}

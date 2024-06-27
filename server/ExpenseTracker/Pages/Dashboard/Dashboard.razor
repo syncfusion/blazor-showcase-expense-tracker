@@ -1,0 +1,187 @@
+﻿@page "/"
+
+@implements IDisposable;
+
+<div class="control-section dashboard-page">
+    <div class="row" style="margin-bottom: 16px;">
+        <p class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</p>
+        <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
+            <div id="daterange-overlay">
+                <div id="daterange-wrapper">
+                    <SfDateRangePicker TValue="DateTime" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
+                        <DateRangePickerEvents TValue="DateTime" ValueChange="OnDateRangeChange"></DateRangePickerEvents>
+                        <DateRangePickerPresets>
+                            <DateRangePickerPreset Label="Last Month" Start="@lastMonthStart" End="@lastMonthEnd"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="Last 3 Months" Start="@last3MonthStart" End="@last3MonthEnd"></DateRangePickerPreset>
+                            <DateRangePickerPreset Label="All Time" Start="@allTimeStart" End="@allTimeEnd"></DateRangePickerPreset>
+                        </DateRangePickerPresets>
+                    </SfDateRangePicker>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <ExpCards @ref="CardsRef" IncomeData="@IncomeData" ExpenseData="@ExpenseData"></ExpCards>
+    </div>
+    <ExpPieChart @ref="PieChartRef" ExpenseData="@ExpenseData"></ExpPieChart>
+    <div>
+        <div>
+            <div class="line-chart-area">
+                <ExpLineChart LineChartData="@LineChartData"></ExpLineChart>
+            </div>
+            <div class="column-chart-area">
+                <ExpColumnChart ColChartIncomeData="@ColChartIncomeData" ColChartExpenseData="@ColChartExpenseData"></ExpColumnChart>
+            </div>
+        </div>
+        <ExpGrid RecentExpenseData="@RecentExpenseData"></ExpGrid>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private ExpenseDataService ExpenseDataService { get; set; }
+
+    private ExpCards CardsRef;
+    private ExpPieChart PieChartRef;
+    private List<ExpenseData> LineChartData;
+    private List<ExpenseData> ColChartIncomeData;
+    private List<ExpenseData> ColChartExpenseData;
+    private IEnumerable<ExpenseData> RecentExpenseData;
+    private IEnumerable<ExpenseData> IncomeData;
+    private IEnumerable<ExpenseData> ExpenseData;
+    private List<TempExpenseData> TempExpenseDS;
+    private List<TempExpenseData> TempIncomeDS;
+    private DateTime minDate = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime maxDate = new DateTime(2019, 11, 30, 23, 59, 59);
+    private DateTime lastMonthStart = new DateTime(2019, 10, 01, 00, 00, 00);
+    private DateTime lastMonthEnd = new DateTime(2019, 10, 31, 23, 59, 59);
+    private DateTime last3MonthStart = new DateTime(2019, 09, 01, 00, 00, 00);
+    private DateTime last3MonthEnd = new DateTime(2019, 11, 30, 23, 59, 59);
+    private DateTime allTimeStart = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime allTimeEnd = new DateTime(2019, 11, 30, 23, 58, 58);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        InitializeData();
+    }
+
+    private void InitializeData()
+    {
+        DateTime start = ExpenseDataService.StartDate; DateTime end = ExpenseDataService.EndDate;
+        var commonData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        ExpenseDataService.SetCurrentData(commonData);
+        var ExpenseD = new List<ExpenseData>();
+        var IncomeD = new List<ExpenseData>();
+        TempExpenseDS = new List<TempExpenseData>();
+        TempIncomeDS = new List<TempExpenseData>();
+        var CurDateTime = new ExpenseData();
+        foreach (var data in commonData)
+        {
+            var tempData = new ExpenseData { Amount = data.Amount, Category = data.Category, DateTime = data.DateTime, Description = data.Description, FormattedDate = data.FormattedDate, MonthFull = data.MonthFull, MonthShort = data.MonthShort, PaymentMode = data.PaymentMode, TransactionType = data.TransactionType, UniqueId = data.UniqueId };
+            if (data.TransactionType == "Expense")
+            {
+                ExpenseD.Add(data);
+                int index = TempExpenseDS.FindIndex(s => s.Month == tempData.DateTime.Month);
+                if (index >= 0)
+                {
+                    CurDateTime = TempExpenseDS[index].ExpenseData;
+                    TempExpenseDS[index].ExpenseData.Amount = CurDateTime.Amount + tempData.Amount;
+                }
+                else
+                {
+                    TempExpenseDS.Add(new TempExpenseData { Month = tempData.DateTime.Month, ExpenseData = tempData });
+                    index = TempExpenseDS.Count() - 1;
+                    TempExpenseDS[index].ExpenseData.DateTime = new DateTime(TempExpenseDS[index].ExpenseData.DateTime.Year, TempExpenseDS[index].ExpenseData.DateTime.Month, 1, 0, 0, 0, 0);
+                }
+            }
+            else
+            {
+                IncomeD.Add(data);
+                int index = TempIncomeDS.FindIndex(s => s.Month == tempData.DateTime.Month);
+                if (index >= 0)
+                {
+                    CurDateTime = TempIncomeDS[index].ExpenseData;
+                    TempIncomeDS[index].ExpenseData.Amount = CurDateTime.Amount + tempData.Amount;
+                }
+                else
+                {
+                    TempIncomeDS.Add(new TempExpenseData { Month = tempData.DateTime.Month, ExpenseData = tempData });
+                    index = TempIncomeDS.Count() - 1;
+                    TempIncomeDS[index].ExpenseData.DateTime = new DateTime(TempIncomeDS[index].ExpenseData.DateTime.Year, TempIncomeDS[index].ExpenseData.DateTime.Month, 1, 0, 0, 0, 0);
+                }
+            }
+        }
+        ExpenseData = ExpenseD; IncomeData = IncomeD;
+        RecentExpenseData = commonData.OrderByDescending(s => s.DateTime).Take(5);
+        var LineD = new List<TempExpenseData>();
+        var LineDS = new List<ExpenseData>();
+        var ColIncomeDS = new List<ExpenseData>();
+        foreach (var data in this.TempIncomeDS)
+        {
+            ColIncomeDS.Add(data.ExpenseData);
+            ProcessLineData(data.ExpenseData, LineD, LineDS);
+        }
+        ColChartIncomeData = ColIncomeDS;
+        var ColExpenseDS = new List<ExpenseData>();
+        foreach (var data in TempExpenseDS)
+        {
+            ColExpenseDS.Add(data.ExpenseData);
+            ProcessLineData(data.ExpenseData, LineD, LineDS);
+        }
+        ColChartExpenseData = ColExpenseDS;
+        LineChartData = LineDS;
+    }
+
+    private void ProcessLineData(ExpenseData data, List<TempExpenseData> LineD, List<ExpenseData> LineDS)
+    {
+        var CurDateTime = new ExpenseData();
+        var lineData = new ExpenseData { Amount = data.Amount, Category = data.Category, DateTime = data.DateTime, Description = data.Description, FormattedDate = data.FormattedDate, MonthFull = data.MonthFull, MonthShort = data.MonthShort, PaymentMode = data.PaymentMode, TransactionType = data.TransactionType, UniqueId = data.UniqueId };
+        int idx = LineD.FindIndex(s => s.Month == lineData.DateTime.Month);
+        if (idx >= 0)
+        {
+            CurDateTime = LineD[idx].ExpenseData;
+            LineD[idx].ExpenseData.Amount = Math.Abs(CurDateTime.Amount - lineData.Amount);
+        }
+        else
+        {
+            LineD.Add(new TempExpenseData { Month = lineData.DateTime.Month, ExpenseData = lineData });
+            LineDS.Add(LineD[LineD.Count - 1].ExpenseData);
+        }
+    }
+
+    private void OnDateRangeChange(RangePickerEventArgs<DateTime> args)
+    {
+        ExpenseDataService.SetDate(args.StartDate, args.EndDate);
+        InitializeData();
+        if (this.CardsRef != null)
+            this.CardsRef.RefreshCards(IncomeData, ExpenseData);
+        if (this.PieChartRef != null)
+            this.PieChartRef.RefreshPieChart(ExpenseData);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        CardsRef = null;
+        PieChartRef = null;
+    }
+
+    private class TempExpenseData
+    {
+        public int Month { get; set; }
+        public ExpenseData ExpenseData { get; set; }
+    }
+}
+
+<style>
+    #main-page {
+        overflow-x: hidden;
+        background: linear-gradient(-141deg, #EEF5F7 14%, #EEF2FB 100%);
+    }
+
+    .sidebar-Rightpane {
+        padding-bottom: 18px;
+        margin-right: -2px;
+    }
+</style>

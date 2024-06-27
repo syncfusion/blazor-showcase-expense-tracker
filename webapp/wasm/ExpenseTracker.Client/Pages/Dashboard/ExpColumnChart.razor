@@ -1,0 +1,58 @@
+﻿<div class="col-xs-12 col-sm-6 col-md-6 chart-container">
+    <div class="chart-padding">
+        <div class="column-chart">
+			@if (Render)
+            {
+                <SfChart @ref="chartRef" UseGroupingSeparator="true">
+                    <ChartMargin Top="90"></ChartMargin>
+                    <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" LabelFormat="MMM" IntervalType="IntervalType.Months" EdgeLabelPlacement="EdgeLabelPlacement.Shift"></ChartPrimaryXAxis>
+                    <ChartPrimaryYAxis LabelFormat="c0" Maximum="9000" Minimum="3000"></ChartPrimaryYAxis>
+                    <ChartAnnotations>
+                        <ChartAnnotation X="@chartXAnnoation" Y="9%" CoordinateUnits="Units.Pixel" Region="Regions.Chart">
+                            <ContentTemplate>
+                                <p style="font-family:Roboto;font-size: 16px;font-weight: 400;font-weight: 400;letter-spacing: 0.02em;line-height: 16px;color: #797979 !important;">Income - Expense</p>
+                            </ContentTemplate>
+                        </ChartAnnotation>
+                    </ChartAnnotations>
+                    <ChartSeriesCollection>
+                        <ChartSeries Type="ChartSeriesType.Column" XName="DateTime" Width="2" YName="Amount" Name="Income" Fill="#A16EE5"
+                                 LegendShape="LegendShape.Circle" DataSource="@ColChartIncomeData">
+                            <ChartSeriesBorder Width="0.5" Color="#A16EE5"></ChartSeriesBorder>
+                            <ChartMarker Visible="true" Width="10" Height="10"></ChartMarker>
+                            <ChartSeriesAnimation Enable="false"></ChartSeriesAnimation>
+                        </ChartSeries>
+                        <ChartSeries Type="ChartSeriesType.Column" XName="DateTime" Width="2" YName="Amount" Name="Expense" Fill="#4472C4"
+                                 LegendShape="LegendShape.Circle" DataSource="@ColChartExpenseData">
+                            <ChartSeriesBorder Width="0.5" Color="#A16EE5"></ChartSeriesBorder>
+                            <ChartMarker Visible="true" Width="10" Height="10"></ChartMarker>
+                            <ChartSeriesAnimation Enable="false"></ChartSeriesAnimation>
+                        </ChartSeries>
+                    </ChartSeriesCollection>
+                    <ChartTooltipSettings Fill="#707070" Enable="true" Shared="true" Format="${series.name} : ${point.y}" Header="Month - ${point.x} "></ChartTooltipSettings>
+                    <ChartTitleStyle TextAlignment="Alignment.Near" FontWeight="500" Size="16" Color="#000"></ChartTitleStyle>
+                    <ChartLegendSettings Visible="true"></ChartLegendSettings>
+                </SfChart>
+			}
+        </div>
+    </div>
+</div>
+@code {
+    private SfChart chartRef;
+    [Parameter]
+    public List<ExpenseData> ColChartIncomeData { get; set; }
+    [Parameter]
+    public List<ExpenseData> ColChartExpenseData { get; set; }
+    [Parameter]
+    public bool Render { get; set; }
+    private string chartXAnnoation = "75px";
+
+    public async Task Refresh(List<ExpenseData> colChartIncomeData, List<ExpenseData> colChartExpenseData)
+    {
+        ColChartIncomeData = colChartIncomeData; ColChartExpenseData = colChartExpenseData;
+        await InvokeAsync(async () =>
+        {
+            await Task.Delay(1);
+            chartRef?.RefreshLiveData();
+        });
+    }
+}

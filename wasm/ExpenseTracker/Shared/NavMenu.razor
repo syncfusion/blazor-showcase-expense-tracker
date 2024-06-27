@@ -1,0 +1,116 @@
+﻿@if (ShowSpinner)
+{
+    <div class="sb-content-overlay">
+        <div class="sb-loading">
+            <svg class="circular" height="40" width="40">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+}
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <span id="menu-toggle" href="#" class="navbar-toggle e-icon" @onclick="OpenSidebar"></span>
+            <div class="navbar-brand samplenameheader"></div>
+        </div>
+    </div>
+</nav>
+
+<div id="navigation-sidebar">
+    <SfSidebar @ref="Sidebar" Width="200px" MediaQuery="(min-width: 769px)" Created="@(() => OnSidebarCreate?.Invoke())">
+        <ChildContent>
+            <div id="sidebar-wrapper">
+                <div class='samplename-header'>
+                    <div class='samplename'><h1>EXPENSE TRACKER</h1></div>
+                </div>
+                <div class="info align-center">
+                    <div class="image"></div>
+                    <div class="content nameContent">
+                        <p class='name' id='user-name'>Nicholas Delacruz</p>
+                        <div class='wallet-container'>
+                            <span style='height: 27px;' class='balance-align'>
+                                <img alt="Cash wallet" src="./styles/images/cash-wallet.svg" />
+                            </span>
+                            <span id="current-balance" class='balance-align'>@ExpenseDataService.CurrentBalance</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-list align-center nav-list">
+                    <div class='nav-item'>
+                        <NavLink class="overview" href="" @onmousedown="@(() => StartSpinner("dashboard"))" @ontouchstart="@(() => StartSpinner("dashboard"))" Match="NavLinkMatch.All" @onclick="TogglePage">
+                            <span aria-hidden="true" title="Dashboard">Dashboard</span>
+                        </NavLink>
+                    </div>
+                    <div class='nav-item'>
+                        <NavLink class="expense" href="expense" @onmousedown="@(() => StartSpinner("expense"))" @ontouchstart="@(() => StartSpinner("expense"))" @onclick="TogglePage">
+                            <span aria-hidden="true" title="Transactions">Transactions</span>
+                        </NavLink>
+                    </div>
+                    <div class='nav-item'>
+                        <NavLink class="about" href="about" @onmousedown="@(() => StartSpinner("about"))" @ontouchstart="@(() => StartSpinner("about"))" @onclick="TogglePage">
+                            <span aria-hidden="true" title="About">About</span>
+                        </NavLink>
+                    </div>
+                </div>
+                <div class="github-logo">
+                    <a href="https://github.com/syncfusion/blazor-showcase-expense-tracker" target="_blank">
+                        <img src="mark.svg" alt="GitHub source code" /><span>Source Code</span>
+                    </a>
+                </div>
+            </div>
+        </ChildContent>
+    </SfSidebar>
+</div>
+
+<div id="overlay" class="@OverlayClass" @onclick="CloseSidebar"></div>
+
+@code {
+    [CascadingParameter]
+    private ExpenseDataService ExpenseDataService { get; set; }
+    [Parameter]
+    public System.Action OnSidebarCreate { get; set; }
+    private SfSidebar Sidebar;
+    public string OverlayClass = "";
+    private bool ShowSpinner = false;
+    private string Page;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Page = "";
+        ExpenseDataService.OnChange += StateHasChanged;
+    }
+
+    private async Task OpenSidebar()
+    {
+        if (!Sidebar.IsOpen)
+        {
+            await this.Sidebar.Show();
+            this.OverlayClass = "overlay";
+        }
+    }
+
+    private async Task CloseSidebar()
+    {
+        if (Sidebar.IsOpen)
+        {
+            await this.Sidebar.Hide();
+            this.OverlayClass = "";
+        }
+    }
+
+    private async Task TogglePage()
+    {
+        await CloseSidebar();
+        ShowSpinner = false;
+    }
+
+    private void StartSpinner(string page)
+    {
+        if (!ShowSpinner && page != Page)
+            ShowSpinner = true;
+        Page = page;
+    }
+}

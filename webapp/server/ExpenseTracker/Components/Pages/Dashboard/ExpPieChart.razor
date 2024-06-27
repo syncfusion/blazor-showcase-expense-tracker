@@ -1,0 +1,185 @@
+﻿@implements IDisposable;
+
+<div class="pie-chart-container">
+    <div class="row pie-chart" id="totalExpense">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="pane col-xs-12 col-sm-12 col-md-12 pie-container">
+                <div class="pieChartHeader">
+                    <p class="chart-title">Total Expenses</p>
+                    <p id="rangeDate" class="chart-value">@Months[@StartDate.Month] @StartDate.Day - @Months[@EndDate.Month] @EndDate.Day</p>
+                </div>
+                <div class="row">
+                    <div class="pieChart">
+                        <SfAccumulationChart Height="350px" EnableAnimation="false" EnableSmartLabels="true">
+                            <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries DataSource="@PieRenderingData" XName="Text" YName="Y" Radius="83%" StartAngle="0" EndAngle="360" InnerRadius="50%" Palettes="@palettes">
+                                    <AccumulationDataLabelSettings Visible="true" Name="X" Position="AccumulationLabelPosition.Outside">
+                                        <AccumulationChartConnector Length="10%"></AccumulationChartConnector>
+                                        <AccumulationChartDataLabelFont Color="Black" Size="14px" FontFamily="Roboto"></AccumulationChartDataLabelFont>
+                                    </AccumulationDataLabelSettings>
+                                </AccumulationChartSeries>
+                            </AccumulationChartSeriesCollection>
+                            <AccumulationChartTooltipSettings Enable="true"></AccumulationChartTooltipSettings>
+                            <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
+                        </SfAccumulationChart>
+                    </div>
+                    <div class="chartLegend" style="margin: 0 auto;">
+                        <SfGrid TValue="LegendRenderData" DataSource="@PieRenderData" Width="100%" AllowSelection="false" GridLines="GridLine.None" EnableHover="false">
+                            <GridTemplates>
+                                <RowTemplate>
+                                    @{
+                                        var legend = (context as LegendRenderData);
+                                        var style = "width: 16px; height: 16px; margin-left: 1px; border-radius: 16px; background:" + legend.Color;
+                                        <td>
+                                            <div style="@style"></div>
+                                        </td>
+                                        <td> @legend.Text </td>
+                                        <td> $@legend.Y </td>
+                                        <td style="text-align:right;">@legend.X </td>
+                                    }
+                                </RowTemplate>
+                            </GridTemplates>
+                            <GridColumns>
+                                <GridColumn Field="@nameof(LegendRenderData.Color)" Width="10%" TextAlign="@TextAlign.Center"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.Text)" Width="50%"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.Y)" Format="C2" Width="20%"></GridColumn>
+                                <GridColumn Field="@nameof(LegendRenderData.X)" Width="20%"></GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [CascadingParameter]
+    public ExpenseDataService ExpenseDataService { get; set; }
+    [Parameter]
+    public IEnumerable<ExpenseData> ExpenseData { get; set; }
+
+    private DateTime StartDate;
+    private DateTime EndDate;
+    private List<RenderingData> PieRenderingData;
+    private List<LegendRenderData> PieRenderData;
+    private string[] palettes = new string[] { "#61EFCD", "#CDDE1F", "#FEC200", "#CA765A", "#2485FA", "#F57D7D", "#C152D2",
+                    "#8854D9", "#3D4EB8", "#00BCD7","#4472c4", "#ed7d31", "#ffc000", "#70ad47", "#5b9bd5", "#c1c1c1", "#6f6fe2", "#e269ae", "#9e480e", "#997300" };
+    private string[] Months = new string[] { "", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        UpdatePieChart();
+    }
+
+    /// <summary>
+    /// Calculate the total expense and update the pie chart
+    /// </summary>
+    public void RefreshPieChart(IEnumerable<ExpenseData> expenseData)
+    {
+        ExpenseData = expenseData;
+        UpdatePieChart();
+    }
+
+    private void UpdatePieChart()
+    {
+        StartDate = ExpenseDataService.StartDate;
+        EndDate = ExpenseDataService.EndDate;
+        var Category = new List<string>();
+        var renderingData = new List<RenderingData>();
+        var lengendRenderData = new List<LegendRenderData>();
+        var legendData = new List<ExpenseData>();
+        var expTotal = 0;
+        /** Extracts the category based data from the whole expense data */
+        foreach (var item in ExpenseData)
+        {
+            expTotal += Convert.ToInt32(item.Amount);
+            legendData.Add(item);
+            if (!Category.Contains(item.Category))
+            {
+                Category.Add(item.Category);
+            }
+        }
+        /** From the category data, percentage calculation for legend grid */
+        for (int i = 0; i < Category.Count(); i++)
+        {
+            var str = Category[i];
+            int total = 0;
+            foreach (var item in legendData)
+            {
+                if (str == item.Category)
+                    total += Convert.ToInt32(item.Amount);
+            }
+
+            string percent = (((decimal)total / expTotal) * 100).ToString("N2") + '%';
+            renderingData.Add(new RenderingData { X = str, Y = total, Text = percent, Fill = "" });
+        }
+        renderingData = renderingData.OrderByDescending(s => s.Y).ToList();
+        var GroupValue = renderingData.Count() > 10 ? renderingData[8].Y - 1 : 0;
+        LegendRenderData OthersRenderData = new LegendRenderData { Color = "", X = "0", Y = 0, Text = "Others" };
+        RenderingData OthersRenderingData = new RenderingData { Fill = "", X = "Others", Y = 0, Text = "0" };
+        decimal X = 0; var Y = 0;
+        for (int i = 0; i < renderingData.Count(); i++)
+        {
+            renderingData[i].Fill = this.palettes[i];
+            if (renderingData[i].Y > GroupValue)
+            {
+                lengendRenderData.Add(new LegendRenderData { X = renderingData[i].Text, Y = renderingData[i].Y, Text = renderingData[i].X, Color = this.palettes[i] });
+            }
+            else
+            {
+                if (OthersRenderData.Color == "")
+                {
+                    OthersRenderData.Color = renderingData[i].Fill;
+                    OthersRenderingData.Fill = renderingData[i].Fill;
+                }
+                X += Convert.ToDecimal(renderingData[i].Text.Split("%")[0]); Y += renderingData[i].Y;
+                renderingData.RemoveAt(i);
+                if (i != 0) { i--; }
+            }
+        }
+        if (OthersRenderData.Color != "")
+        {
+            OthersRenderData.X = X.ToString() + "%"; OthersRenderingData.Text = X.ToString() + "%";
+            OthersRenderData.Y = Y; OthersRenderingData.Y = Y;
+            lengendRenderData.Add(OthersRenderData); renderingData.Add(OthersRenderingData);
+        }
+        PieRenderingData = renderingData;
+        PieRenderData = lengendRenderData;
+    }
+
+    private class RenderingData
+    {
+        public string X { get; set; }
+        public int Y { get; set; }
+        public string Text { get; set; }
+        public string Fill { get; set; }
+    }
+
+    private class LegendRenderData
+    {
+        public string X { get; set; }
+        public int Y { get; set; }
+        public string Text { get; set; }
+        public string Color { get; set; }
+    }
+
+    public void Dispose()
+    {
+        PieRenderingData = null;
+        PieRenderData = null;
+    }
+}
+
+<style>
+    .chartLegend .e-grid {
+        border: none !important;
+        box-shadow: none !important;
+        min-width: 250px;
+    }
+
+    .e-grid tr.e-row {
+        height: 30px;
+    }
+</style>

@@ -1,0 +1,15 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="42" height="42" viewBox="0 0 42 42">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="15.2" y1="21.88" x2="27.41" y2="21.88" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#497df2"/>
+      <stop offset="1" stop-color="#6890fb"/>
+    </linearGradient>
+  </defs>
+  <title>Total Income_1</title>
+  <path class="cls-1" d="M22.25,30.24v2.19H20.77V30.27a7.83,7.83,0,0,1-5.57-2.55l1.22-1.53a6.75,6.75,0,0,0,4.35,2.26V22.53c-2.48-.66-5.06-1.51-5.06-4.5,0-2.53,2.14-4.31,5.06-4.5V11.32h1.48v2.26A7.22,7.22,0,0,1,27,15.8l-1.22,1.48a5.76,5.76,0,0,0-3.58-1.85v5.28c2.5.71,5.16,1.63,5.16,4.82C27.41,27.71,26,30,22.25,30.24Zm-1.48-9.92v-5c-1.75.1-3,1.12-3,2.55S19.14,19.86,20.77,20.32Zm4.57,5.38c0-1.65-1.41-2.26-3.09-2.77v5.5C24.59,28.22,25.34,26.81,25.34,25.7Z"/>
+</svg>

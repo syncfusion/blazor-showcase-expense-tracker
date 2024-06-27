@@ -1,0 +1,81 @@
+﻿<div class="row recent-expense-grid">
+    <div class="col-xs-6 col-sm-6 col-md-12" style="width:100%">
+        <SfGrid TValue="ExpenseData" DataSource="@RecentExpenseData" Height="100%" AllowSorting="true" EnableHover="false" AllowPaging="false" Width="100%">
+            <GridPageSettings PageCount="4" PageSize="14"></GridPageSettings>
+            <GridTemplates>
+                <ToolbarTemplate>
+                    <SfToolbar>
+                        <ToolbarItems>
+                            <ToolbarItem Text="Recent Transactions"></ToolbarItem>
+                        </ToolbarItems>
+                    </SfToolbar>
+                </ToolbarTemplate>
+            </GridTemplates>
+            <GridColumns>
+                <GridColumn Field="@nameof(ExpenseData.DateTime)" HeaderText="Date" Width="120" Format="d"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.Category)" HeaderText="Category" Width="180">
+                    <Template>
+                        @{
+                            var expense = (context as ExpenseData);
+                            <div class="normalRes">
+                                <div class="category-icon @expense.Category"></div>
+                                <div class='category-text'>@expense.Category</div>
+                            </div>
+                            <div class="mediumRes">
+                                <div>
+                                    <div class="category-icon @expense.Category"></div>
+                                </div>
+                                <div>
+                                    <div>@expense.Category </div>
+                                    <div class="description-section"> @expense.Description </div>
+                                </div>
+                            </div>
+                            <div class="smallRes">
+                                <div class='sm-category sm-icon'>
+                                    <div class="category-icon @expense.Category"></div>
+                                </div>
+                                <div class='sm-category category-content'>
+                                    <div> @expense.Category </div>
+                                    <div class="description-section"> @expense.Description </div>
+                                    <div> @expense.PaymentMode</div>
+                                </div>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.PaymentMode)" HeaderText="Payment Mode" Width="160"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.Description)" HeaderText="Description"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.Amount)" HeaderText="Amount" Width="120" TextAlign="@TextAlign.Right">
+                    <Template>
+                        @{
+                            var expense = (context as ExpenseData);
+                            <div class="normalRes">
+                                <div class='amt-payment @expense.TransactionType'>
+                                    <span>$</span> <span>@expense.Amount</span>
+                                </div>
+                            </div>
+                            <div class="mediumRes">
+                                <div class='amt-payment @expense.TransactionType'>
+                                    <span>$</span> <span>@expense.Amount</span>
+                                </div>
+                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
+                            </div>
+                            <div class="smallRes">
+                                <div class='amt-payment @expense.TransactionType'>
+                                    <span>$</span> <span>@expense.Amount</span>
+                                </div>
+                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public IEnumerable<ExpenseData> RecentExpenseData { get; set; }
+}

@@ -1,0 +1,40 @@
+﻿<div class="col-xs-12 col-sm-6 col-md-6 chart-container">
+    <div class="chart-padding">
+        <div class="line-chart">
+            <SfChart UseGroupingSeparator="true">
+                <ChartMargin Top="90"></ChartMargin>
+                <ChartArea>
+                    <ChartAreaBorder Width="0"></ChartAreaBorder>
+                </ChartArea>
+                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" LabelFormat="MMM" IntervalType="IntervalType.Months">
+                    <ChartAxisMajorGridLines Width="0"></ChartAxisMajorGridLines>
+                </ChartPrimaryXAxis>
+                <ChartPrimaryYAxis LabelFormat="c0" Maximum="1800" Interval="300"></ChartPrimaryYAxis>
+                <ChartAnnotations>
+                    <ChartAnnotation X="@chartXAnnoation" Y="9%" CoordinateUnits="Units.Pixel" Region="Regions.Chart">
+                        <ContentTemplate>
+                            <p style="font-family:Roboto;font-size: 16px;font-weight: 400;font-weight: 400;letter-spacing: 0.02em;line-height: 16px;color: #797979 !important;">Account - Balance</p>
+                        </ContentTemplate>
+                    </ChartAnnotation>
+                </ChartAnnotations>
+                <ChartSeriesCollection>
+                    <ChartSeries Type="ChartSeriesType.Area" XName="DateTime" Width="2" YName="Amount" Name="Amount" Fill="rgba(4, 112, 216, 0.3)"
+                                 DataSource="@LineChartData">
+                        <ChartSeriesBorder Width="0.5" Color="#0470D8"></ChartSeriesBorder>
+                        <ChartMarker Visible="true" Width="10" Height="10" Fill="white">
+                            <ChartMarkerBorder Width="2" Color="#0470D8"></ChartMarkerBorder>
+                        </ChartMarker>
+                    </ChartSeries>
+                </ChartSeriesCollection>
+                <ChartTooltipSettings Fill="#707070" Enable="true" Format="${series.name} : ${point.y}" Header="Month - ${point.x} "></ChartTooltipSettings>
+                <ChartLegendSettings Visible="true"></ChartLegendSettings>
+            </SfChart>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public List<ExpenseData> LineChartData { get; set; }
+    private string chartXAnnoation = "75px";
+}

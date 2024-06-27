@@ -1,0 +1,87 @@
+﻿<nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <span id="menu-toggle" href="#" class="navbar-toggle e-icon" @onclick="OpenSidebar"></span>
+            <div class="navbar-brand samplenameheader"></div>
+        </div>
+    </div>
+</nav>
+
+<div id="navigation-sidebar">
+    <SfSidebar @ref="Sidebar" Width="200px" MediaQuery="(min-width: 769px)" Created="@(() => OnSidebarCreate?.Invoke())">
+        <ChildContent>
+            <div id="sidebar-wrapper">
+                <div class='samplename-header'>
+                    <div class='samplename'><h1>EXPENSE TRACKER</h1></div>
+                </div>
+                <div class="info align-center">
+                    <div class="image"></div>
+                    <div class="content nameContent">
+                        <p class='name' id='user-name'>Nicholas Delacruz</p>
+                        <div class='wallet-container'>
+                            <span style='height: 27px;' class='balance-align'>
+                                <img alt="Cash wallet" src="./styles/images/cash-wallet.svg" />
+                            </span>
+                            <span id="current-balance" class='balance-align'>@ExpenseDataService.CurrentBalance</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-list align-center nav-list">
+                    <div class='nav-item'>
+                        <NavLink class="overview" href="" Match="NavLinkMatch.All" @onclick="CloseSidebar">
+                            <span aria-hidden="true" title="Dashboard">Dashboard</span>
+                        </NavLink>
+                    </div>
+                    <div class='nav-item'>
+                        <NavLink class="expense" href="expense" @onclick="CloseSidebar">
+                            <span aria-hidden="true" title="Transactions">Transactions</span>
+                        </NavLink>
+                    </div>
+                    <div class='nav-item'>
+                        <NavLink class="about" href="about" @onclick="CloseSidebar">
+                            <span aria-hidden="true" title="About">About</span>
+                        </NavLink>
+                    </div>
+                </div>
+                <div class="github-logo">
+                    <a href="https://github.com/syncfusion/blazor-showcase-expense-tracker" target="_blank">
+                        <img src="mark.svg" alt="GitHub source code" /><span>Source Code</span>
+                    </a>
+                </div>
+            </div>
+        </ChildContent>
+    </SfSidebar>
+</div>
+
+<div id="overlay" class="@OverlayClass" @onclick="CloseSidebar"></div>
+
+@code {
+    [CascadingParameter]
+    private ExpenseDataService ExpenseDataService { get; set; }
+    [Parameter]
+    public System.Action OnSidebarCreate { get; set; }
+    private SfSidebar Sidebar;
+    public string OverlayClass = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ExpenseDataService.OnChange += StateHasChanged;
+    }
+    private async Task OpenSidebar()
+    {
+        if (!Sidebar.IsOpen)
+        {
+            await this.Sidebar.Show();
+            this.OverlayClass = "overlay";
+        }
+    }
+    private async Task CloseSidebar()
+    {
+        if (Sidebar.IsOpen)
+        {
+            await this.Sidebar.Hide();
+            this.OverlayClass = "";
+        }
+    }
+}

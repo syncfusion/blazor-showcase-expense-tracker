@@ -1,0 +1,238 @@
+﻿@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+
+@implements IDisposable;
+
+<div id="expense-grid-wrapper">
+    @if (this.RenderGrid)
+    {
+        <SfGrid @ref="TransactGridRef" TValue="ExpenseData" Width="100%" Height="100%" AllowSelection="true" AllowPaging="true" AllowTextWrap="false" Toolbar="@Toolbaritems" DataSource="@TransactGridData">
+            <GridEvents RowSelected="@EnableToolbarItems" RowDeselected="@EnableToolbarItems" OnToolbarClick="ToolbarClickHandler" TValue="ExpenseData"></GridEvents>
+            <GridEditSettings AllowEditing="true" AllowEditOnDblClick="false"></GridEditSettings>
+            <GridPageSettings PageSize="11"></GridPageSettings>
+            <GridColumns>
+                <GridColumn Type="ColumnType.CheckBox" Width="40"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.Category)" HeaderText="Category" Width="178" ClipMode="@ClipMode.EllipsisWithTooltip" ValidationRules="@rules">
+                    <Template>
+                        @{
+                            var expense = (context as ExpenseData);
+                            <div class="normalRes">
+                                <div class="category-icon @expense.Category"></div>
+                                <div class='category-text'>@expense.Category</div>
+                            </div>
+                            <div class="mediumRes">
+                                <div>
+                                    <div class="category-icon @expense.Category"></div>
+                                </div>
+                                <div>
+                                    <div>@expense.Category</div>
+                                    <div class="description-section"> @expense.Description </div>
+                                </div>
+                            </div>
+                            <div class="smallRes">
+                                <div class='sm-category sm-icon'><div class="category-icon @expense.Category"></div></div>
+                                <div class='sm-category category-content'>
+                                    <div> @expense.Category </div>
+                                    <div class="description-section"> @expense.Description </div>
+                                    <div> @expense.PaymentMode </div>
+                                </div>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.DateTime)" HeaderText="Date" Format="d" Width="112" ValidationRules="@rules"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.PaymentMode)" HeaderText="Payment Mode" Width="140" ValidationRules="@rules"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.Description)" HeaderText="Description" ClipMode="@ClipMode.Ellipsis"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.UniqueId)" HeaderText="Unique Id" IsPrimaryKey="true" Visible="false"></GridColumn>
+                <GridColumn Field="@nameof(ExpenseData.Amount)" HeaderText="Amount" Width="120" Format="C0" TextAlign="@TextAlign.Right" ValidationRules="@rules">
+                    <Template>
+                        @{
+                            var expense = (context as ExpenseData);
+                            <div class="normalRes">
+                                <div class='amt-payment @expense.TransactionType'>
+                                    <span>$</span> <span>@expense.Amount</span>
+                                </div>
+                            </div>
+                            <div class="mediumRes">
+                                <div class='amt-payment @expense.TransactionType'>
+                                    <span>$</span> <span>@expense.Amount</span>
+                                </div>
+                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
+                            </div>
+                            <div class="smallRes">
+                                <div class='amt-payment @expense.TransactionType'>
+                                    <span>$</span> <span>@expense.Amount</span>
+                                </div>
+                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    }
+</div>
+
+@code{
+    [CascadingParameter]
+    public ExpenseDataService ExpenseDataService { get; set; }
+
+    public SfGrid<ExpenseData> TransactGridRef;
+    public TransactDialog DialogRef;
+    public FilterMenu FilterRef;
+
+    public ValidationRules rules = new ValidationRules { Required = true };
+    public IEnumerable<ExpenseData> TransactGridData { get; set; } = new List<ExpenseData>();
+    private List<ItemModel> Toolbaritems = new List<ItemModel> {
+        new ItemModel() { Text = "Edit", PrefixIcon = "e-edit e-icons", TooltipText = "Edit", Id = "Edit", Disabled = true },
+        new ItemModel() { Text = "Delete", PrefixIcon = "e-delete e-icons", TooltipText = "Delete", Id = "Delete", Disabled = true }
+    };
+    private bool RenderGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        this.UpdateTotalBalance();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+            RenderGrid = true;
+        }
+    }
+
+    internal async Task EnableToolbarItems()
+    {
+        var selectedIndexes = await TransactGridRef.GetSelectedRecords();
+        var count = selectedIndexes.Count();
+        if (count > 1)
+        {
+            Toolbaritems[0].Disabled = true;
+            Toolbaritems[1].Disabled = false;
+        }
+        else if (count == 0)
+        {
+            Toolbaritems[0].Disabled = true;
+            Toolbaritems[1].Disabled = true;
+        }
+        else if (count == 1)
+        {
+            Toolbaritems[0].Disabled = false;
+            Toolbaritems[1].Disabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Show edit or alert dialog
+    ///
+    ///</summary>
+    /// <param name="args"></param>
+    public void OnGridEditBegin(ActionEventArgs<ExpenseData> args)
+    {
+        if (args.RequestType == Syncfusion.Blazor.Grids.Action.BeginEdit)
+            args.Cancel = true;
+    }
+
+    public async void ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        var selectedRecords = await this.TransactGridRef.GetSelectedRecords();
+
+        if (args.Item.Id == "Edit")
+        {
+            if (selectedRecords.Count() == 1)
+                await this.DialogRef.ShowEditDialog(selectedRecords[0]);
+        }
+        else if (args.Item.Id == "Delete")
+        {
+            await this.DialogRef.ShowAlertDialog(selectedRecords);
+        }
+    }
+
+    /// <summary>
+    /// Filter the grid data with search value
+    /// </summary>
+    public async Task Search(string value)
+    {
+        await this.TransactGridRef.Search(value);
+    }
+
+    /// <summary>
+    /// Add record to source and refresh
+    /// </summary>
+    /// <param name="gridData"></param>
+    public void AddRecord(ExpenseData gridData)
+    {
+        ExpenseDataService.ExpenseData.Add(gridData);
+        this.GridRefresh(this.FilterRef.RefreshData());
+    }
+
+    /// <summary>
+    /// Update record in source and refresh
+    /// </summary>
+    /// <param name="gridData"></param>
+    public void UpdateRecord(ExpenseData gridData)
+    {
+        foreach (var data in ExpenseDataService.ExpenseData.Where(s => s.UniqueId == gridData.UniqueId))
+        {
+            data.UniqueId = gridData.UniqueId;
+            data.TransactionType = gridData.TransactionType;
+            data.DateTime = gridData.DateTime;
+            data.Category = gridData.Category;
+            data.PaymentMode = gridData.PaymentMode;
+            data.Description = gridData.Description;
+            data.Amount = gridData.Amount;
+            data.MonthShort = gridData.MonthShort;
+            data.MonthFull = gridData.MonthFull;
+            data.FormattedDate = gridData.FormattedDate;
+        }
+        this.GridRefresh(this.FilterRef.RefreshData());
+    }
+
+    /// <summary>
+    /// Removed the record from source and refresh
+    /// </summary>
+    /// <param name="uniqueIds"></param>
+    public void RemoveRecord(List<string> uniqueIds)
+    {
+        foreach (var id in uniqueIds)
+        {
+            var index = ExpenseDataService.ExpenseData.FindIndex(s => s.UniqueId == id);
+            if (index > -1)
+                ExpenseDataService.ExpenseData.RemoveAt(index);
+        }
+        this.GridRefresh(this.FilterRef.RefreshData());
+    }
+
+    public void GridRefresh(IEnumerable<ExpenseData> gridData)
+    {
+        this.TransactGridData = gridData;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Update the totalBalance when grid data is updated
+    /// </summary>
+    public void UpdateTotalBalance()
+    {
+        int incomeRS = 0;
+        int expenseRS = 0;
+        List<ExpenseData> incomeD = new List<ExpenseData>();
+        List<ExpenseData> expenseD = new List<ExpenseData>();
+        var commonData = ExpenseDataService.CurrentExpenseData == null ? ExpenseDataService.ExpenseData.Where(s => s.DateTime >= ExpenseDataService.StartDate && s.DateTime <= ExpenseDataService.EndDate) :
+            ExpenseDataService.CurrentExpenseData;
+        incomeD = commonData.Where(s => s.TransactionType == "Income").ToList();
+        incomeRS = incomeD.Sum(s => Convert.ToInt32(s.Amount));
+        expenseD = commonData.Where(s => s.TransactionType == "Expense").ToList();
+        expenseRS = expenseD.Sum(s => s.Amount);
+        var totalBalance = CommonService.GetCurrencyVal(incomeRS - expenseRS);
+        ExpenseDataService.UpdateCurrentBalance(totalBalance);
+    }
+
+    public void Dispose()
+    {
+        TransactGridRef = null;
+    }
+}
