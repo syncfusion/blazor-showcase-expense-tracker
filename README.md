@@ -13,12 +13,20 @@ The samples requires the below requirements to run.
 
 ### Run
 
-* Clone this repository.
-* Open the command prompt from Application root directory.
-* Run the demo using `dotnet run` command.
+#### Server app:
+1. Clone this repository.
+2. Open the `.csproj` file in VS 2022.
+3. Click the green run button in the toolbar.
+
+#### WASM app:
+1. Clone this repository.
+2. Open the `.sln` file in VS 2022.
+3. Click the green run button in the toolbar.
 
 ## Demo
 
-### <a href="https://blazor.syncfusion.com/showcase/expensetracker/" target="_blank">https://blazor.syncfusion.com/showcase/expensetracker/</a>
+### Server app: <a href="https://blazor.syncfusion.com/showcase/expensetracker/" target="_blank">https://blazor.syncfusion.com/showcase/expensetracker/</a>
+
+### WASM app: <a href="https://blazor.syncfusion.com/showcase/wasm/expensetracker/" target="_blank">https://blazor.syncfusion.com/showcase/wasm/expensetracker/</a>
 
 Check all the showcase samples from <a href="https://blazor.syncfusion.com/" target="_blank">here</a>.

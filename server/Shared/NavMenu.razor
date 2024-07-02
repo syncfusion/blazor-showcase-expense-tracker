@@ -1,14 +1,15 @@
-﻿<nav class="navbar navbar-default" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <span id="menu-toggle" href="#" class="navbar-toggle e-icon" @onclick="OpenSidebar"></span>
-            <div class="navbar-brand samplenameheader"></div>
-        </div>
-    </div>
+﻿@using Syncfusion.Blazor.Navigations
+@using ExpenseTracker.Service
+
+<nav class="navbar navbar-default" role="navigation">
+    <SfAppBar>
+        <span id="menu-toggle" href="#" class="navbar-toggle e-icon" @onclick="OpenSidebar"></span>
+        <div class="navbar-brand samplenameheader"></div>
+    </SfAppBar>
 </nav>
 
 <div id="navigation-sidebar">
-    <SfSidebar @ref="Sidebar" Width="200px" MediaQuery="(min-width: 769px)" Created="@(() => OnSidebarCreate?.Invoke())">
+    <SfSidebar @ref="Sidebar" Width="200px" MediaQuery="(min-width: 769px)" Created="@(() => OnSidebarCreate?.Invoke())" IsOpen="@sliderOpen">
         <ChildContent>
             <div id="sidebar-wrapper">
                 <div class='samplename-header'>
@@ -62,25 +63,26 @@
     public System.Action OnSidebarCreate { get; set; }
     private SfSidebar Sidebar;
     public string OverlayClass = "";
+    private bool sliderOpen;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         ExpenseDataService.OnChange += StateHasChanged;
     }
-    private async Task OpenSidebar()
+    private void OpenSidebar()
     {
         if (!Sidebar.IsOpen)
         {
-            await this.Sidebar.Show();
+            sliderOpen = true;
             this.OverlayClass = "overlay";
         }
     }
-    private async Task CloseSidebar()
+    private void CloseSidebar()
     {
         if (Sidebar.IsOpen)
         {
-            await this.Sidebar.Hide();
+            sliderOpen = false;
             this.OverlayClass = "";
         }
     }
