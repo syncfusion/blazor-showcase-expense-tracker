@@ -25,8 +25,6 @@ jobs:
       with:
         dotnet-version: 9.0.x
     - name: Build Server
-      run: dotnet restore
-    - name: Build Server
       run: dotnet build ./server/ExpenseTracker.csproj
     - name: Build Wasm
       run: dotnet build ./wasm/ExpenseTracker/ExpenseTracker.csproj
