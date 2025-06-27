@@ -1,3 +1,5 @@
+[![.NET](https://github.com/syncfusion/blazor-showcase-expense-tracker/actions/workflows/dotnet.yml/badge.svg)](https://github.com/syncfusion/blazor-showcase-expense-tracker/actions/workflows/dotnet.yml)
+
 # Essential Studio for Blazor - Expense Tracker
 
 This expense tracker demo application showcases using several Syncfusion Blazor components together in a real-world application scenario. You can further explore the source code of this application and use it as a reference for integrating Syncfusion Blazor components into your applications.
