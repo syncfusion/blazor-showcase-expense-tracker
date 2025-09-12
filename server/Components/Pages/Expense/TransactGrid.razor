@@ -106,7 +106,7 @@
 
     internal async Task EnableToolbarItems()
     {
-        var selectedIndexes = await TransactGridRef.GetSelectedRecords();
+        var selectedIndexes = await TransactGridRef.GetSelectedRecordsAsync();
         var count = selectedIndexes.Count();
         if (count > 1)
         {
@@ -138,7 +138,7 @@
 
     public async void ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
     {
-        var selectedRecords = await this.TransactGridRef.GetSelectedRecords();
+        var selectedRecords = await this.TransactGridRef.GetSelectedRecordsAsync();
 
         if (args.Item.Id == "Edit")
         {
@@ -156,7 +156,7 @@
     /// </summary>
     public async Task Search(string value)
     {
-        await this.TransactGridRef.Search(value);
+        await this.TransactGridRef.SearchAsync(value);
     }
 
     /// <summary>
