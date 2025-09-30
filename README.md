@@ -1,30 +1,77 @@
 [![.NET](https://github.com/syncfusion/blazor-showcase-expense-tracker/actions/workflows/dotnet.yml/badge.svg)](https://github.com/syncfusion/blazor-showcase-expense-tracker/actions/workflows/dotnet.yml)
 
-# Essential Studio for Blazor - Expense Tracker
+# Essential Studio® for Blazor - Expense Tracker
 
-This expense tracker demo application showcases using several Syncfusion Blazor components together in a real-world application scenario. You can further explore the source code of this application and use it as a reference for integrating Syncfusion Blazor components into your applications.
+This expense tracker demo application showcases using several Syncfusion® Blazor components together in a real-world application scenario. You can further explore the source code of this application and use it as a reference for integrating Syncfusion® Blazor components into your applications.
 
-## Deployment
+## Requirements to run the demo
 
-### Requirements to run the demo
+* [System requirements](https://blazor.syncfusion.com/documentation/system-requirements/)
 
-The samples requires the below requirements to run.
+* [NET 8 WebAssembly Workload](https://learn.microsoft.com/en-us/aspnet/core/blazor/webassembly-build-tools-and-aot?view=aspnetcore-8.0#net-webassembly-build-tools)
 
-* [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
-* [NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+## How to run the demo
 
-### Run
+Clone the repository.This repository contains Blazor Expense Tracker Server app, Blazor Expense Tracker WASM app.
+* `server` folder has solution and project files to run Expense Tracker server app.
+* `Wasm` folder has solution and project files to run Expense Tracker WebAssembly app.
 
-1. Clone this repository.
-2. Open the project in VS 2022:
-	- For the .NET 8 Server app, open server/ExpenseTracker.csproj.
-	- For the .NET 8 WASM app, open wasm/ExpenseTracker.sln.
-3. Run the demo.
+### Run the demo using .NET CLI
 
-## Demo
+* Open the command prompt from the demo's directory.
+* Run the demo using the following command.
+   
+   To run .NET 8 Expense Tracker Server project
+   > `dotnet run --project server/ExpenseTracker.csproj`
 
-### Server app: <a href="https://blazor.syncfusion.com/showcase/expensetracker/" target="_blank">https://blazor.syncfusion.com/showcase/expensetracker/</a>
+   To run .NET 8 Expense Tracker WASM project
+   > `dotnet run --project wasm/ExpenseTracker.sln`
 
-### WASM app: <a href="https://blazor.syncfusion.com/showcase/wasm/expensetracker/" target="_blank">https://blazor.syncfusion.com/showcase/wasm/expensetracker/</a>
+### Run the demo using Visual Studio
 
-Check all the showcase samples from <a href="https://blazor.syncfusion.com/" target="_blank">here</a>.
+* Open the solution file using Visual Studio.
+* Press `Ctrl + F5` to run the demo.
+
+### Run the demo using Visual Studio code
+
+* Open the Visual Studio code from the Demo directory where the project file is present.
+
+* Press `Ctrl + F5` to run the demo.
+
+## Live Demo
+
+#### Server app: <a href="https://blazor.syncfusion.com/showcase/expensetracker/" target="_blank">Expense Tracker Server Live Demo</a>
+
+#### WASM app: <a href="https://blazor.syncfusion.com/showcase/wasm/expensetracker/" target="_blank">Expense Tracker Wasm Live Demo</a>
+
+Check all the showcase samples from <a href="https://www.syncfusion.com/showcase-apps" target="_blank">here</a>.
+
+## License
+
+Syncfusion® Blazor Components is available under the Syncfusion® Essential Studio program, and can be licensed either under the Syncfusion® Community License Program or the Syncfusion® commercial license.
+
+To be qualified for the Syncfusion® Community License Program, you must have gross revenue of less than one (1) million U.S. dollars (USD 1,000,000.00) per year and have less than five (5) developers in your organization, and agree to be bound by Syncfusion's terms and conditions.
+
+Customers who do not qualify for the community license can contact sales@syncfusion.com for commercial licensing options.
+
+Use of Syncfusion® Blazor Components requires prior acquisition of either a Community License or a Commercial License. Additionally, usage is subject to acceptance of and compliance with Syncfusion's license terms and conditions.
+
+The Syncfusion® license that contains the terms and conditions can be found at
+[https://www.syncfusion.com/content/downloads/syncfusion_license.pdf](https://www.syncfusion.com/content/downloads/syncfusion_license.pdf)
+
+## Support and feedback
+
+* For any other queries, reach the [Syncfusion® support team](https://support.syncfusion.com/) or post the queries through the [community forums](https://www.syncfusion.com/forums?utm_source=github&utm_medium=listing&utm_campaign=blazor-samples).
+
+* To renew the subscription, click [here](https://www.syncfusion.com/sales/products?utm_source=github&utm_medium=listing&utm_campaign=blazor-samples) or contact our sales team at <salessupport@syncfusion.com>.
+
+* If the required information is not available, it can be submitted through the Syncfusion® Blazor Components Feedback Portal [feedback portal](https://www.syncfusion.com/feedback/blazor-components).
+
+## See also
+
+* [Blazor Documentation](https://blazor.syncfusion.com/documentation/introduction)
+* [Blazor Components](https://www.syncfusion.com/blazor-components)
+* [Blazor Live Demos - Server](https://blazor.syncfusion.com/demos/)
+* [Blazor Live Demos - WebAssembly](https://blazor.syncfusion.com/wasm/demos/)
+* [Blazor Playground](https://blazorplayground.syncfusion.com/)
+* [Blazor Smart/AI Samples](https://github.com/syncfusion/smart-ai-samples)  
