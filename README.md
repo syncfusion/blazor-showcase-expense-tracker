@@ -8,7 +8,7 @@ This expense tracker demo application showcases using several Syncfusion® Blazo
 
 * [System requirements](https://blazor.syncfusion.com/documentation/system-requirements/)
 
-* [NET 8 WebAssembly Workload](https://learn.microsoft.com/en-us/aspnet/core/blazor/webassembly-build-tools-and-aot?view=aspnetcore-8.0#net-webassembly-build-tools)
+* [NET 10 WebAssembly Workload](https://learn.microsoft.com/en-us/aspnet/core/blazor/webassembly-build-tools-and-aot?view=aspnetcore-10.0#net-webassembly-build-tools)
 
 ## How to run the demo
 
@@ -21,10 +21,10 @@ Clone the repository.This repository contains Blazor Expense Tracker Server app,
 * Open the command prompt from the demo's directory.
 * Run the demo using the following command.
    
-   To run .NET 8 Expense Tracker Server project
+   To run .NET 10 Expense Tracker Server project
    > `dotnet run --project server/ExpenseTracker.csproj`
 
-   To run .NET 8 Expense Tracker WASM project
+   To run .NET 10 Expense Tracker WASM project
    > `dotnet run --project wasm/ExpenseTracker.sln`
 
 ### Run the demo using Visual Studio
