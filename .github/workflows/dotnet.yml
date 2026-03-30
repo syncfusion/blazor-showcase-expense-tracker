@@ -24,6 +24,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+    - name: Setup .NET10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
     - name: Build Server
       run: dotnet build ./server/ExpenseTracker.csproj
     - name: Build Wasm
