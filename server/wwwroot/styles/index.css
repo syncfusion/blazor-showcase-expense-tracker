@@ -345,8 +345,9 @@ html body > .content {
 }
 
 #main-page {
-    height: 100vh;
+    height: calc(100vh - 6em);
     width: 100%;
+    overflow-y: scroll;
 }
 
 @media (max-width: 1050px) {
