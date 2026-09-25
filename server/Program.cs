@@ -1,10 +1,7 @@
 using ExpenseTracker.Components;
 using Syncfusion.Blazor;
 using Syncfusion.Blazor.Popups;
-using Syncfusion.Telemetry;
 var builder = WebApplication.CreateBuilder(args);
-
-Telemetry.Disable();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
