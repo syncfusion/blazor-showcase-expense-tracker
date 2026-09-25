@@ -2,8 +2,10 @@ using ExpenseTracker.Client.Pages;
 using ExpenseTracker.Components;
 using Syncfusion.Blazor.Popups;
 using Syncfusion.Blazor;
+using Syncfusion.Telemetry;
 
 var builder = WebApplication.CreateBuilder(args);
+Telemetry.Disable();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -26,6 +28,12 @@ else
 
 app.UseHttpsRedirection();
 
+// SEO: Add X-Robots-Tag header for search engine indexing
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Robots-Tag", "index, follow");
+    await next();
+});
 
 app.UseAntiforgery();
 app.MapStaticAssets();

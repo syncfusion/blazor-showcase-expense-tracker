@@ -1,4 +1,14 @@
 ﻿@inject NavigationManager Urihelper
+@* SEO Variables - Single source of truth for all meta tags *@
+@{
+    string SeoTitle = "Expense Tracker - Syncfusion Blazor Showcase";
+    string SeoDescription = "Track and manage expenses with real-world Syncfusion Blazor components integrated into one application.";
+    string SiteUrl = Urihelper.Uri.TrimEnd('/');
+    string ApplicationName = "Expense Tracker";
+    string Publisher = "Syncfusion";
+    string Language = "English";
+    string SocialImage = SiteUrl + "/ExpenseTracker.svg";
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +23,7 @@
             }); var f = d.getElementsByTagName(s)[0],
                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-P3WXFWCW');
+        })(window, document, 'script', 'dataLayer', 'GTM-WXZ6DX9B');
     </script>
     <!-- Load GTM-W8WD8WN on user interaction -->
     <script>
@@ -33,18 +43,45 @@
             events.forEach(event => document.addEventListener(event, loadGTM, { once: true }));
         });
     </script>
-    <title>Expense Tracker | Syncfusion Blazor WebAssembly Showcase App</title>
+        <!-- HTML Title -->
+    <title>@SeoTitle</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="@SeoTitle" />
+    <meta name="description" content="@SeoDescription" />
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="expense tracker, financial management, Blazor, budgeting, tracking" />
+    <meta name="publisher" content="@Publisher" />
+    <meta name="language" content="@Language" />
+    
+    <!-- Canonical URL -->
+    <link href="https://showcase.syncfusion.com/expense-tracker/blazor/wasm/" rel="canonical" />
+    
+    <!-- Alternate Language Tags -->
+    <link rel="alternate" hreflang="en-US" href="@SiteUrl" />
+    <link rel="alternate" hreflang="x-default" href="@SiteUrl" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@SeoTitle" />
+    <meta property="og:description" content="@SeoDescription" />
+    <meta property="og:url" content="@SiteUrl" />
+    <meta property="og:site_name" content="@ApplicationName" />
+    <meta property="og:image" content="@SocialImage" />
+    <meta property="og:image:alt" content="@ApplicationName Logo" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@SeoTitle" />
+    <meta name="twitter:description" content="@SeoDescription" />
+    <meta name="twitter:image" content="@SocialImage" />
+    <meta name="twitter:image:alt" content="@ApplicationName" />
+    <meta name="twitter:site" content="@@Syncfusion" />
+    
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Expense Tracker is a single page WebAssembly application to showcase dashboard like layout with rich interactions using Syncfusion Blazor Components." />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta property="og:title" content="Expense Tracker | Syncfusion Blazor WebAssembly Showcase App" />
-    <meta property="og:description" content="Expense Tracker is a single page WebAssembly application to showcase dashboard like layout with rich interactions using Syncfusion Blazor Components." />
-    <meta property="og:url" content="https://showcase.syncfusion.com/expense-tracker/blazor/wasm/" />
-    <meta property="og:image" content="@(Urihelper.BaseUri)styles/images/exp-track.png" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link href="https://showcase.syncfusion.com/expense-tracker/blazor/wasm/" rel="canonical" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <ResourcePreloader />
     <link rel="shortcut icon" href="favicon.ico" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
@@ -59,6 +96,31 @@
     <link href="@Assets["styles/main.css"]" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+    <!-- Schema.org Structured Data - SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org/",
+      "@@type": "SoftwareApplication",
+      "name": "@ApplicationName",
+      "description": "@SeoDescription",
+      "url": "@SiteUrl",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "browserRequirements": "WebAssembly enabled browser",
+      "image": "@SocialImage",
+      "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@@type": "Organization",
+        "name": "@Publisher",
+        "url": "https://www.syncfusion.com"
+      },
+      "inLanguage": "en-US"
+    }
+    </script>
     <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
@@ -67,7 +129,7 @@
     <!-- Google Tag Manager (noscript) -->
     <!--Page Load-->
     <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3WXFWCW" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXZ6DX9B" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
     <!--Interaction-->
     <noscript>
