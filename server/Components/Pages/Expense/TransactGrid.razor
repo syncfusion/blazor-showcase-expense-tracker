@@ -1,8 +1,6 @@
 ﻿@using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Navigations
 
-@implements IDisposable;
-
 <div id="expense-grid-wrapper">
     @if (this.RenderGrid)
     {
@@ -17,24 +15,24 @@
                         @{
                             var expense = (context as ExpenseData);
                             <div class="normalRes">
-                                <div class="category-icon @expense.Category"></div>
-                                <div class='category-text'>@expense.Category</div>
+                                <div class="category-icon @expense?.Category"></div>
+                                <div class='category-text'>@expense?.Category</div>
                             </div>
                             <div class="mediumRes">
                                 <div>
-                                    <div class="category-icon @expense.Category"></div>
+                                    <div class="category-icon @expense?.Category"></div>
                                 </div>
                                 <div>
-                                    <div>@expense.Category</div>
-                                    <div class="description-section"> @expense.Description </div>
+                                    <div>@expense?.Category</div>
+                                    <div class="description-section"> @expense?.Description </div>
                                 </div>
                             </div>
                             <div class="smallRes">
-                                <div class='sm-category sm-icon'><div class="category-icon @expense.Category"></div></div>
+                                <div class='sm-category sm-icon'><div class="category-icon @expense?.Category"></div></div>
                                 <div class='sm-category category-content'>
-                                    <div> @expense.Category </div>
-                                    <div class="description-section"> @expense.Description </div>
-                                    <div> @expense.PaymentMode </div>
+                                    <div> @expense?.Category </div>
+                                    <div class="description-section"> @expense?.Description </div>
+                                    <div> @expense?.PaymentMode </div>
                                 </div>
                             </div>
                         }
@@ -49,21 +47,21 @@
                         @{
                             var expense = (context as ExpenseData);
                             <div class="normalRes">
-                                <div class='amt-payment @expense.TransactionType'>
-                                    <span>$</span> <span>@expense.Amount</span>
+                                <div class='amt-payment @expense?.TransactionType'>
+                                    <span>$</span> <span>@expense?.Amount</span>
                                 </div>
                             </div>
                             <div class="mediumRes">
-                                <div class='amt-payment @expense.TransactionType'>
-                                    <span>$</span> <span>@expense.Amount</span>
+                                <div class='amt-payment @expense?.TransactionType'>
+                                    <span>$</span> <span>@expense?.Amount</span>
                                 </div>
-                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
+                                <div>@expense?.DateTime.ToString("dd/MM/yyyy")</div>
                             </div>
                             <div class="smallRes">
-                                <div class='amt-payment @expense.TransactionType'>
-                                    <span>$</span> <span>@expense.Amount</span>
+                                <div class='amt-payment @expense?.TransactionType'>
+                                    <span>$</span> <span>@expense?.Amount</span>
                                 </div>
-                                <div>@expense.DateTime.ToString("dd/MM/yyyy")</div>
+                                <div>@expense?.DateTime.ToString("dd/MM/yyyy")</div>
                             </div>
                         }
                     </Template>
@@ -75,11 +73,11 @@
 
 @code{
     [CascadingParameter]
-    public ExpenseDataService ExpenseDataService { get; set; }
+    public ExpenseDataService ExpenseDataService { get; set; } = default!;
 
-    public SfGrid<ExpenseData> TransactGridRef;
-    public TransactDialog DialogRef;
-    public FilterMenu FilterRef;
+    public SfGrid<ExpenseData> TransactGridRef = default!;
+    public TransactDialog DialogRef = default!;
+    public FilterMenu? FilterRef;
 
     public ValidationRules rules = new ValidationRules { Required = true };
     public IEnumerable<ExpenseData> TransactGridData { get; set; } = new List<ExpenseData>();
@@ -93,6 +91,8 @@
     {
         await base.OnInitializedAsync();
         this.UpdateTotalBalance();
+        // Initialize with all data
+        RenderGrid = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -100,7 +100,6 @@
         if (firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            RenderGrid = true;
         }
     }
 
@@ -160,13 +159,64 @@
     }
 
     /// <summary>
+    /// Update filtered data based on selected filters
+    /// </summary>
+    public async Task UpdateFilteredData(bool incomeChecked, bool expenseChecked, bool cashChecked, bool debitChecked, bool creditChecked)
+    {
+        DateTime start = ExpenseDataService.StartDate;
+        DateTime end = ExpenseDataService.EndDate;
+        var expenseData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end);
+        ExpenseDataService.SetCurrentData(expenseData);
+
+        // Filter by transaction type
+        if (incomeChecked || expenseChecked)
+        {
+            if (incomeChecked && expenseChecked)
+                expenseData = expenseData.Where(s => s.TransactionType == "Income" || s.TransactionType == "Expense");
+            else if (incomeChecked)
+                expenseData = expenseData.Where(s => s.TransactionType == "Income");
+            else if (expenseChecked)
+                expenseData = expenseData.Where(s => s.TransactionType == "Expense");
+        }
+
+        // Filter by payment mode
+        if (cashChecked || creditChecked || debitChecked)
+        {
+            if (cashChecked && creditChecked && debitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash" || s.PaymentMode == "Credit Card" || s.PaymentMode == "Debit Card");
+            else if (cashChecked && creditChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash" || s.PaymentMode == "Credit Card");
+            else if (cashChecked && debitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash" || s.PaymentMode == "Debit Card");
+            else if (creditChecked && debitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Credit Card" || s.PaymentMode == "Debit Card");
+            else if (cashChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Cash");
+            else if (creditChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Credit Card");
+            else if (debitChecked)
+                expenseData = expenseData.Where(s => s.PaymentMode == "Debit Card");
+        }
+
+        expenseData = expenseData.OrderByDescending(e => e.DateTime).ToList();
+        this.TransactGridData = expenseData;
+        StateHasChanged();
+    }
+
+    /// <summary>
     /// Add record to source and refresh
     /// </summary>
     /// <param name="gridData"></param>
     public void AddRecord(ExpenseData gridData)
     {
         ExpenseDataService.ExpenseData.Add(gridData);
-        this.GridRefresh(this.FilterRef.RefreshData());
+        
+        // Refresh the grid with filtered data
+        DateTime start = ExpenseDataService.StartDate;
+        DateTime end = ExpenseDataService.EndDate;
+        var filteredData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end)
+            .OrderByDescending(e => e.DateTime).ToList();
+        this.GridRefresh(filteredData);
     }
 
     /// <summary>
@@ -188,7 +238,13 @@
             data.MonthFull = gridData.MonthFull;
             data.FormattedDate = gridData.FormattedDate;
         }
-        this.GridRefresh(this.FilterRef.RefreshData());
+        
+        // Refresh the grid with filtered data
+        DateTime start = ExpenseDataService.StartDate;
+        DateTime end = ExpenseDataService.EndDate;
+        var filteredData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end)
+            .OrderByDescending(e => e.DateTime).ToList();
+        this.GridRefresh(filteredData);
     }
 
     /// <summary>
@@ -203,7 +259,13 @@
             if (index > -1)
                 ExpenseDataService.ExpenseData.RemoveAt(index);
         }
-        this.GridRefresh(this.FilterRef.RefreshData());
+        
+        // Refresh the grid with filtered data
+        DateTime start = ExpenseDataService.StartDate;
+        DateTime end = ExpenseDataService.EndDate;
+        var filteredData = ExpenseDataService.ExpenseData.Where(s => s.DateTime >= start && s.DateTime <= end)
+            .OrderByDescending(e => e.DateTime).ToList();
+        this.GridRefresh(filteredData);
     }
 
     public void GridRefresh(IEnumerable<ExpenseData> gridData)
@@ -231,8 +293,4 @@
         ExpenseDataService.UpdateCurrentBalance(totalBalance);
     }
 
-    public void Dispose()
-    {
-        TransactGridRef = null;
-    }
 }

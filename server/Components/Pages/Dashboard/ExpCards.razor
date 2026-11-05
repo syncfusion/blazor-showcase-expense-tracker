@@ -1,50 +1,54 @@
-﻿<div class="row">
-    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
-        <div class="e-card card">
-            <div class="e-card-content">
-                <h3 class="card-value" id="tolincome">@TotalIncome</h3>
-                <span class="card-text">Income</span>
-            </div>
+﻿<div class="modern-cards-container">
+    <div class="stat-card income">
+        <div class="stat-card-header">
+            <h3 class="stat-card-title">Total Income</h3>
+            <div class="stat-card-icon income">💰</div>
         </div>
+        <div class="stat-card-value" id="tolincome">@TotalIncome</div>
     </div>
-    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
-        <div class="e-card card">
-            <div class="e-card-content">
-                <h3 class="card-value" id="tolexpense">@TotalExpense</h3>
-                <span class="card-text">Expenses</span>
-            </div>
+
+    <div class="stat-card expense">
+        <div class="stat-card-header">
+            <h3 class="stat-card-title">Total Expenses</h3>
+            <div class="stat-card-icon expense">💳</div>
         </div>
+        <div class="stat-card-value" id="tolexpense">@TotalExpense</div>
     </div>
-    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
-        <div class="e-card card">
-            <div class="e-card-content">
-                <h3 class="card-value" id="tolbalance">@TotalBalance</h3>
-                <span class="card-text">Balance</span>
-            </div>
+
+    <div class="stat-card balance">
+        <div class="stat-card-header">
+            <h3 class="stat-card-title">Balance</h3>
+            <div class="stat-card-icon balance">📊</div>
         </div>
+        <div class="stat-card-value" id="tolbalance">@TotalBalance</div>
     </div>
-    <div class="col-xs-6 col-xl-3 col-lg-3 col-md-3 col-sm-6 card-container">
-        <div class="e-card card">
-            <div class="e-card-content">
-                <h3 class="card-value" id="toltransaction">@TotalTransactions</h3>
-                <span class="card-text">Transactions</span>
-            </div>
+
+    <div class="stat-card transactions">
+        <div class="stat-card-header">
+            <h3 class="stat-card-title">Total Transactions</h3>
+            <div class="stat-card-icon" style="background: rgba(243, 156, 18, 0.1); color: #F39C12;">📝</div>
         </div>
+        <div class="stat-card-value" id="toltransaction">@TotalTransactions</div>
     </div>
 </div>
 
 @code{
     [CascadingParameter]
-    private ExpenseDataService ExpenseDataService { get; set; }
+    private ExpenseDataService ExpenseDataService { get; set; } = default!;
     [Parameter]
-    public IEnumerable<ExpenseData> IncomeData { get; set; }
+    public IEnumerable<ExpenseData>? IncomeData { get; set; }
     [Parameter]
-    public IEnumerable<ExpenseData> ExpenseData { get; set; }
+    public IEnumerable<ExpenseData>? ExpenseData { get; set; }
 
     private string TotalIncome = "$0";
     private string TotalExpense = "$0";
     private string TotalBalance = "$0";
     private string TotalTransactions = "0";
+    
+    private string IncomeTrend = "vs last month";
+    private string ExpenseTrend = "vs last month";
+    private decimal PreviousIncomeAmount = 0;
+    private decimal PreviousExpenseAmount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,18 +64,53 @@
         IncomeData = incomeData; ExpenseData = expenseData;
         UpdateCards();
     }
+    
     private void UpdateCards()
     {
         var incomeRS = 0;
         var expenseRS = 0;
-        //Calulates total income and sets to the Income card
-        incomeRS = IncomeData.Sum(s => s.Amount);
+        
+        // Calculate current period totals
+        incomeRS = (IncomeData ?? Enumerable.Empty<ExpenseData>()).Sum(s => s.Amount);
+        expenseRS = (ExpenseData ?? Enumerable.Empty<ExpenseData>()).Sum(s => s.Amount);
+        
         TotalIncome = CommonService.GetCurrencyVal(incomeRS);
-        //Calulates total expenses and sets to the Expenses card
-        expenseRS = ExpenseData.Sum(s => s.Amount);
         TotalExpense = CommonService.GetCurrencyVal(expenseRS);
         TotalBalance = CommonService.GetCurrencyVal(incomeRS - expenseRS);
-        TotalTransactions = CommonService.GetNumberVal(ExpenseDataService.CurrentExpenseData.Count());
+        TotalTransactions = CommonService.GetNumberVal((ExpenseDataService.CurrentExpenseData ?? Enumerable.Empty<ExpenseData>()).Count());
+        
+        // Calculate trend indicators comparing to previous month
+        IncomeTrend = CalculateTrend(incomeRS, PreviousIncomeAmount, "Income");
+        ExpenseTrend = CalculateTrend(expenseRS, PreviousExpenseAmount, "Expense");
+        
+        PreviousIncomeAmount = incomeRS;
+        PreviousExpenseAmount = expenseRS;
+        
         ExpenseDataService.UpdateCurrentBalance(TotalBalance);
+    }
+    
+    private string CalculateTrend(int currentAmount, decimal previousAmount, string type)
+    {
+        if (previousAmount == 0)
+            return "vs last month";
+            
+        decimal percentChange = ((currentAmount - (int)previousAmount) / (int)previousAmount) * 100;
+        
+        if (percentChange > 5)
+            return $"↑ {Math.Abs(percentChange):F1}% vs last month";
+        else if (percentChange < -5)
+            return $"↓ {Math.Abs(percentChange):F1}% vs last month";
+        else
+            return "→ Same as last month";
+    }
+    
+    private string GetTrendClass(string trend)
+    {
+        if (trend.Contains("↑"))
+            return "positive";
+        else if (trend.Contains("↓"))
+            return "negative";
+        else
+            return "neutral";
     }
 }

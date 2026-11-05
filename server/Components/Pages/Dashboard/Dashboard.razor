@@ -5,9 +5,13 @@
 @if (isDataLoaded)
 {
 <div class="control-section dashboard-page">
-    <div class="row" style="margin-bottom: 16px;">
-        <p class="page-title" style="display: inline-block;margin-bottom: -2em; margin-top: 0.175em">Dashboard</p>
-        <div class="col-md-3 col-xs-12 col-xl-6 col-lg-3 daterange overview-range-picker">
+    <div class="dashboard-header">
+        <div class="dashboard-header-content">
+            <h1 class="page-title">Good morning, Nicholas Delacruz</h1>
+            <h2 class="page-subtitle">Track your spending, manage your budget, and achieve your financial goals</h2>
+        </div>
+        <div class="dashboard-header-right">
+            <div class="overview-range-picker">
             <div id="daterange-overlay">
                 <div id="daterange-wrapper">
                     <SfDateRangePicker TValue="DateTime" AllowEdit="false" ShowClearButton="false" Format="MM/dd/yyyy" StartDate="@ExpenseDataService.StartDate" EndDate="@ExpenseDataService.EndDate" Min="@minDate" Max="@maxDate">
@@ -21,21 +25,60 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
+
+    <!-- Modern Stat Cards -->
     <div>
         <ExpCards @ref="CardsRef" IncomeData="@IncomeData" ExpenseData="@ExpenseData"></ExpCards>
     </div>
-    <ExpPieChart @ref="PieChartRef" ExpenseData="@ExpenseData"></ExpPieChart>
-    <div>
-        <div>
-            <div class="line-chart-area">
-                <ExpLineChart LineChartData="@LineChartData"></ExpLineChart>
-            </div>
-            <div class="column-chart-area">
-                <ExpColumnChart ColChartIncomeData="@ColChartIncomeData" ColChartExpenseData="@ColChartExpenseData"></ExpColumnChart>
+
+    <!-- Summary Stats Section -->
+    <div class="summary-stats-container">
+        <div class="summary-stat-card">
+            <div class="summary-stat-label">Average Transaction</div>
+            <div class="summary-stat-value">@AverageTransaction</div>
+        </div>
+        <div class="summary-stat-card">
+            <div class="summary-stat-label">Monthly Savings</div>
+            <div class="summary-stat-value">@MonthlySavings</div>
+        </div>
+        <div class="summary-stat-card">
+            <div class="summary-stat-label">Top Category</div>
+            <div class="summary-stat-value">@TopCategory</div>
+        </div>
+        <div class="summary-stat-card">
+            <div class="summary-stat-label">Average Daily Spend</div>
+            <div class="summary-stat-value">@AverageDailySpend</div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container">
+        <div class="chart-card">
+            <ExpPieChart @ref="PieChartRef" ExpenseData="@ExpenseData"></ExpPieChart>
+        </div>
+
+        <div class="chart-card">
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <ExpColumnChart ColChartIncomeData="@ColChartIncomeData" ColChartExpenseData="@ColChartExpenseData"></ExpColumnChart>
+                </div>
             </div>
         </div>
-        <ExpGrid RecentExpenseData="@RecentExpenseData"></ExpGrid>
+    </div>
+
+    <!-- Balance Trend & Recent Transactions Side by Side -->
+    <div class="side-by-side-container">
+        <div class="balance-trend-section">
+            <div class="chart-card">
+                <ExpLineChart LineChartData="@LineChartData"></ExpLineChart>
+            </div>
+        </div>
+
+        <div class="recent-transactions-section">
+            <ExpGrid RecentExpenseData="@RecentExpenseData"></ExpGrid>
+        </div>
     </div>
 </div>
 }
@@ -75,18 +118,25 @@ else{
 
 @code {
     [CascadingParameter]
-    private ExpenseDataService ExpenseDataService { get; set; }
+    private ExpenseDataService ExpenseDataService { get; set; } = default!;
 
-    private ExpCards CardsRef;
-    private ExpPieChart PieChartRef;
-    private List<ExpenseData> LineChartData;
-    private List<ExpenseData> ColChartIncomeData;
-    private List<ExpenseData> ColChartExpenseData;
-    private IEnumerable<ExpenseData> RecentExpenseData;
-    private IEnumerable<ExpenseData> IncomeData;
-    private IEnumerable<ExpenseData> ExpenseData;
-    private List<TempExpenseData> TempExpenseDS;
-    private List<TempExpenseData> TempIncomeDS;
+    private ExpCards? CardsRef;
+    private ExpPieChart? PieChartRef;
+    private List<ExpenseData> LineChartData = new();
+    private List<ExpenseData> ColChartIncomeData = new();
+    private List<ExpenseData> ColChartExpenseData = new();
+    private IEnumerable<ExpenseData> RecentExpenseData = new List<ExpenseData>();
+    private IEnumerable<ExpenseData> IncomeData = new List<ExpenseData>();
+    private IEnumerable<ExpenseData> ExpenseData = new List<ExpenseData>();
+    private List<TempExpenseData> TempExpenseDS = new();
+    private List<TempExpenseData> TempIncomeDS = new();
+    
+    // Summary Stats
+    private string AverageTransaction = "$0";
+    private string MonthlySavings = "$0";
+    private string TopCategory = "-";
+    private string AverageDailySpend = "$0";
+    
     private DateTime minDate = new DateTime(2019, 06, 01, 00, 00, 00);
     private DateTime maxDate = new DateTime(2019, 11, 30, 23, 59, 59);
     private DateTime lastMonthStart = new DateTime(2019, 10, 01, 00, 00, 00);
@@ -151,6 +201,43 @@ else{
         }
         ExpenseData = ExpenseD; IncomeData = IncomeD;
         RecentExpenseData = commonData.OrderByDescending(s => s.DateTime).Take(5);
+        
+        // Calculate summary stats
+        CalculateSummaryStats(commonData);
+    }
+    
+    private void CalculateSummaryStats(IEnumerable<ExpenseData> data)
+    {
+        if (data.Count() == 0)
+        {
+            AverageTransaction = "$0";
+            MonthlySavings = "$0";
+            TopCategory = "-";
+            AverageDailySpend = "$0";
+            return;
+        }
+        
+        // Average Transaction
+        int avgTransaction = (int)data.Average(x => x.Amount);
+        AverageTransaction = CommonService.GetCurrencyVal(avgTransaction);
+        
+        // Monthly Savings (Income - Expenses)
+        int totalIncome = data.Where(x => x.TransactionType == "Income").Sum(x => x.Amount);
+        int totalExpense = data.Where(x => x.TransactionType == "Expense").Sum(x => x.Amount);
+        int savings = totalIncome - totalExpense;
+        MonthlySavings = CommonService.GetCurrencyVal(savings);
+        
+        // Top Category
+        var topCat = data.GroupBy(x => x.Category)
+            .OrderByDescending(g => g.Count())
+            .FirstOrDefault();
+        TopCategory = topCat?.Key ?? "-";
+        
+        // Average Daily Spend
+        var dateRange = data.Select(x => x.DateTime.Date).Distinct().Count();
+        int totalExpenseAmount = data.Where(x => x.TransactionType == "Expense").Sum(x => x.Amount);
+        int avgDaily = dateRange > 0 ? totalExpenseAmount / dateRange : 0;
+        AverageDailySpend = CommonService.GetCurrencyVal(avgDaily);
     }
 
     private void ProcessLineData(ExpenseData data, List<TempExpenseData> LineD, List<ExpenseData> LineDS)
@@ -190,7 +277,7 @@ else{
     private class TempExpenseData
     {
         public int Month { get; set; }
-        public ExpenseData ExpenseData { get; set; }
+        public ExpenseData ExpenseData { get; set; } = new();
     }
 
     private async void LoadData()
@@ -249,7 +336,7 @@ else{
     }
 
     .content-wrapper-skeleton {
-        padding: 10px !important;
+        padding: 10px;
     }
 
     .mobile-skeleton {
