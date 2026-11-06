@@ -19,7 +19,7 @@
 
 <div id="main-page">
     <div class="sidebar">
-        <NavMenu OnSidebarCreate="@(() => { ShowSpinner = false; StateHasChanged(); })" />
+        <NavMenu OnSidebarCreate="@OnSidebarCreated" />
     </div>
     <div id="addexpenseDialog" class="expense-dialog"></div>
 
@@ -184,4 +184,13 @@
 </div>
 @code{
     private bool ShowSpinner = true;
+
+    private void OnSidebarCreated()
+    {
+        _ = InvokeAsync(() =>
+        {
+            ShowSpinner = false;
+            StateHasChanged();
+        });
+    }
 }

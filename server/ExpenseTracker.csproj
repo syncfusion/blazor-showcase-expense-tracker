@@ -16,16 +16,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Syncfusion.Blazor.Buttons" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Calendars" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Charts" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.DropDowns" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Grid" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Inputs" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Navigations" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Notifications" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Popups" Version="34.1.29" />
-	<PackageReference Include="Syncfusion.Blazor.Themes" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Buttons" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Calendars" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Charts" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.DropDowns" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Grid" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Inputs" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Navigations" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Notifications" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Popups" Version="*" />
+	<PackageReference Include="Syncfusion.Blazor.Themes" Version="*" />
   </ItemGroup>
 	
 </Project>

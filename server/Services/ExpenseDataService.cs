@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using ExpenseTracker.Models;
 
-
 namespace ExpenseTracker.Service
 {
     public class ExpenseDataService
@@ -13,9 +12,9 @@ namespace ExpenseTracker.Service
         public List<CategoryData> CategoryIncomeData { get; set; }
         public List<CategoryData> CategoryExpenseData { get; set; }
         public List<ExpenseData> ExpenseData { get; set; }
-        public string CurrentBalance { get; set; }
-        public IEnumerable<ExpenseData> CurrentExpenseData { get; set; }
-        public event Action OnChange;
+        public string CurrentBalance { get; set; } = "$0";
+        public IEnumerable<ExpenseData>? CurrentExpenseData { get; set; }
+        public event Action? OnChange;
 
         public void SetDate(DateTime StartDate, DateTime EndDate)
         {

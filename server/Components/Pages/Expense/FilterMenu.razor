@@ -68,10 +68,10 @@
 <div class="@overlayClass" @onclick="HideFilterMenu"></div>
 
 @code {
-    public SfCheckBox<bool> CreditFilter;
-    public SfSlider<int[]> RangeFilter;
-    public TransactGrid ContentRef;
-    private SfSidebar Sidebar;
+    public SfCheckBox<bool>? CreditFilter;
+    public SfSlider<int[]>? RangeFilter;
+    public TransactGrid ContentRef { get; set; } = default!;
+    private SfSidebar Sidebar = default!;
 
     private string overlayClass = string.Empty;
     private bool incomeChecked = true;
@@ -89,7 +89,7 @@
     private bool sliderOpen;
 
     [CascadingParameter]
-    public ExpenseDataService ExpenseDataService { get; set; }
+    public ExpenseDataService ExpenseDataService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -155,7 +155,7 @@
         {
             if (expenseData.DateTime >= start && expenseData.DateTime <= end)
             {
-                categoryList.Add(new FilterCategory { Text = expenseData.Category, Value = expenseData.Category });
+                categoryList.Add(new FilterCategory { Text = expenseData.Category ?? "", Value = expenseData.Category ?? "" });
             }
         }
         categoryList = categoryList.GroupBy(x => x.Value).Select(y => y.First()).ToList();
@@ -227,12 +227,11 @@
 
     public class FilterCategory
     {
-        public string Text { get; set; }
-        public string Value { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 
     public void Dispose()
     {
-        Sidebar = null;
     }
 }
