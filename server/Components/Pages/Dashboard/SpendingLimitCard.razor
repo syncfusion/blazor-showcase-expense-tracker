@@ -1,0 +1,126 @@
+@using ExpenseTracker.Service
+@using ExpenseTracker.Models
+
+<div class="spending-limit-card">
+    <div class="spending-limit-header">
+        <h3 class="spending-limit-title">Monthly Spending Limit</h3>
+        <div class="spending-limit-amount" id="remaining-budget">@RemainingBudget</div>
+    </div>
+    
+    <div class="spending-categories">
+        @if (CategoryLimits != null && CategoryLimits.Any())
+        {
+            @foreach (var category in CategoryLimits)
+            {
+                <div class="category-limit">
+                    <div class="category-limit-name">@category.Category</div>
+                    <div class="category-limit-bar">
+                        <div class="category-limit-bar-fill" style="width: @(category.PercentageUsed)%;"></div>
+                    </div>
+                    <div class="category-limit-amount">@category.AmountUsed / @category.Limit</div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private ExpenseDataService ExpenseDataService { get; set; } = default!;
+    
+    [Parameter]
+    public IEnumerable<ExpenseData>? ExpenseData { get; set; }
+    
+    private string RemainingBudget = "$0";
+    private List<CategoryLimitData> CategoryLimits = new();
+    
+    private const int TotalMonthlyBudget = 30000; // Increased to realistic amount based on sample data
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        CalculateCategoryLimits();
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        CalculateCategoryLimits();
+    }
+    
+    private void CalculateCategoryLimits()
+    {
+        CategoryLimits.Clear();
+        
+        if (ExpenseData == null || !ExpenseData.Any())
+            return;
+        
+        // Group expenses by category
+        var groupedByCategory = ExpenseData
+            .Where(x => x.TransactionType == "Expense")
+            .GroupBy(x => x.Category)
+            .ToList();
+        
+        // Category budgets - realistic based on sample data
+        var categoryBudgets = new Dictionary<string, int>
+        {
+            { "Food", 3000 },
+            { "Transportation", 1600 },
+            { "Entertainment", 500 },
+            { "Shopping", 2000 },
+            { "Bills", 1800 },
+            { "Utilities", 800 },
+            { "Mortgage / Rent", 3200 },
+            { "Health Care", 600 },
+            { "Education", 800 },
+            { "Insurance", 1000 },
+            { "Personal Care", 400 },
+            { "Clothing", 600 },
+            { "Housing", 800 },
+            { "Tax", 1000 },
+            { "Miscellaneous", 500 }
+        };
+        
+        int totalSpent = 0;
+        
+        foreach (var group in groupedByCategory)
+        {
+            var categoryName = group.Key ?? "";
+            var spent = group.Sum(x => x.Amount);
+            totalSpent += spent;
+            
+            if (categoryBudgets.TryGetValue(categoryName, out var limit))
+            {
+                var percentageUsed = (spent * 100) / limit;
+                
+                CategoryLimits.Add(new CategoryLimitData
+                {
+                    Category = categoryName,
+                    AmountUsed = CommonService.GetCurrencyVal(spent),
+                    Limit = CommonService.GetCurrencyVal(limit),
+                    PercentageUsed = Math.Min(100, percentageUsed),
+                    Spent = spent
+                });
+            }
+        }
+        
+        // Sort by percentage used (descending) and take top 6
+        CategoryLimits = CategoryLimits
+            .OrderByDescending(x => x.PercentageUsed)
+            .Take(6)
+            .ToList();
+        
+        // Calculate remaining budget
+        var remainingBudget = TotalMonthlyBudget - totalSpent;
+        RemainingBudget = CommonService.GetCurrencyVal(Math.Max(0, remainingBudget));
+    }
+    
+    public class CategoryLimitData
+    {
+        public string Category { get; set; } = string.Empty;
+        public string AmountUsed { get; set; } = string.Empty;
+        public string Limit { get; set; } = string.Empty;
+        public int PercentageUsed { get; set; }
+        public int Spent { get; set; }
+    }
+}

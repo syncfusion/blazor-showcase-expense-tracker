@@ -9,11 +9,11 @@
 </nav>
 
 <div id="navigation-sidebar">
-    <SfSidebar @ref="Sidebar" Width="200px" MediaQuery="(min-width: 769px)" Created="@(() => OnSidebarCreate?.Invoke())" IsOpen="@sliderOpen">
+    <SfSidebar Width="200px" MediaQuery="(min-width: 769px)" Created="@(() => OnSidebarCreate?.Invoke())" @bind-IsOpen="sliderOpen">
         <ChildContent>
             <div id="sidebar-wrapper">
                 <div class='samplename-header'>
-                    <div class='samplename'><h1>EXPENSE TRACKER</h1></div>
+                    <div class='samplename'><p>EXPENSE TRACKER</p></div>
                 </div>
                 <div class="info align-center">
                     <div class="image"></div>
@@ -58,29 +58,28 @@
 
 @code {
     [CascadingParameter]
-    private ExpenseDataService ExpenseDataService { get; set; }
+    private ExpenseDataService ExpenseDataService { get; set; } = default!;
     [Parameter]
-    public System.Action OnSidebarCreate { get; set; }
-    private SfSidebar Sidebar;
+    public System.Action? OnSidebarCreate { get; set; }
     public string OverlayClass = "";
-    private bool sliderOpen;
+    private bool sliderOpen = true;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         ExpenseDataService.OnChange += StateHasChanged;
     }
-    private void OpenSidebar()
+    private async Task OpenSidebar()
     {
-        if (!Sidebar.IsOpen)
-        {
-            sliderOpen = true;
-            this.OverlayClass = "overlay";
-        }
+        // Change the bound value so a media-query-closed sidebar can open on mobile.
+        sliderOpen = false;
+        await Task.Yield();
+        sliderOpen = true;
+        this.OverlayClass = "overlay";
     }
     private void CloseSidebar()
     {
-        if (Sidebar.IsOpen)
+        if (sliderOpen && !string.IsNullOrEmpty(OverlayClass))
         {
             sliderOpen = false;
             this.OverlayClass = "";

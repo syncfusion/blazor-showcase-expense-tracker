@@ -3,164 +3,771 @@
 @implements IDisposable;
 
 <style>
-    #main-page {
-        overflow-x: hidden;
-        background: linear-gradient(-141deg, #EEF5F7 14%, #EEF2FB 100%);
+    .expense-page {
+        background: #F8F9FB;
+        min-height: 100vh;
+        padding: 24px;
     }
 
-    .content.container-fluid {
-        height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
     }
 
-    @@media (min-width: 1100px) {
-        .rightpane {
-            margin-right: 270px;
+    .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, #1ABC9C 0%, #16A085 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .action-btn:hover {
+        box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .action-btn.secondary {
+        background: white;
+        color: #1ABC9C;
+        border: 1px solid #E0E6ED;
+    }
+
+    .action-btn.secondary:hover {
+        background: rgba(26, 188, 156, 0.05);
+        border-color: #1ABC9C;
+    }
+
+    /* Stats Cards Section */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #1ABC9C;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .stat-card.income {
+        border-left-color: #1ABC9C;
+    }
+
+    .stat-card.expense {
+        border-left-color: #E74C3C;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+
+    .stat-card.income .stat-value {
+        color: #1ABC9C;
+    }
+
+    .stat-card.expense .stat-value {
+        color: #E74C3C;
+    }
+
+    .stat-change {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .stat-change.positive {
+        color: #1ABC9C;
+    }
+
+    .stat-change.negative {
+        color: #E74C3C;
+    }
+
+    /* Main Content Grid */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .content-main {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .content-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .expense-breakdown-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .breakdown-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+    }
+
+    .breakdown-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #F0F0F0;
+        font-size: 13px;
+    }
+
+    .breakdown-item:last-child {
+        border-bottom: none;
+    }
+
+    .breakdown-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-primary);
+    }
+
+    .breakdown-badge {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+    }
+
+    .breakdown-value {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .breakdown-percent {
+        color: var(--text-secondary);
+        font-size: 12px;
+    }
+
+    /* Modern Filter Bar */
+    .filter-bar {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .filter-bar-left {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        flex: 1;
+    }
+
+    .date-range-presets {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .preset-btn {
+        background: #F5F7FA;
+        border: 1px solid #E0E6ED;
+        color: var(--text-primary);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .preset-btn:hover,
+    .preset-btn.active {
+        background: #1ABC9C;
+        color: white;
+        border-color: #1ABC9C;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        letter-spacing: 0.5px;
+    }
+
+    .filter-control {
+        min-width: 150px;
+    }
+
+    .filter-divider {
+        width: 1px;
+        height: 24px;
+        background: #E0E6ED;
+        margin: 0 8px;
+    }
+
+    /* Grid Container */
+    .expense-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    /* Search Bar */
+    .search-section {
+        padding: 16px;
+        border-bottom: 1px solid #E0E6ED;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex: 1;
+        min-width: 300px;
+    }
+
+    #search {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .button-section {
+        display: flex;
+        gap: 8px;
+    }
+
+    .button-section button {
+        background: linear-gradient(135deg, #1ABC9C 0%, #16A085 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .button-section button:hover {
+        box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .content-grid {
+            grid-template-columns: 1fr;
         }
     }
 
-    @@media (max-width: 1100px) {
-        .rightpane {
-            margin-right: 0px;
+    @@media (max-width: 1024px) {
+        .filter-bar {
+            flex-direction: column;
+            align-items: stretch;
         }
-    }
 
-    @@media (min-width: 768px) {
-        .content .content-wrapper {
-            padding: 0;
+        .filter-bar-left {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .filter-group {
+            width: 100%;
+        }
+
+        .filter-control {
+            width: 100%;
+        }
+
+        .filter-divider {
+            width: 100%;
+            height: 1px;
+            margin: 8px 0;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .stats-container {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         }
     }
 
     @@media (max-width: 768px) {
-        .content .content-wrapper {
-            padding: 0 8px 8px 8px;
-            margin-top: 7rem;
+        .expense-page {
+            padding: 12px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .filter-bar {
+            padding: 12px;
+            gap: 8px;
+        }
+
+        .search-wrapper {
+            flex-direction: column;
+            min-width: 100%;
+        }
+
+        #search {
+            width: 100%;
+        }
+
+        .button-section {
+            width: 100%;
+        }
+
+        .button-section button {
+            flex: 1;
         }
     }
 
-    .content.container-fluid {
-        height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+    @@media (max-width: 480px) {
+        .expense-page {
+            padding: 8px;
+        }
 
-    /*skeleton*/
-    .e-skeleton.e-skeleton-text, .e-skeleton.e-skeleton-square, .e-skeleton.e-skeleton-rectangle, .e-skeleton.e-skeleton-circle {
-        background-color: #83808014;
-    }
+        .page-title {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
 
-    .search-skeleton {
-        height: 30px;
-        width: 100%;
-        margin: 40px 15px 15px 15px;
-    }
+        .filter-bar {
+            padding: 8px;
+        }
 
-    .expense-grid-skeleton {
-        height: 80%;
-        width: 100%;
-        margin: 0px 10px 10px 15px;
-    }
+        .filter-label {
+            font-size: 11px;
+        }
 
-    .filter-skeleton{
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        width: 251px;
-        height: 100%;
-    }
+        .button-section {
+            width: 100%;
+            flex-direction: column;
+        }
 
-    @@media (max-width:1101px) {
-        .filter-skeleton{
-            display:none;
+        .button-section button {
+            width: 100%;
         }
     }
 
-    @@media (max-width:768px) {
-        .search-skeleton {
-            margin: 106px 0px 10px 0px;
-        }
-
-        .expense-grid-skeleton {
-            margin: 10px 0px 10px;
-        }
+    /* Filter Control Styling */
+    .filter-checkbox {
+        margin-right: 12px;
     }
 
+    .modern-date-range :deep(.e-input-group) {
+        border: 1px solid #E0E6ED;
+        border-radius: 6px;
+    }
+
+    .modern-date-range :deep(.e-input-group:focus-within) {
+        border-color: #1ABC9C;
+        box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+    }
+
+    .modern-date-range :deep(.e-input) {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Checkbox styling in filter bar */
+    :deep(.filter-checkbox .e-checkbox) {
+        margin-right: 8px;
+    }
+
+    :deep(.filter-checkbox .e-checkbox-wrapper label) {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    :deep(.filter-checkbox .e-checkbox-wrapper input:checked ~ .e-checkmark) {
+        background: #1ABC9C;
+        border-color: #1ABC9C;
+    }
 </style>
 
 @if (isDataLoaded)
 {
-<div class="expense-page">
-    <div class='exp-content-container'>
-        <div>
-            <p class="page-title">All Transactions</p>
+    <div class="expense-page">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Transactions</h1>
+                <p class="page-subtitle">View and manage all your income and expenses in one place</p>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn secondary" @onclick="ExportTransactions">📥 Export</button>
+                <button class="action-btn" @onclick="@(async () => { if (this.DialogRef != null) await this.DialogRef.ShowAddDialog(); })">+ Add Transaction</button>
+            </div>
         </div>
-        <div>
-            <div class="col-md-12 margin-top col-lg-12">
-                <div class="expense-grid-container">
-                    <div class="expense-head-padding" style="background-color: @color;">
-                        <div class="search-wrapper search-section" style="display: @visibility;">
-                            <div id="search">
-                                <SfTextBox Type="InputType.Search" ShowClearButton="true" Placeholder="Search" CssClass="search txt" @bind-Value="SearchValue" ValueChange="@(async () => await this.ContentRef.Search(SearchValue))" Created="OnCreate"></SfTextBox>
-                                <span id="searchbtn" class="e-search-icon expense-search-icon e-icons" @onclick="@(() => this.ContentRef.Search(SearchValue))"></span>
-                            </div>
-                            <div class="button-section search-section">
-                                <button id="addexpense" class="e-btn small e-info" @onclick="@(() => this.DialogRef.ShowAddDialog())">Add Transaction</button>
-                                <button id="filterExpense" class="e-btn small e-info" @onclick="@(() => this.FilterRef.ShowFilterMenu())">Filter</button>
-                                <div id="add-btn" class='e-btn' @onclick="@(() => this.DialogRef.ShowAddDialog())">
-                                    <span class='e-icons add-icon add-head-item'></span>
-                                </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Transaction</div>
+                <div class="stat-value">$@totalAmount.ToString("N2")</div>
+                <div class="stat-change positive">📈 @transactionCount transactions</div>
+            </div>
+            <div class="stat-card income">
+                <div class="stat-label">Incomes</div>
+                <div class="stat-value">$@totalIncome.ToString("N2")</div>
+                <div class="stat-change positive">+@incomeCount sources</div>
+            </div>
+            <div class="stat-card expense">
+                <div class="stat-label">Expenses</div>
+                <div class="stat-value">$@totalExpense.ToString("N2")</div>
+                <div class="stat-change negative">@expenseCount categories</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Main Content -->
+            <div class="content-main">
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="filter-bar-left">
+                        <div class="date-range-section">
+                            <span class="filter-label">📅 Date Range</span>
+                            <div class="filter-control">
+                                <SfDateRangePicker TValue="DateTime" 
+                                                   CssClass="modern-date-range" 
+                                                   ShowClearButton="false" 
+                                                   AllowEdit="false" 
+                                                   EndDate="@ExpenseDataService.EndDate" 
+                                                   StartDate="@ExpenseDataService.StartDate" 
+                                                   Min="@minDate" 
+                                                   Max="@maxDate">
+                                    <DateRangePickerEvents TValue="DateTime" ValueChange="DateRangeChanged"></DateRangePickerEvents>
+                                </SfDateRangePicker>
                             </div>
                         </div>
                     </div>
+
+                    <div id="search" style="flex: 1; min-width: 250px;">
+                        <SfTextBox Type="InputType.Search" ShowClearButton="true" Placeholder="Search transactions..." CssClass="search txt" @bind-Value="SearchValue" ValueChange="@(async () => { if (this.ContentRef != null) await this.ContentRef.Search(SearchValue); })" Created="OnCreate"></SfTextBox>
+                    </div>
+                </div>
+
+                <!-- Transaction Grid -->
+                <div class="expense-container">
                     <TransactGrid @ref="ContentRef"></TransactGrid>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="content-sidebar">
+                <div class="expense-breakdown-card">
+                    <div class="breakdown-title">Expense Breakdown</div>
+                    @if (totalExpense > 0)
+                    {
+                        <div style="margin-top: 16px;">
+                            @foreach (var category in expenseCategories)
+                            {
+                                <div class="breakdown-item">
+                                    <div class="breakdown-label">
+                                        <div class="breakdown-badge" style="background: @GetCategoryColor(category.Category);"></div>
+                                        <span>@category.Category</span>
+                                    </div>
+                                    <div>
+                                        <div class="breakdown-value">$@category.Amount.ToString("N2")</div>
+                                        <div class="breakdown-percent">@((int)(category.Amount / totalExpense * 100))%</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="color: var(--text-secondary); text-align: center; padding: 20px 0;">No expense data</p>
+                    }
                 </div>
             </div>
         </div>
     </div>
-    <FilterMenu @ref="FilterRef"></FilterMenu>
+
     <TransactDialog @ref="DialogRef"></TransactDialog>
-</div>
 }
-else{
-    <div class="search-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="30px" Width="100%"></SfSkeleton></div>
-    <div class="expense-grid-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="700px" Width="100%"></SfSkeleton></div>
-    <div class="filter-skeleton"><SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="815px" Width="100%"></SfSkeleton></div>
+else
+{
+    <div class="expense-page">
+        <div style="padding: 20px;">
+            <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="50px" Width="100%" Count="1"></SfSkeleton>
+            <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="80px" Width="100%" Count="1"></SfSkeleton>
+            <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="40px" Width="100%" Count="1"></SfSkeleton>
+            <SfSkeleton Shape="Syncfusion.Blazor.Notifications.SkeletonType.Rectangle" Height="600px" Width="100%" Count="1"></SfSkeleton>
+        </div>
+    </div>
 }
 
 @code{
     [CascadingParameter]
-    public ExpenseDataService ExpenseDataService { get; set; }
+    public ExpenseDataService ExpenseDataService { get; set; } = default!;
 
-    public FilterMenu FilterRef;
-    public TransactDialog DialogRef;
-    public TransactGrid ContentRef;
-    public string SearchValue { get; set; }
-    private string visibility = "none";
-    private string color = "#FFFFFF";
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
+
+    public TransactDialog? DialogRef;
+    public TransactGrid? ContentRef;
+    public string SearchValue { get; set; } = string.Empty;
+
+    // Statistics
+    private decimal totalAmount = 0;
+    private decimal totalIncome = 0;
+    private decimal totalExpense = 0;
+    private int transactionCount = 0;
+    private int incomeCount = 0;
+    private int expenseCount = 0;
+    private List<ExpenseCategoryData> expenseCategories = new();
+
+    // Filter states
+    private bool incomeChecked = true;
+    private bool expenseChecked = true;
+    private bool cashChecked = true;
+    private bool debitChecked = true;
+    private bool creditChecked = true;
+    private DateTime minDate = new DateTime(2019, 06, 01, 00, 00, 00);
+    private DateTime maxDate = new DateTime(2019, 11, 30, 23, 59, 59);
+    private string currentDateRange = "all"; // Default to "all" to show all data
     private bool isDataLoaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Set default date range to show all data
+        ExpenseDataService.SetDate(minDate, maxDate);
+        isDataLoaded = true;
+        await UpdateStatistics();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (isDataLoaded)
+        if (isDataLoaded && firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-            this.ContentRef.DialogRef = this.DialogRef;
-            this.FilterRef.ContentRef = this.ContentRef;
-            this.DialogRef.ContentRef = this.ContentRef;
-            this.ContentRef.FilterRef = this.FilterRef;
+            if (this.ContentRef != null && this.DialogRef != null)
+            {
+                this.ContentRef.DialogRef = this.DialogRef;
+                this.DialogRef.ContentRef = this.ContentRef;
+            }
+            
+            // Load all data into grid on first render
+            await UpdateGrid();
         }
+    }
+
+    private async Task DateRangeChanged(RangePickerEventArgs<DateTime> args)
+    {
+        if (args != null)
+        {
+            ExpenseDataService.SetDate(args.StartDate, args.EndDate);
+            await UpdateGrid();
+            await UpdateStatistics();
+        }
+    }
+
+    private async Task SetDateRange(string range)
+    {
+        currentDateRange = range;
+        // Always show all data by default
+        ExpenseDataService.SetDate(minDate, maxDate);
+        await UpdateGrid();
+        await UpdateStatistics();
+    }
+
+    private async Task UpdateGrid()
+    {
+        if (ContentRef != null)
+        {
+            await ContentRef.UpdateFilteredData(incomeChecked, expenseChecked, cashChecked, debitChecked, creditChecked);
+        }
+    }
+
+    private async Task UpdateStatistics()
+    {
+        var data = ExpenseDataService.ExpenseData
+            .Where(x => x.DateTime >= ExpenseDataService.StartDate && x.DateTime <= ExpenseDataService.EndDate)
+            .ToList();
+
+        transactionCount = data.Count;
+        totalIncome = data.Where(x => x.TransactionType == "Income").Sum(x => x.Amount);
+        totalExpense = data.Where(x => x.TransactionType == "Expense").Sum(x => x.Amount);
+        totalAmount = totalIncome + totalExpense;
+        incomeCount = data.Where(x => x.TransactionType == "Income").Select(x => x.Category).Distinct().Count();
+        expenseCount = data.Where(x => x.TransactionType == "Expense").Select(x => x.Category).Distinct().Count();
+
+        // Expense breakdown
+        expenseCategories = data
+            .Where(x => x.TransactionType == "Expense")
+            .GroupBy(x => x.Category)
+            .Select(g => new ExpenseCategoryData
+            {
+                Category = g.Key ?? "",
+                Amount = g.Sum(x => x.Amount),
+                Count = g.Count()
+            })
+            .OrderByDescending(x => x.Amount)
+            .Take(10)
+            .ToList();
+
+        StateHasChanged();
+    }
+
+    private async Task ExportTransactions()
+    {
+        try
+        {
+            var data = ExpenseDataService.ExpenseData
+                .Where(x => x.DateTime >= ExpenseDataService.StartDate && x.DateTime <= ExpenseDataService.EndDate)
+                .OrderByDescending(x => x.DateTime)
+                .ToList();
+
+            if (data.Count == 0)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "No data to export");
+                return;
+            }
+
+            // Generate CSV content
+            var csv = new System.Text.StringBuilder();
+            csv.AppendLine("Date,Category,Description,Payment Mode,Transaction Type,Amount");
+
+            foreach (var transaction in data)
+            {
+                var date = transaction.DateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                var category = transaction.Category;
+                var description = (transaction.Description ?? "").Replace(",", ";"); // Escape commas
+                var paymentMode = transaction.PaymentMode;
+                var type = transaction.TransactionType;
+                var amount = transaction.Amount;
+
+                csv.AppendLine($"{date},{category},{description},{paymentMode},{type},{amount}");
+            }
+
+            // Create blob and download
+            var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+            var fileName = $"transactions_{DateTime.Now:yyyy-MM-dd_HHmmss}.csv";
+
+            await JSRuntime.InvokeVoidAsync("downloadFile", bytes, fileName, "text/csv");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Export error: {ex.Message}");
+        }
+    }
+
+    private string GetCategoryColor(string category)
+    {
+        var colors = new Dictionary<string, string>
+        {
+            { "Food", "#FF6B6B" },
+            { "Transportation", "#4ECDC4" },
+            { "Housing", "#45B7D1" },
+            { "Entertainment", "#FFA07A" },
+            { "Utilities", "#98D8C8" },
+            { "Healthcare", "#F7DC6F" },
+            { "Education", "#BB8FCE" },
+            { "Savings", "#1ABC9C" },
+            { "Shopping", "#E74C3C" },
+            { "Other", "#95A5A6" }
+        };
+
+        return colors.ContainsKey(category) ? colors[category] : "#BDC3C7";
     }
 
     private void OnCreate()
     {
-        this.visibility = ""; this.color = "";
     }
 
     public void Dispose()
     {
         ContentRef = null;
-        FilterRef = null;
         DialogRef = null;
         isDataLoaded = false;
     }
@@ -178,5 +785,12 @@ else{
         {
             LoadData();
         }
+    }
+
+    public class ExpenseCategoryData
+    {
+        public string Category { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public int Count { get; set; }
     }
 }

@@ -10,72 +10,72 @@
         <SfMessage Severity="MessageSeverity.Success" Visible=@ShowSavedMsg>The transaction has been saved successfully.</SfMessage>
         @if (CreateNewDialog)
         {
-            <SfDialog @ref="TransactionDialog" Width="100%" CssClass="transact-dialog" ShowCloseIcon="true" CloseOnEscape="false" IsModal="true" Target="#sidebarRightpane">
+            <SfDialog @ref="TransactionDialog" Width="500px" Height="auto" CssClass="modern-transact-dialog" ShowCloseIcon="true" CloseOnEscape="false" IsModal="true" AllowDragging="true">
                 <ChildContent>
                     <DialogTemplates>
                         <Header>@DialogHeader</Header>
                     </DialogTemplates>
-                    <div class='dlg-content'>
-                        <div class="transaction-dialog">
+                    <div class='modern-dlg-content'>
+                        <div class="modern-transaction-dialog">
                             <input type='hidden' id="uniqueId" @bind="UniqueId" class="e-input required readonly" />
-                            <div class='dlg-radio-btn-section'>
-                                <div class='dlg-income-radio-section'>
-                                    <SfRadioButton TChecked="string" Label="Income" @bind-Checked="TransactionType" Value="Income" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged"></SfRadioButton>
-                                </div>
-                                <div class='dlg-expense-radio-section'>
-                                    <SfRadioButton TChecked="string" Label="Expense" @bind-Checked="TransactionType" Value="Expense" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged"></SfRadioButton>
+                            
+                            <!-- Transaction Type Section -->
+                            <div class='form-section transaction-type-section'>
+                                <label class="section-label">Transaction Type</label>
+                                <div class='transaction-type-buttons'>
+                                    <SfRadioButton TChecked="string" Label="Income" @bind-Checked="TransactionType" Value="Income" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged" CssClass="type-radio"></SfRadioButton>
+                                    <SfRadioButton TChecked="string" Label="Expense" @bind-Checked="TransactionType" Value="Expense" Name='dlgTransactionType' ValueChange="DlgTransactTypeChanged" CssClass="type-radio"></SfRadioButton>
                                 </div>
                             </div>
-                            <div class='dlg-date-section'>
-                                <div class='dlg-date-picker-container'>
-                                    <div>
+
+                            <!-- Date & Time Section -->
+                            <div class='form-section datetime-section'>
+                                <label class="section-label">When</label>
+                                <div class='datetime-fields'>
+                                    <div class='field-wrapper date-wrapper'>
                                         <SfDatePicker Placeholder='Choose a Date' Width='100%' FloatLabelType='FloatLabelType.Always' @bind-Value="DateValue" Min="@MinDate" Max="@MaxDate"></SfDatePicker>
                                     </div>
-                                </div>
-                                <div class='dlg-time-picker-container'>
-                                    <div>
+                                    <div class='field-wrapper time-wrapper'>
                                         <SfTimePicker Placeholder='Choose a Time' Width='100%' FloatLabelType='FloatLabelType.Always' @bind-Value="TimeValue"></SfTimePicker>
                                     </div>
                                 </div>
                             </div>
-                            <div class='category-section'>
-                                <div class='dlg-category-container'>
-                                    <div>
+
+                            <!-- Category & Amount Section -->
+                            <div class='form-section category-amount-section'>
+                                <label class="section-label">Details</label>
+                                <div class='category-amount-fields'>
+                                    <div class='field-wrapper category-wrapper'>
                                         <SfDropDownList @ref="DropDownList" TValue="string" CssClass='Category' Placeholder='Select a Category' FloatLabelType='FloatLabelType.Always'
                                                         TItem="CategoryData" DataSource='CategoryDataSource' @bind-Value="CategoryValue">
                                             <DropDownListFieldSettings Text="Category" Value="Category" IconCss="Class"></DropDownListFieldSettings>
                                         </SfDropDownList>
                                     </div>
-                                </div>
-                                <div class='dlg-amount-container'>
-                                    <div>
+                                    <div class='field-wrapper amount-wrapper'>
                                         <SfNumericTextBox TValue="double?" Placeholder='Enter a Amount' FloatLabelType='FloatLabelType.Always' Format="c2" Min="0" @bind-Value="Amount"></SfNumericTextBox>
                                     </div>
                                 </div>
                             </div>
-                            <div class='description-container'>
-                                <div>
+
+                            <!-- Description Section -->
+                            <div class='form-section description-section'>
+                                <label class="section-label">Description</label>
+                                <div class="field-wrapper">
                                     <div class="e-float-input">
-                                        <input type='text' @bind="Description" class="e-input required readonly" />
+                                        <input type='text' @bind="Description" class="e-input" />
                                         <span class="e-float-line"></span>
-                                        <label class="e-float-text e-label-top">Descriptions</label>
+                                        <label class="e-float-text e-label-top">Add notes (optional)</label>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div class='payment-label'>
-                                    <label class="">PaymentMode</label>
-                                </div>
-                                <div class='payment-radio-container'>
-                                    <div class='dlg-cash-payment'>
-                                        <SfRadioButton Label="Cash" Value="Cash" @bind-Checked="PaymentMode" Name='dlgPaymentMode'></SfRadioButton>
-                                    </div>
-                                    <div class='dlg-debit-payment'>
-                                        <SfRadioButton Label="Debit Card" Value="Debit Card" @bind-Checked="PaymentMode" Name='dlgPaymentMode'></SfRadioButton>
-                                    </div>
-                                    <div class='dlg-credit-payment'>
-                                        <SfRadioButton Label="Credit Card" Value="Credit Card" @bind-Checked="PaymentMode" Name='dlgPaymentMode'></SfRadioButton>
-                                    </div>
+
+                            <!-- Payment Mode Section -->
+                            <div class='form-section payment-section'>
+                                <label class="section-label">Payment Method</label>
+                                <div class='payment-options'>
+                                    <SfRadioButton Label="Cash" Value="Cash" @bind-Checked="PaymentMode" Name='dlgPaymentMode' CssClass="payment-radio"></SfRadioButton>
+                                    <SfRadioButton Label="Debit Card" Value="Debit Card" @bind-Checked="PaymentMode" Name='dlgPaymentMode' CssClass="payment-radio"></SfRadioButton>
+                                    <SfRadioButton Label="Credit Card" Value="Credit Card" @bind-Checked="PaymentMode" Name='dlgPaymentMode' CssClass="payment-radio"></SfRadioButton>
                                 </div>
                             </div>
                         </div>
@@ -91,50 +91,30 @@
     </div>
 </div>
 
-<style>
-    .e-message {
-        position: absolute;
-        top: 0%;
-        right: 0%;
-        width: 86%;
-        letter-spacing: 0.5px;
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-    }
-
-    @@media (max-width: 600px) {
-        .e-message {
-            top: 8%;
-            width: 100%;
-        }
-    }
-</style>
-
 @code{
-    public SfDialog TransactionDialog;
-    public TransactGrid ContentRef;
-    SfDropDownList<string, CategoryData> DropDownList;
+    public SfDialog? TransactionDialog;
+    public TransactGrid ContentRef { get; set; } = default!;
+    SfDropDownList<string, CategoryData>? DropDownList;
 
-    public string CategoryValue { get; set; } = null;
+    public string? CategoryValue { get; set; } = null;
     public DateTime? DateValue;
     public DateTime? TimeValue;
-    public string UniqueId { get; set; }
-    public string Description { get; set; }
+    public string UniqueId { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public double? Amount = 0;
-    public List<CategoryData> CategoryDataSource { get; set; }
+    public List<CategoryData> CategoryDataSource { get; set; } = new();
     [CascadingParameter]
-    public ExpenseDataService ExpenseDataService { get; set; }
+    public ExpenseDataService ExpenseDataService { get; set; } = default!;
     [Parameter]
-    public Action<List<ExpenseData>> OnGridUpdate { get; set; }
+    public Action<List<ExpenseData>>? OnGridUpdate { get; set; }
     public bool IsAdd = false;
 
     private DateTime MinDate;
     private DateTime MaxDate;
-    private ExpenseData SelectedRecord;
+    private ExpenseData? SelectedRecord;
     private string ButtonContent = "Add";
 
-    public string DialogHeader { get; set; }
+    public string DialogHeader { get; set; } = string.Empty;
     public bool CreateNewDialog = false;
     public bool ShowAddedMsg;
     public bool ShowDeleteMsg;
@@ -143,19 +123,40 @@
 
     public string PaymentMode = "Cash";
 
-    List<ExpenseData> GridSelectedRecords { get; set; }
+    List<ExpenseData> GridSelectedRecords { get; set; } = new();
+    private bool ShouldShowDialog = false;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         this.DialogHeader = "";
         this.Description = "";
-        this.DateValue = ExpenseDataService.EndDate;
         this.MinDate = new DateTime(2019, 06, 01, 00, 00, 00);
         this.MaxDate = new DateTime(2019, 11, 30, 23, 59, 59);
-        this.CategoryDataSource = new List<CategoryData>();
+        
+        if (ExpenseDataService != null)
+        {
+            this.DateValue = ExpenseDataService.EndDate;
+            this.CategoryDataSource = ExpenseDataService.CategoryExpenseData ?? new List<CategoryData>();
+        }
+        else
+        {
+            this.DateValue = DateTime.Now;
+            this.CategoryDataSource = new List<CategoryData>();
+        }
+        
         this.GridSelectedRecords = new List<ExpenseData>();
-        this.CategoryDataSource = ExpenseDataService.CategoryExpenseData;
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        // This is called after CascadingParameters are set
+        await base.OnParametersSetAsync();
+        
+        if (ExpenseDataService != null && (CategoryDataSource == null || CategoryDataSource.Count == 0))
+        {
+            this.CategoryDataSource = ExpenseDataService.CategoryExpenseData ?? new List<CategoryData>();
+        }
     }
 
     /// <summary>
@@ -164,16 +165,16 @@
     public async Task ShowAddDialog()
     {
         this.IsAdd = true;
+        this.UpdateAddDialog();
+        
         if (this.TransactionDialog == null)
         {
-            this.UpdateAddDialog();
+            ShouldShowDialog = true;
             CreateNewDialog = true;
             StateHasChanged();
         }
         else
         {
-            this.UpdateAddDialog();
-            StateHasChanged();
             await this.TransactionDialog.ShowAsync();
         }
     }
@@ -184,12 +185,21 @@
         this.ButtonContent = "Add";
         this.UniqueId = "T" + DateTime.Now.Ticks.ToString().Substring(12, 6);
         this.Amount = 0;
-        this.DateValue = this.TimeValue = ExpenseDataService.EndDate;
+        this.DateValue = this.TimeValue = (ExpenseDataService != null) ? ExpenseDataService.EndDate : DateTime.Now;
         this.Description = "";
         this.TransactionType = "Expense";
         this.PaymentMode = "Cash";
-        this.CategoryDataSource = ExpenseDataService.CategoryExpenseData;
-        this.CategoryValue = CategoryDataSource[0].Category;
+        
+        if (ExpenseDataService != null)
+        {
+            this.CategoryDataSource = ExpenseDataService.CategoryExpenseData ?? new List<CategoryData>();
+        }
+        else
+        {
+            this.CategoryDataSource = this.CategoryDataSource ?? new List<CategoryData>();
+        }
+        
+        this.CategoryValue = (this.CategoryDataSource != null && this.CategoryDataSource.Count > 0) ? CategoryDataSource[0].Category : "";
     }
 
     /// <summary>
@@ -200,16 +210,16 @@
     {
         this.IsAdd = false;
         SelectedRecord = selectedRecord;
+        this.UpdateEditDialog();
+        
         if (this.TransactionDialog == null)
         {
-            this.UpdateEditDialog();
+            ShouldShowDialog = true;
             CreateNewDialog = true;
             StateHasChanged();
         }
         else
         {
-            this.UpdateEditDialog();
-            StateHasChanged();
             await this.TransactionDialog.ShowAsync();
         }
     }
@@ -218,22 +228,22 @@
     {
         this.DialogHeader = "Edit Transaction";
         this.ButtonContent = "Save";
-        if (SelectedRecord != null)
+        if (SelectedRecord != null && ExpenseDataService != null)
         {
-            this.UniqueId = SelectedRecord.UniqueId;
+            this.UniqueId = SelectedRecord.UniqueId ?? "";
             if (SelectedRecord.TransactionType == "Income")
             {
                 this.TransactionType = "Income";
-                this.CategoryDataSource = this.ExpenseDataService.CategoryIncomeData;
+                this.CategoryDataSource = this.ExpenseDataService.CategoryIncomeData ?? new List<CategoryData>();
             }
             else if (SelectedRecord.TransactionType == "Expense")
             {
                 this.TransactionType = "Expense";
-                this.CategoryDataSource = this.ExpenseDataService.CategoryExpenseData;
+                this.CategoryDataSource = this.ExpenseDataService.CategoryExpenseData ?? new List<CategoryData>();
             }
             this.DateValue = this.TimeValue = SelectedRecord.DateTime;
-            this.PaymentMode = SelectedRecord.PaymentMode;
-            this.Description = SelectedRecord.Description;
+            this.PaymentMode = SelectedRecord.PaymentMode ?? "";
+            this.Description = SelectedRecord.Description ?? "";
             this.Amount = (double?)SelectedRecord.Amount;
             this.CategoryValue = SelectedRecord.Category;
         }
@@ -272,7 +282,7 @@
 
     public async Task DlgOverlayClicked()
     {
-        if (CreateNewDialog)
+        if (CreateNewDialog && this.TransactionDialog != null)
             await this.TransactionDialog.HideAsync();
     }
 
@@ -280,13 +290,13 @@
     {
         if (args.Value == "Income")
         {
-            this.CategoryDataSource = this.ExpenseDataService.CategoryIncomeData;
+            this.CategoryDataSource = this.ExpenseDataService.CategoryIncomeData ?? new List<CategoryData>();
         }
         else
         {
-            this.CategoryDataSource = this.ExpenseDataService.CategoryExpenseData;
+            this.CategoryDataSource = this.ExpenseDataService.CategoryExpenseData ?? new List<CategoryData>();
         }
-        this.CategoryValue = this.CategoryDataSource[0].Category;
+        this.CategoryValue = this.CategoryDataSource.Count > 0 ? this.CategoryDataSource[0].Category : "";
     }
 
     /// <summary>
@@ -295,29 +305,85 @@
     /// <param name="args"></param>
     public async Task OnClickSave()
     {
-        var expenseData = new ExpenseData();
-        expenseData.UniqueId = this.UniqueId;
-        expenseData.TransactionType = this.TransactionType;
-        expenseData.DateTime = (this.DateValue == null ? ExpenseDataService.EndDate : (DateTime)this.DateValue).Date.Add((this.TimeValue == null ? ExpenseDataService.EndDate : (DateTime)this.TimeValue).TimeOfDay);
-        expenseData.Category = this.CategoryValue;
-        expenseData.PaymentMode = this.PaymentMode;
-        expenseData.Description = this.Description;
-        expenseData.Amount = (int)this.Amount;
-        expenseData.MonthShort = expenseData.DateTime.ToString("MMM");
-        expenseData.MonthFull = expenseData.DateTime.ToString("MMMM, yyyy");
-        expenseData.FormattedDate = expenseData.DateTime.ToString("MM/dd/yyyy hh:mm tt");
-        if (IsAdd)
+        try
         {
-            ShowAddedMsg = true;
-            this.ContentRef.AddRecord(expenseData);
+            // Validate ExpenseDataService
+            if (ExpenseDataService == null)
+            {
+                await DialogService.AlertAsync("Data service not initialized. Please reload the page.", "Error");
+                return;
+            }
+
+            // Validate required fields
+            if (string.IsNullOrWhiteSpace(this.CategoryValue))
+            {
+                await DialogService.AlertAsync("Please select a category", "Validation Error");
+                return;
+            }
+
+            if (this.Amount == null || this.Amount <= 0)
+            {
+                await DialogService.AlertAsync("Please enter a valid amount", "Validation Error");
+                return;
+            }
+
+            if (this.ContentRef == null)
+            {
+                await DialogService.AlertAsync("Grid reference not initialized. Please try again.", "Error");
+                return;
+            }
+
+            var expenseData = new ExpenseData
+            {
+                UniqueId = string.IsNullOrEmpty(this.UniqueId) ? Guid.NewGuid().ToString() : this.UniqueId,
+                TransactionType = this.TransactionType ?? "Expense",
+                Category = this.CategoryValue,
+                PaymentMode = this.PaymentMode ?? "Cash",
+                Description = this.Description ?? "",
+                Amount = (int)(this.Amount ?? 0),
+                MonthShort = DateTime.Now.ToString("MMM"),
+                MonthFull = DateTime.Now.ToString("MMMM, yyyy"),
+                FormattedDate = DateTime.Now.ToString("MM/dd/yyyy hh:mm tt")
+            };
+
+            // Calculate DateTime safely
+            try
+            {
+                var date = this.DateValue ?? ExpenseDataService.EndDate;
+                var time = this.TimeValue ?? ExpenseDataService.EndDate;
+                expenseData.DateTime = date.Date.Add(time.TimeOfDay);
+            }
+            catch
+            {
+                expenseData.DateTime = ExpenseDataService.EndDate;
+            }
+
+            // Update formatted date with actual datetime
+            expenseData.MonthShort = expenseData.DateTime.ToString("MMM");
+            expenseData.MonthFull = expenseData.DateTime.ToString("MMMM, yyyy");
+            expenseData.FormattedDate = expenseData.DateTime.ToString("MM/dd/yyyy hh:mm tt");
+            
+            if (IsAdd)
+            {
+                this.ContentRef.AddRecord(expenseData);
+                ShowAddedMsg = true;
+            }
+            else
+            {
+                this.ContentRef.UpdateRecord(expenseData);
+                ShowSavedMsg = true;
+            }
+            
+            if (this.TransactionDialog != null)
+                await this.TransactionDialog.HideAsync();
+            this.ContentRef.UpdateTotalBalance();
         }
-        else
+        catch (Exception ex)
         {
-            ShowSavedMsg = true;
-            this.ContentRef.UpdateRecord(expenseData);
+            Console.WriteLine($"Exception in OnClickSave: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            await DialogService.AlertAsync($"Error: {ex.Message}", "Error");
         }
-        await this.TransactionDialog.HideAsync();
-        this.ContentRef.UpdateTotalBalance();
     }
 
     /// <summary>
@@ -326,7 +392,7 @@
     /// <param name="args"></param>
     public async Task OnClickDelete()
     {
-        var selectedIds = this.GridSelectedRecords.Select(s => s.UniqueId).ToList();
+        var selectedIds = this.GridSelectedRecords.Select(s => s.UniqueId).Where(id => id != null).Select(id => id!).ToList();
         this.ContentRef.RemoveRecord(selectedIds);
         this.ContentRef.UpdateTotalBalance();
         await ContentRef.EnableToolbarItems();
@@ -337,11 +403,27 @@
         await this.DlgOverlayClicked();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
+        
+        // Show dialog if it was just created
+        if (ShouldShowDialog && TransactionDialog != null)
+        {
+            ShouldShowDialog = false;
+            try
+            {
+                await TransactionDialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error showing dialog: {ex}");
+            }
+        }
+        
+        // Hide success messages after delay
         if(ShowDeleteMsg || ShowAddedMsg || ShowSavedMsg){
-            Task.Delay(1000).Wait();
+            await Task.Delay(1000);
             ShowDeleteMsg = false;
             ShowAddedMsg = false;
             ShowSavedMsg = false;
